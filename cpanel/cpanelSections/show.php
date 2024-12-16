@@ -18,7 +18,12 @@ redirectIfNotLoggedIn();
 */
 include_once $GLOBALS["webroot"] . "/core/parser.php";
 
-parseconfig($CONFIG["ZoneConfigFile"]);
+echo "<pre>";
+
+print_r(parseconfig($CONFIG["ZoneConfigFile"]));
+echo "\n\n\n\n\n";
+
+echo "</pre>";
 
 ?>
 

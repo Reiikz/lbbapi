@@ -92,3 +92,8 @@ $text .= "\n\n";
 $text .= "\$USERIDS = " . var_export($USERIDS, TRUE) . ";";
 
 file_put_contents($USERS_FILE_PATH, $text, LOCK_EX);
+
+session_start();
+$_SESSION["username"]=$_POST["user"];
+
+header("Location: " . getPathClientWebRoot());
