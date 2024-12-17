@@ -23,20 +23,25 @@ $available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
 print_r($available_zones);
 $database = bind9_zonedb_decode($available_zones[$available_zones["zones"][0]]["file"]);
 print_r($database);
-echo "\n\n";
-echo bind9_zoneconfig_encode($available_zones);
-echo "\n\n";
-echo bind9_zonedb_encode($database);
+// echo "\n\n";
+// echo bind9_zoneconfig_encode($available_zones);
+// echo "\n\n";
+// echo bind9_zonedb_encode($database);
 
 echo "</pre>";
 
 ?>
 
 <div class="content">
-    <div class="DNSzone">
-        <div class="DNSZone Title">
-        </div>
     <?php
+        foreach($available_zones["zones"] as $zoneName){
+            echo "<div class=\"DNSzone\">\n";
+                echo "<div class=\"DNSZone_Title\">$zoneName</div>\n";
+
+                // foreach()
+
+            echo "</div>\n";
+        }
+        
     ?>
-    </div>
 </div>

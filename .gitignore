@@ -1,3 +1,4 @@
 .fuse*
 config.php
 users.php
+userPermissions

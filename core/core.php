@@ -12,6 +12,20 @@ function getPathClientWebRoot(){
     return str_replace($_SERVER["DOCUMENT_ROOT"], "", $GLOBALS["webroot"]);
 }
 
+function saveVariable($subject, $subjectName, $file = null){
+    $text .= "\$$subjectName = " . var_export($subject, TRUE) . ";";
+    $text .= "\n\n";
+    if($file != null){
+        if(!is_dir(dirname($file))){
+            mkdir(dirname($file), 0700, true);
+        }
+        $text = "<?php\n\n" . "unset(\$$subjectName);\n\n"  . $text;
+        file_put_contents($file, $text, LOCK_EX);
+        chmod($file, 0700);
+    }
+    return $text;
+}
+
 $CONFIG_FILE_PATH=$GLOBALS["webroot"] . "/config/config.php";
 if(file_exists($CONFIG_FILE_PATH)){
     include_once $CONFIG_FILE_PATH;

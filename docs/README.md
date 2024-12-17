@@ -52,6 +52,11 @@ Check your web server documentation but some common usernames for the web server
 
 # API
 
+## Permissions
+
+- `admin`
+- - Allows doing anything.
+
 # Internal decoding formats
 
 >Bind9 zone configuration files and databses are decoded to PHP arrays that can later be encoded back into databses and config files making interacting with them exctremely simple.
