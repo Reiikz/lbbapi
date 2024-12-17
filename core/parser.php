@@ -86,6 +86,31 @@ function bind9_zoneconfig_decode($file){
                 continue;
             }
 
+            $pattern="/\}(\s|\n|\r|\t|\f)*(;)/";
+            $match = "";
+            preg_match($pattern, $x, $match);
+            if(count($match) > 0){
+                continue;
+            }
+
+            if(empty(trim($x))) continue;
+
+            $c = explode(" ", $x);
+            // var_dump($c);
+            foreach($c as $key => &$value){
+                $value = trim($value);
+                $value = str_replace(";", "", $value);
+                $value = str_replace("\"", "", $value);
+            }
+            
+            $val="";
+            for($x = 1; $x < count($c); $x++){
+                $val .= $c[$x];
+            }
+
+            // var_dump($val);
+            $config[$currentZone][$c[0]]=$val;
+
         }
 
         fclose($handle);
