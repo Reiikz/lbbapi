@@ -1,0 +1,319 @@
+# Installation
+
+## Dependancies:
+### You'll need:
+- PHP enabled web server.
+- Bind9 Server.
+- The sudo command for allowing the web server to restart/reload the bind9 server.
+- Systemd enabled OS.
+
+After installing sudo add the following lines to your  `/etc/sudoers` file.
+```
+    www-data ALL=NOPASSWD:/usr/bin/systemctl start bind9
+    www-data ALL=NOPASSWD:/usr/bin/systemctl stop bind9
+    www-data ALL=NOPASSWD:/usr/bin/systemctl restart bind9
+    www-data ALL=NOPASSWD:/usr/bin/systemctl reload bind9
+```
+> **Note:** That it is asumed your web server's user is www-data and the Bind9 server's unit file is bind9, if it's not adjust acordingly.
+
+## Web server confuration recomendations:
+
+- You should disable indexing.
+- Use HTTPS
+
+## Installing the files:
+
+Clone the repository into your web server
+
+> **Note:** That the API is meant to be able to function anywhere on the web server.
+
+```bash
+    git clone http://git.reiikz.net/reiikz/lbbapi.git
+```
+
+Configure the locations of the bind9 files.
+You can use the provided config.php.sample file provided like so:
+
+```bash
+    cp config.php.sample config.php
+```
+You require an administrator user, by default the first user created is the administrator.
+To create the user access the registration form directly as follows: `http://Web-server.net/LBBAPI_PATH/cpanel/auth/register.php`
+
+> **Note:** Security of the API is dependant on you setting up **HTTPS** and making sure the permissions to write Bind9 configurations are correct.
+Another alternative is to access the API over an encrypted tunnel like a VPN or SSH tunnel arguably even safer as the traffic is obfuscated.
+
+Bind9 configuration files must be writable by the web server user.
+Check your web server documentation but some common usernames for the web server include:
+- www-data (Debian based)
+- http  (Arch based)
+
+# Basic usage
+
+# API
+
+# Internal decoding formats
+
+>Bind9 zone configuration files and databses are decoded to PHP arrays that can later be encoded back into databses and config files making interacting with them exctremely simple.
+
+## Zones
+>**Note:** Refer to the API reference for details on how to interact with the files indirectly.
+
+> DNS zones are read from the file set by: `$CONFIG["ZoneConfigFile"]` in `lbbapi/config/config.php`
+
+The function `bind9_zoneconfig_decode($file)` located in `core/parser.php` is the one resposible for this task.
+- `$file` - The zone config file to decode.
+
+The returned array will contain the following format:
+
+- `zones` - Array with the zone domains
+- `<zone-domain>` - Associative array with the zone details
+- - [`key`] - `value` pair.
+
+> **Note:** `allow-transfer` is represented as an array itself as it may contain more than one value.
+
+**IE:**
+A zone file containing:
+```
+zone "localdomain" IN {
+        type master;
+        file "/etc/bind/zones/localdomain.db";
+        allow-transfer { none; };
+}
+```
+Then becomes:
+```
+    Array
+    (
+        [zones] => Array
+            (
+                [0] => localdomain
+            )
+
+        [localdomain] => Array
+            (
+                [type] => master
+                [file] => /etc/bind/zones/localdomain.db
+                [allow-transfer] => Array
+                    (
+                        [0] =>  none
+                    )
+
+            )
+
+    )
+```
+
+## DNS Databases
+
+>**Note:** Refer to the API reference for details on how to interact with the files indirectly.
+
+> DNS Databses are read from the file set by: `<$decoded_zone_config>[<zone-name>]["file"]`
+
+The function `bind9_zonedb_decode($file)` located in `core/parser.php` is the one resposible for this task.
+- `$file` - The zone config file to decode.
+
+The database is decoded into a PHP array with the following structure:
+
+- `["DEFAULT_TTL"]` - Default database TTL
+- `["SOA"]` - Start of Authority
+- `["SOA_SERVER]` - Authoritative NameServer
+- `["SERIAL"]` - Database version
+- `["REFRESH"]` - DNS DB Refresh
+- `["RETRY"]` - DNS DB transfer retry
+- `["EXPIRE"]` - Expiration time
+- `["NEGATIVE_CACHE_TTL"]` - Time To Live of a negative response
+- `["recordset"]` - PHP Array with all the database records
+
+### Recordset section
+- `["<record-name>"]`
+- - `["types"]` - All the types that this name resolves to
+- - `[<DNS record type>]` - Array of all the records of this type for this name
+
+**IE:**
+A DNS Database containing:
+```
+$TTL      60
+@      IN      SOA     localdomain.      ns1.localdomain (
+                       0      ; SERIAL
+                       3600      ; REFRESH
+                       31536000      ; RETRY
+                       604800      ; EXPIRE
+                       300 )     ; NEGATIVE_CACHE_TTL
+
+
+;------------------------------- RECORDSET
+
+
+;----------- @
+@             300           IN      NS            ns1
+@             400           IN      NS            ns2
+
+
+;----------- ns1
+ns1           500           IN      A             10.69.51.11
+
+
+;----------- ns2
+ns2           600           IN      A             10.69.51.11
+
+
+;----------- test
+test          700           IN      A             0.0.0.0
+test                        IN      TXT           test1
+test                        IN      TXT           test2
+
+
+;----------- testnottl
+testnottl                   IN      A             0.0.0.0
+```
+
+Then becomes:
+```
+Array
+(
+    [DEFAULT_TTL] => 60
+    [SOA] => localdomain.
+    [SOA_SERVER] => ns1.localdomain
+    [SERIAL] => 0
+    [REFRESH] => 3600
+    [RETRY] => 31536000
+    [EXPIRE] => 604800
+    [NEGATIVE_CACHE_TTL] => 300
+    [recordset] => Array
+        (
+            [@] => Array
+                (
+                    [types] => Array
+                        (
+                            [0] => NS
+                        )
+
+                    [NS] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [value] => ns1
+                                    [ttl] => 300
+                                )
+
+                            [1] => Array
+                                (
+                                    [value] => ns2
+                                    [ttl] => 400
+                                )
+
+                        )
+
+                )
+
+            [ns1] => Array
+                (
+                    [types] => Array
+                        (
+                            [0] => A
+                        )
+
+                    [A] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [value] => 10.69.51.11
+                                    [ttl] => 500
+                                )
+
+                        )
+
+                )
+
+            [ns2] => Array
+                (
+                    [types] => Array
+                        (
+                            [0] => A
+                        )
+
+                    [A] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [value] => 10.69.51.11
+                                    [ttl] => 600
+                                )
+
+                        )
+
+                )
+
+            [test] => Array
+                (
+                    [types] => Array
+                        (
+                            [0] => A
+                            [1] => TXT
+                        )
+
+                    [A] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [value] => 0.0.0.0
+                                    [ttl] => 700
+                                )
+
+                        )
+
+                    [TXT] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [value] => test1
+                                    [ttl] => 60
+                                )
+
+                            [1] => Array
+                                (
+                                    [value] => test2
+                                    [ttl] => 60
+                                )
+
+                        )
+
+                )
+
+            [testnottl] => Array
+                (
+                    [types] => Array
+                        (
+                            [0] => A
+                        )
+
+                    [A] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [value] => 0.0.0.0
+                                    [ttl] => 60
+                                )
+
+                        )
+
+                )
+
+        )
+
+)
+```
+
+# Internal encoding
+
+>**Note:** Refer to the API reference for details on how to interact with the files indirectly.
+
+To encode database and zone file configurations back into Bind9 recognized formats use the following functions:
+- `bind9_zoneconfig_encode($ConfigurationArray)`
+- - `$ConfigurationArray` - being An array in the previously described format.
+- `bind9_zonedb_encode($DBArray)`
+- - `$DBArray `- being an array in the previously described format.
+
+Both of these functions will return a string with the parsed data but they will not write to disk.
+
