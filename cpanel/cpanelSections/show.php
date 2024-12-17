@@ -20,7 +20,7 @@ include_once $GLOBALS["webroot"] . "/core/parser.php";
 
 echo "<pre>";
 
-print_r(parseconfig($CONFIG["ZoneConfigFile"]));
+print_r(bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]));
 echo "\n\n\n\n\n";
 
 echo "</pre>";

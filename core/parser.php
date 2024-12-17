@@ -1,95 +1,93 @@
 <?php
 
 
-$BIND9_CONFIG_SYMBOLS = array(
-    "zone",
-    "type",
-    "file",
+$GLOBALS["BIND9_DATABLOCK_VALUES"] = array(
+    "allow-transfer",
 );
 
-function parseconfig($file){
+function bind9_zoneconfig_decode($file){
     $config=array(
         "raw" => "",
+        "log" => "",
     );
     $handle = fopen($file, "r");
-    $expecting = "";
-    $reading = "";
-    $read = false;
-    $collected = "";
-    $key = "";
-    $scope = "";
+    $currentZone = "";
+    $currentBlock = "";
+    $readingDataBlock = false;
     if ($handle) {
-        while (($x = fgetc($handle)) !== false) {
+        while (($x = fgets($handle)) !== false) {
+            
+            if(str_starts_with($x, "//")){
+                continue;
+            }
+
             $config["raw"].=$x;
-            
-            $collected .= $x;
-            
-            switch(trim ($collected)){
-                case "//":
-                    $reading="comment";
-                    $expecting="lineJump";
-                    break;
 
-                case "zone":
-                    $expecting="OpenQuote";
-                    $reading="zoneName";
-                    $read = false;
-                    $collected="";
-                    break;
+            if(str_starts_with($x, "zone")){
+                $match="";
+                preg_match("/\".*\"/", $x, $match);
+                $match = str_replace("\"", "", $match);
+                $currentZone = $match[0];
+                if(!isset($config["zones"])){
+                    $config["zones"] = array();
+                }
+                array_push($config["zones"], $currentZone);
+                if(!isset($config[$currentZone])){
+                    $config[$currentZone] = array();
+                }
+                continue;
             }
 
-            switch($expecting){
-                case "lineJump":
-                    if($x == "\n"){
-                        $reading="";
-                        $expecting="";
-                    }
-                    $collected="";
-                    break;
-                
-                case "OpenQuote":
-                    if($collected == "\""){
-                        $expecting="CloseQuote";
-                    }
-                    $collected="";
-                    break;
-
-                case "CloseQuote":
-                    if($x == "\""){
-                        $collected = substr($collected, 0, strlen($collected) - 2);
-                    }
-                    $read = true;
-                    break;
-                
-                case "OpenBracket":
-                    if($collected == "{"){
-                        $expecting="CloseBracket";
-                    }
-                    $collected="";
-                    break;
-                
-                // case "CloseBracket": {
-                //     if($)
-                // }
-            }
-
-            if($read){
-                switch($reading){
-                    case "zoneName":
-                        if(!isset($config["zones"])){
-                            $config["zones"] = array();
-                        }
-                        array_push($config["zones"], $collected);
-                        $scope = $collected;
-                        $collected = "";
-                        $reading = "ZoneConfig";
-                        $expecting = "OpenBracket";
-                        $read = false;
-                        $expecting = "";
-                        break;
+            
+            foreach($GLOBALS["BIND9_DATABLOCK_VALUES"] as $key => $value){
+                if(str_contains($x, $value)){
+                    // echo "X: $x contiene $value";
+                    $readingDataBlock = true;
+                    $currentBlock = $x;
                 }
             }
+
+            if($readingDataBlock){
+                $match="";
+                $pattern="/\}(\s|\n|\r|\t|\f)*(;)/";
+                preg_match($pattern, $currentBlock,$match);
+                if(count($match) == 0){
+                    if($currentBlock != $x){
+                        $currentBlock .= $x;
+                    }
+                    
+                    preg_match($pattern, $currentBlock,$match);
+                    if(count($match) == 0) continue;
+                }
+                echo "Data block:" . $currentBlock . "\n";
+                
+
+                $match="";
+                $currentBlock = str_replace("\n", "", $currentBlock);
+                preg_match("/\{.*\}/", $currentBlock, $match);
+                $value = str_replace("{", "", $match[0]);
+                $value = str_replace("}", "", $value);
+
+                preg_match("/^\s*(\w+|-)+/", $currentBlock, $match);
+                $key = trim($match[0]);
+                
+                $values = explode(";", $value);
+                // var_dump($value);
+                // var_dump($currentBlock);
+                foreach($values as $k => $val){
+                    $val = trim($val);
+                    if(empty($val)){
+                        unset($values[$k]);
+                    }
+                }
+
+                $config[$currentZone][$key] = $values;
+                $readingDataBlock = false;
+                continue;
+            }
+
         }
+
         fclose($handle);
     }
     if(count($config) == 0){
