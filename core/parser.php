@@ -100,14 +100,17 @@ function bind9_zoneconfig_decode($file){
                 $value = trim($value);
                 $value = str_replace(";", "", $value);
                 $value = str_replace("\"", "", $value);
+                if(empty($value))
+                    unset($c[$key]);
             }
-            
+            $c = array_values($c);
+            // var_dump($c);
             $val="";
             for($x = 1; $x < count($c); $x++){
                 $val .= $c[$x];
             }
 
-            // var_dump($val);
+            // var_dump($c[0]);
             $config[$currentZone][$c[0]]=$val;
 
         }

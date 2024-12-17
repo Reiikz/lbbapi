@@ -28,19 +28,11 @@ echo "</pre>";
 
 ?>
 
-<!DOCTYPE html>
-<htmL>
-    <head>
-
-    </head>
-    <body>
-            <div class="content">
-                <div class="DNSzone">
-                    <div class="DNSZone Title">
-                    </div>
-                <?php
-                ?>
-                </div>
-            </div>
-    </body>
-</html>
+<div class="content">
+    <div class="DNSzone">
+        <div class="DNSZone Title">
+        </div>
+    <?php
+    ?>
+    </div>
+</div>

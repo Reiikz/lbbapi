@@ -7,10 +7,7 @@ $CONFIG = array(
     "EnableMaxUsers" => true,
     //Enable allowed user count
     "AllowedUserCount" => "1",
-    //directory where to store zone databases to!
-    //note that this directory needs to be writable by www-data (web server user) and readable by bind9
-    "ZoneDBPath" = "/etc/bind/zones"
     //Bind9 Default zone config file so it can configure new zones and read the existing ones!
     //note that this file needs to be writable by www-data (web server user) and readable by bind9
-    "ZoneConfigFile" = "/etc/bind/named.conf.default-zones"
+    "ZoneConfigFile" = "/etc/bind/named.conf.local"
 );
