@@ -25,6 +25,8 @@ $database = bind9_zonedb_decode($available_zones[$available_zones["zones"][0]]["
 print_r($database);
 echo "\n\n";
 echo bind9_zoneconfig_encode($available_zones);
+echo "\n\n";
+echo bind9_zonedb_encode($database);
 
 echo "</pre>";
 
