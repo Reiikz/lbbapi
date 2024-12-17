@@ -21,8 +21,10 @@ include_once $GLOBALS["webroot"] . "/core/parser.php";
 echo "<pre>";
 $available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
 print_r($available_zones);
-print_r(bind9_zonedb_decode($available_zones[$available_zones["zones"][0]]["file"]));
-echo "\n\n\n\n\n";
+$database = bind9_zonedb_decode($available_zones[$available_zones["zones"][0]]["file"]);
+print_r($database);
+echo "\n\n";
+echo bind9_zoneconfig_encode($available_zones);
 
 echo "</pre>";
 
