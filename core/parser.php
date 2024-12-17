@@ -6,10 +6,9 @@ $GLOBALS["BIND9_DATABLOCK_VALUES"] = array(
 );
 
 function bind9_zoneconfig_decode($file){
-    $config=array(
-        "raw" => "",
-        "log" => "",
-    );
+    // $config=array(
+    //     "raw" => "",
+    // );
     $handle = fopen($file, "r");
     $currentZone = "";
     $currentBlock = "";
@@ -21,7 +20,7 @@ function bind9_zoneconfig_decode($file){
                 continue;
             }
 
-            $config["raw"].=$x;
+            // $config["raw"].=$x;
 
             if(str_starts_with($x, "zone")){
                 $match="";
@@ -59,7 +58,7 @@ function bind9_zoneconfig_decode($file){
                     preg_match($pattern, $currentBlock,$match);
                     if(count($match) == 0) continue;
                 }
-                echo "Data block:" . $currentBlock . "\n";
+                // echo "Data block:" . $currentBlock . "\n";
                 
 
                 $match="";
@@ -119,4 +118,9 @@ function bind9_zoneconfig_decode($file){
         return null;
     }
     return $config;
+}
+
+function bind9_zonedb_decode($file){
+    echo "implement decode $file";
+    return null;
 }

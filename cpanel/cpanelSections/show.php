@@ -19,8 +19,9 @@ redirectIfNotLoggedIn();
 include_once $GLOBALS["webroot"] . "/core/parser.php";
 
 echo "<pre>";
-
-print_r(bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]));
+$available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
+print_r($available_zones);
+print_r(bind9_zonedb_decode($available_zones[$available_zones["zones"][0]]["file"]));
 echo "\n\n\n\n\n";
 
 echo "</pre>";
