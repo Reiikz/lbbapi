@@ -124,6 +124,122 @@ function bind9_zoneconfig_decode($file){
 }
 
 function bind9_zonedb_decode($file){
-    echo "implement decode $file";
+    $database = array();
+    $handle = fopen($file, "r");
+    $db_params_gathered = 0;
+    $db_params_gathering = false;
+    $buffer = "";
+    if ($handle) {
+        while (($x = fgets($handle)) !== false) {
+            $y = $x;
+            // echo $x;
+            
+            if(str_starts_with($y, ";")){
+                continue;
+            }
+
+            if(str_contains($x, ";")){
+                $y = preg_replace("/\;.*$/", "", $x);
+            }
+
+            // echo "trimmed: " . trim($y) . "\n";
+            // echo "empty: " . print_r(empty(trim($y))) . "\n";
+
+            if((empty(trim($y))) && (trim($y) != "0")) continue;
+            
+            if(str_starts_with($y, "\$TTL")){
+                $value = preg_replace("/[^0-9]/", "", $y);
+                // print_r($d);
+                $database["DEFAULT_TTL"] = $value;
+                continue;
+            }
+
+            if(preg_match("/\@\s+IN\s+SOA\s+/", $y) || $db_params_gathering){
+                $db_params_gathering = true;
+                if(!preg_match("/\((.*)\)/", $buffer)){
+                    $buffer .= "$y";
+                    $buffer = str_replace("\n", "", $buffer);
+                    // echo $buffer . "\n";
+                    if(!preg_match("/\((.*)\)/", $buffer))
+                        continue;
+                }
+                // echo $buffer;
+
+                $s = preg_split("/\s+/", $buffer);
+                $database["SOA"] = $s[3];
+                $z = 4;
+                while($s[$z] != "("){
+                    $database["SOA_SERVERS"]=$s[$z];
+                    $z++;
+                    if($z >= count($s)){
+                        break;
+                    }
+                }
+
+                $database["SERIAL"]=$s[6];
+                $database["REFRESH"]=$s[7];
+                $database["RETRY"]=$s[8];
+                $database["EXPIRE"]=$s[9];
+                $database["NEGATIVE_CACHE_TTL"]=$s[10];
+
+                // print_r($s);
+
+                $db_params_gathering = false;
+                continue;
+            }
+
+            if(!isset($database["recordset"])){
+                $database["recordset"] = array();
+            }
+
+            $record = preg_split("/\s+/", $y);
+
+            //offets according to record setup
+            $rpos = 0;
+            $ttlpos = 1;
+            $inpos = 2;
+            $typepos = 3;
+            $resolutionpos = 4;
+            if(count($record) < 6){
+                $rpos = 0;
+                $ttlpos = -1;
+                $inpos = 1;
+                $typepos = 2;
+                $resolutionpos = 3;
+            }
+
+            if(!isset($database["recordset"][$record[$rpos]])){
+                $database["recordset"][$record[$rpos]] = array();
+            }
+
+            if(!isset($database["recordset"][$record[$rpos]]["types"])){
+                $database["recordset"][$record[$rpos]]["types"] = array();
+            }
+
+            if(!in_array($record[$typepos], $database["recordset"][$record[$rpos]]["types"])){
+                array_push($database["recordset"][$record[$rpos]]["types"], $record[$typepos]);
+            }
+
+            if(!isset($database["recordset"][$record[$rpos]][$record[$typepos]])){
+                $database["recordset"][$record[$rpos]][$record[$typepos]] = array();
+            }
+            $ttl = "";
+            if($ttlpos == -1){
+                $ttl = $database["DEFAULT_TTL"];
+            }else{
+                $ttl = $record[$ttlpos];
+            }
+            array_push($database["recordset"][$record[$rpos]][$record[$typepos]], array(
+                "value" => $record[$resolutionpos],
+                "ttl" => $ttl,
+            ));
+
+            // echo $y;
+        }
+        fclose($handle);
+        if(count($database) > 0){
+            return $database;
+        }
+    }
     return null;
 }
