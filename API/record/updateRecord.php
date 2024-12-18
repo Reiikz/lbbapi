@@ -66,6 +66,7 @@ if(isset($_POST["returnTo"])){
     header("Location: " . $_POST["returnTo"]);
 }
 
-
+$ret = null;
+exec("sudo systemctl reload bind9", $ret);
 
 
