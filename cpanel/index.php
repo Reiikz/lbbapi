@@ -36,6 +36,7 @@ redirectIfNotLoggedIn();
                 <?php
                     echo $_SESSION["username"];
                 ?>
+
                 <form method="POST" action="<?php echo getPathClientWebRoot(); ?>/API/auth/logout.php">
                     <input type="submit" value="Logout"/>
                 </form>
@@ -45,7 +46,8 @@ redirectIfNotLoggedIn();
 
                 <a href="./?p=show">Show</a>
                 <a href="./?p=add">Add</a>
-                <a href="./?p=update">Update</a>
+                <a href="./?p=tokens">Tokens</a>
+                <a href="./?p=newtoken">New Token</a>
 
             </div>
 
@@ -61,6 +63,12 @@ redirectIfNotLoggedIn();
                             break;
                         case "update":
                             include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/updateRecord.php";
+                            break;
+                        case "tokens":
+                            include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/tokens.php";
+                            break;
+                        case "newtoken":
+                            include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/newToken.php";
                             break;
                     }
                 }else{

@@ -76,3 +76,35 @@ function userHasAnyOfThesePermissions($array){
     }
     return false;
 }
+
+function generateZonePermissions(){
+    $permissions = array();
+    $ZoneConfig = getCFG();
+    foreach($ZoneConfig["zones"] as $zoneName){
+        array_push($permissions, "$zoneName.delete");
+        array_push($permissions, "$zoneName.update");
+        array_push($permissions, "$zoneName.new");
+        array_push($permissions, "*.$zoneName.delete");
+        array_push($permissions, "*.$zoneName.update");
+        array_push($permissions, "*.$zoneName.new");
+    }
+    return $permissions;
+}
+
+function arePermissionWithinCurrentDNSZones($permissions, $zones = null){
+    if($zones == null){
+        $zones = getCFG()["zones"];
+    }
+    $out = true;
+    foreach($permissions as $permission){
+        $withinZone = false;
+        foreach($zones as $zone){
+            if(str_contains($permission, $zone)){
+                $withinZone = true;
+                break;
+            }
+        }
+        $out = $out && $withinZone;
+    }
+    return $out;
+}

@@ -59,7 +59,7 @@ function reparseZones(){
     saveVariable($sum, "_ZONES_SUM", $cachedCFGSumPath);
 }
 
-function getCFG($domain){
+function getCFG($domain = null){
     $cacheDir = getCacheDir();
     $cachedCFGPath = $cacheDir . "/cachedcfg.php";
     $cachedCFGSumPath = $cacheDir . "/cachedcfgmd5.php";
@@ -72,6 +72,11 @@ function getCFG($domain){
         reparseZones();
     }
     include $cachedCFGPath;
+
+    if($domain == null){
+        return $_ZONES;
+    }
+    
     foreach($_ZONES["zones"] as $zone){
         // echo $zone;
         // echo $domain;

@@ -3,3 +3,4 @@ config.php
 users.php
 userPermissions
 cache
+tokens
