@@ -9,5 +9,6 @@ $CONFIG = array(
     "AllowedUserCount" => "1",
     //Bind9 Default zone config file so it can configure new zones and read the existing ones!
     //note that this file needs to be writable by www-data (web server user) and readable by bind9
-    "ZoneConfigFile" = "/etc/bind/named.conf.local"
+    //you can for instance make a symlink to this config file and store the database here and also use a symlink to it
+    "ZoneConfigFile" = "/var/www/html/lbbapi/config/named.conf.local"
 );

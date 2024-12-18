@@ -36,10 +36,9 @@ function isRecord($domain, $type, $value, $db = null){
     $authority = preg_replace("/\.$/", "", $db["SOA"]);
 
     $targetName=$domain;
-    if($authority == $targetName){
-        $targetName = $targetName . ".";
-    }else{
-        $targetName = str_replace($authority, "", $targetName);
+    if($db["SOA"] != $targetName){
+        $targetName = preg_replace("/\.$authority\$/", "", $targetName);
+        // $targetName = str_replace($authority, "", $targetName);
         $targetName = preg_replace("/\.$/", "", $targetName);
     }
 
@@ -61,6 +60,130 @@ function isRecord($domain, $type, $value, $db = null){
     
 }
 
+function recordUpdate($domain, $type, $value, $newValue, $newTTL,  $db = null){
+    $domainPermission = "$domain.update";
+    if(!userHasAnyOfThesePermissions(array($domainPermission, "admin"))){
+        header("HTTP/1.1 403 Forbidden");
+        echo "<h1>;|!</h1>";
+        exit(0);
+    }
+
+    // echo "<pre>";
+
+    $ZoneConfig = getCFG($domain);
+
+    // echo "</pre>";
+
+    if($ZoneConfig == null){
+        header("HTTP/1.1 400 Bad request");
+        echo "<h1>I do not own the requested domain $domain</h1>";
+        exit(0);
+    }
+
+    if($db == null){
+        $db = bind9_zonedb_decode($ZoneConfig["file"]);
+    }
+
+    $authority = preg_replace("/\.$/", "", $db["SOA"]);
+
+    $targetName=$domain;
+    if($db["SOA"] != $targetName){
+        $targetName = preg_replace("/\.$authority\$/", "", $targetName);
+        // $targetName = str_replace($authority, "", $targetName);
+        $targetName = preg_replace("/\.$/", "", $targetName);
+    }
+
+    if(!isRecord($domain, $type, $value, $db)){
+        newRecord($domain, $type, $value, $db);
+    }
+
+    foreach($db["recordset"][$targetName][$type] as &$set){
+        if($set["value"] == $value){
+            $set["value"] = $newValue;
+            $set["ttl"] = $newTTL;
+            break;
+        }
+    }
+
+    $db["SERIAL"]++;
+
+    $rencodedDB = bind9_zonedb_encode($db);
+    
+    file_put_contents($ZoneConfig["file"], $rencodedDB, LOCK_EX);
+    chmod($ZoneConfig["file"], 0750);
+}
+
+function newRecord($domain, $type, $value, $ttl, $db = null){
+    $domainPermission = "$domain.new";
+    if(!userHasAnyOfThesePermissions(array($domainPermission, "admin"))){
+        header("HTTP/1.1 403 Forbidden");
+        echo "<h1>;|!</h1>";
+        exit(0);
+    }
+
+    $ZoneConfig = getCFG($domain);
+    // echo "</pre>";
+
+    if($ZoneConfig == null){
+        header("HTTP/1.1 400 Bad request");
+        echo "<h1>I do not own the requested domain $domain</h1>";
+        exit(0);
+    }
+
+    if($db == null){
+        $db = bind9_zonedb_decode($ZoneConfig["file"]);
+    }
+
+    $authority = preg_replace("/\.$/", "", $db["SOA"]);
+
+    $targetName=$domain;
+    if($db["SOA"] != $targetName){
+        $targetName = preg_replace("/\.$authority\$/", "", $targetName);
+        // $targetName = str_replace($authority, "", $targetName);
+        $targetName = preg_replace("/\.$/", "", $targetName);
+    }
+
+    echo $domain;
+
+    if(isRecord($domain, $type, $value, $db)){
+        return;
+    }
+
+    if(!isset($type, $db["recordset"][$targetName])){
+        $db["recordset"][$targetName] = array();
+    }
+
+    if(!isset($db["recordset"][$targetName]["types"])){
+        $db["recordset"][$targetName]["types"] = array();
+    }
+
+    if(!in_array($type, $db["recordset"][$targetName]["types"])){
+        array_push($db["recordset"][$targetName]["types"], $type);
+    }
+
+    if(!isset($db["recordset"][$targetName][$type])){
+        $db["recordset"][$targetName][$type] = array();
+    }
+
+    array_push($db["recordset"][$targetName][$type], array(
+        "value" => $value,
+        "ttl" => $ttl,
+    ));
+
+    // echo "<pre>";
+    
+    // print_r($db);
+
+    // echo "</pre>";
+
+    $db["SERIAL"]++;
+
+    $rencodedDB = bind9_zonedb_encode($db);
+
+    
+    file_put_contents($ZoneConfig["file"], $rencodedDB, LOCK_EX);
+    chmod($ZoneConfig["file"], 0750);
+}
 
 function deleteRecord($domain, $type, $value, $db = null){
     if($db == null){
@@ -89,16 +212,13 @@ function deleteRecord($domain, $type, $value, $db = null){
         if(!isRecord($domain, $type, $value, $db)){
             return;
         }
-        
-        echo $domain;
 
         $authority = preg_replace("/\.$/", "", $db["SOA"]);
 
         $targetName=$domain;
-        if($authority == $targetName){
-            $targetName = $targetName . ".";
-        }else{
-            $targetName = str_replace($authority, "", $targetName);
+        if($db["SOA"] != $targetName){
+            $targetName = preg_replace("/\.$authority\$/", "", $targetName);
+            // $targetName = str_replace($authority, "", $targetName);
             $targetName = preg_replace("/\.$/", "", $targetName);
         }
         // echo "<br/>delete target: $targetName";
@@ -119,6 +239,8 @@ function deleteRecord($domain, $type, $value, $db = null){
         if(count($db["recordset"][$targetName]["types"]) == 0){
             unset($db["recordset"][$targetName]);
         }
+
+        $db["SERIAL"]++;
 
         $rencodedDB = bind9_zonedb_encode($db);
 

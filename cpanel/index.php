@@ -45,6 +45,7 @@ redirectIfNotLoggedIn();
 
                 <a href="./?p=show">Show</a>
                 <a href="./?p=add">Add</a>
+                <a href="./?p=update">Update</a>
 
             </div>
 
@@ -57,6 +58,9 @@ redirectIfNotLoggedIn();
                             break;
                         case "add":
                             include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/add.php";
+                            break;
+                        case "update":
+                            include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/updateRecord.php";
                             break;
                     }
                 }else{

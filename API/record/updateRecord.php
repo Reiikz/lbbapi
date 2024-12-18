@@ -45,39 +45,26 @@ if(!isset($_POST["value"])){
     exit(0);
 }
 
-if(!isset($_POST["ttl"])){
+if(!isset($_POST["newValue"])){
     header("HTTP/1.1 400 Bad request");
-    echo "<h1>No ttl!</h1>";
+    echo "<h1>No newValue!</h1>";
+    exit(0);
+}
+
+if(!isset($_POST["newTTL"])){
+    header("HTTP/1.1 400 Bad request");
+    echo "<h1>No newTTL!</h1>";
     exit(0);
 }
 
 include_once $GLOBALS["webroot"] . "/core/permissions.php";
 include_once $GLOBALS["webroot"] . "/core/manageDomainDatabase.php";
 
-$authority="";
-if(isset($_POST["authority"])){
-    $authority = $_POST["authority"];
-}
-
-$domain="";
-if(!str_ends_with($_POST["record"], ".")){
-    $domain = $_POST["record"] . ".$authority";
-}else{
-    $domain = $_POST["record"];
-}
-
-// echo $domain;
-
-
-// echo "<pre>";
-newRecord($domain, $_POST["type"], $_POST["value"], $_POST["ttl"]);
-// deleteRecord($domain, $_POST["type"], $_POST["value"]);
-// echo "</pre>";
+recordUpdate($_POST["record"], $_POST["type"], $_POST["value"], $_POST["newValue"], $_POST["newTTL"]);
 
 if(isset($_POST["returnTo"])){
     header("Location: " . $_POST["returnTo"]);
 }
-
 
 
 

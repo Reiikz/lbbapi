@@ -55,9 +55,7 @@ input[type="submit"]{
                         foreach($set[$recordType] as $valueSet){
                             $ttl = $valueSet["ttl"];
                             $name = $recordName;
-                            if(str_ends_with($name, ".")){
-                                $name = preg_replace("/\.$/", "", $name);
-                            }else{
+                            if(!str_ends_with($name, ".")){
                                 $name = "$name.$authority";
                             }
                             echo "
@@ -84,12 +82,15 @@ input[type="submit"]{
                                         </form>
                                     </div>
                                     <div>
-                                        <form method=\"POST\" Action=\"" . getPathClientWebRoot() . "cpanel/cpanelSections/updateRecord.php\" >
-                                            <input type=\"submit\" value=\"Edit\" />
+                                        <form method=\"get\" Action=\"" . getPathClientWebRoot() . "/cpanel/" . "\" >
+                                            <input type=\"hidden\" name=\"p\" value=\"update\"/>
                                             <input type=\"hidden\" name=\"record\" value=\"$name\"/>
+                                            <input type=\"hidden\" name=\"authority\" value=\"$authority\"/>
                                             <input type=\"hidden\" name=\"type\" value=\"$recordType\"/>
+                                            <input type=\"hidden\" name=\"ttl\" value=\"$ttl\"/>
                                             <input type=\"hidden\" name=\"value\" value=\"" . $valueSet["value"] . "\"/>
                                             <input type=\"hidden\" name=\"returnTo\" value=\"" . $_SERVER['REQUEST_URI'] . "\"/>
+                                            <input type=\"submit\" value=\"Edit\" />
                                         </form>
                                     </div>
                                 </div>
