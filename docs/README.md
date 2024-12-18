@@ -48,14 +48,87 @@ Check your web server documentation but some common usernames for the web server
 - www-data (Debian based)
 - http  (Arch based)
 
-# Basic usage
-
 # API
+
+This is a web API meant to be used with your curl client of choice.
+
+All successfull requests will return an empty 200.
+Otherwise the header is set to a meaningful http error and a help string is returned.
 
 ## Permissions
 
 - `admin`
 - - Allows doing anything.
+
+The admin permission should only be given to the administrator user and will not work for the API
+
+## DNS database permissions
+
+The permissions are given out to tokens on a DNS by DNS basis.
+Ending with the type of operation allowed for that token.
+
+Like so:
+
+- `example.com.delete` - would allow deletion of all records matching example.com
+
+Similarly wildcards can be used
+
+- `*.example.com.delete` - would allow deleting all records matching < anything >.example.com as well as example.com itself.
+
+Available permissions are:
+
+- `example.com.new`
+  - Create new record
+- `example.com.delete`
+  - delete new record
+- `example.com.update`
+  - update record
+
+## Record Creation
+
+> **Note:** That DNS record names aren't unique but rather the value+record tuple is, so for delition queries both must be given otherwise we would delete the entire recordset for a given domain.
+
+If we were to create the `TXT` record `femboy.s.cooldomain.net` with value "`shody`".
+
+Aditionally the record type is required.
+
+The post request should look something like this:
+
+```
+POST to https://cooldomain.net/lbbapi/API/record/new.php
+    token:algo
+    type:TXT
+    record:femboy.s.cooldomain.net
+    value:shody
+```
+
+Aditionally we can specify the DNS authority separately (useful for web interactions).
+```
+POST to https://cooldomain.net/lbbapi/API/record/new.php
+    token:algo
+    type:TXT
+    authority:s.cooldomain.net
+    record:femboy
+    value:shody
+```
+
+## Record Deletion
+
+> **Note:** That DNS record names aren't unique but rather the value+record tuple is, so for delition queries both must be given otherwise we would delete the entire recordset for a given domain.
+
+If we were to delete the `TXT` record `femboy.s.cooldomain.net` with value "`shody`".
+
+Aditionally the record type is required.
+
+The post request should look something like this:
+
+```
+POST to https://cooldomain.net/lbbapi/API/record/delete.php
+    token:algo
+    type:TXT
+    record:femboy.s.cooldomain.net
+    value:shody
+```
 
 # Internal decoding formats
 
@@ -187,7 +260,7 @@ Array
     [NEGATIVE_CACHE_TTL] => 300
     [recordset] => Array
         (
-            [@] => Array
+            [localdomain.] => Array
                 (
                     [types] => Array
                         (
@@ -309,6 +382,7 @@ Array
 
 )
 ```
+> **Note:** that the @ symbol becomes the start of authority ended by a dot in the PHP representation.
 
 # Internal encoding
 

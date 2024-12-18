@@ -22,7 +22,9 @@ redirectIfNotLoggedIn();
     ?>
 
     <head>
-            
+            <title>
+                LBBAPI: CPANEL
+            </title>
     </head>
 
     <body>
@@ -39,9 +41,10 @@ redirectIfNotLoggedIn();
                 </form>
             </div>
 
-            <div>
+            <div class="Menu">
 
                 <a href="./?p=show">Show</a>
+                <a href="./?p=add">Add</a>
 
             </div>
 
@@ -51,6 +54,10 @@ redirectIfNotLoggedIn();
                     switch($_GET["p"]){
                         case "show":
                             include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/show.php";
+                            break;
+                        case "add":
+                            include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/add.php";
+                            break;
                     }
                 }else{
                     include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/show.php";

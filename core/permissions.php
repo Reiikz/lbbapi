@@ -12,7 +12,7 @@ if(!isset($GLOBALS["webroot"])){
 
 }
 include_once $GLOBALS["webroot"] . "/core/core.php";
-redirectIfNotLoggedIn();
+
 /*
     **************************
 */
@@ -44,8 +44,20 @@ function userHasPermission($permission){
         include $userPermFile;    
         $_SESSION["permissions"] = $_PERMISSIONS;
     }
-    
-    return in_array($permission, $_SESSION["permissions"]);
+
+    foreach($_SESSION["permissions"] as $perm){
+        if($perm == $permission){
+            return true;
+        }
+
+        if(str_contains($perm, "*")){
+            $wildcardPerm = substr($perm, 2, strlen($perm));
+            if(str_ends_with($permission, $wildcardPerm)){
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 function userHasAllThesePermissions($array){

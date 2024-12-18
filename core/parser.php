@@ -237,20 +237,26 @@ function bind9_zonedb_decode($file){
                 $resolutionpos = 3;
             }
 
-            if(!isset($database["recordset"][$record[$rpos]])){
-                $database["recordset"][$record[$rpos]] = array();
+            $_recordName = $record[$rpos];
+            $authority = preg_replace("/\.$/", "", $database["SOA"]);
+            if($_recordName == "@"){
+                $_recordName = $authority . ".";
             }
 
-            if(!isset($database["recordset"][$record[$rpos]]["types"])){
-                $database["recordset"][$record[$rpos]]["types"] = array();
+            if(!isset($database["recordset"][$_recordName])){
+                $database["recordset"][$_recordName] = array();
             }
 
-            if(!in_array($record[$typepos], $database["recordset"][$record[$rpos]]["types"])){
-                array_push($database["recordset"][$record[$rpos]]["types"], $record[$typepos]);
+            if(!isset($database["recordset"][$_recordName]["types"])){
+                $database["recordset"][$_recordName]["types"] = array();
             }
 
-            if(!isset($database["recordset"][$record[$rpos]][$record[$typepos]])){
-                $database["recordset"][$record[$rpos]][$record[$typepos]] = array();
+            if(!in_array($record[$typepos], $database["recordset"][$_recordName]["types"])){
+                array_push($database["recordset"][$_recordName]["types"], $record[$typepos]);
+            }
+
+            if(!isset($database["recordset"][$_recordName][$record[$typepos]])){
+                $database["recordset"][$_recordName][$record[$typepos]] = array();
             }
             $ttl = "";
             if($ttlpos == -1){
@@ -258,7 +264,8 @@ function bind9_zonedb_decode($file){
             }else{
                 $ttl = $record[$ttlpos];
             }
-            array_push($database["recordset"][$record[$rpos]][$record[$typepos]], array(
+            
+            array_push($database["recordset"][$_recordName][$record[$typepos]], array(
                 "value" => $record[$resolutionpos],
                 "ttl" => $ttl,
             ));
@@ -313,8 +320,13 @@ function bind9_zonedb_encode($dbarray){
                     $ttl = "";
                 }
 
+                $recName = $dbarrykey;
+                if($recName == $dbarray["SOA"]){
+                    $recName = "@";
+                }
+
                 //calculate blank spaces for the record so they lign up neatly
-                $curSpaces = $blankSpacesCount - strlen($dbarrykey) + 4;
+                $curSpaces = $blankSpacesCount - strlen($recName) + 4;
                 $blankSpaces = "";
                 for($x = 0; $x < $curSpaces; $x++) {
                     $blankSpaces .= " ";
@@ -334,7 +346,9 @@ function bind9_zonedb_encode($dbarray){
                     $recordTTLBlankSpaces .= " ";
                 }
 
-                $out .= "$dbarrykey$blankSpaces $ttl$recordTTLBlankSpaces" . "IN      $recordType$recordBlankSpaces" . $entry["value"] . "\n";
+                
+
+                $out .= "$recName$blankSpaces $ttl$recordTTLBlankSpaces" . "IN      $recordType$recordBlankSpaces" . $entry["value"] . "\n";
             }
         }
         $out .= "\n\n";

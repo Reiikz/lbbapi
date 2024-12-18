@@ -44,6 +44,8 @@ input[type="submit"]{
                 
                 $zonedb = bind9_zonedb_decode($available_zones[$zoneName]["file"]);
 
+                $authority = preg_replace("/\.$/", "", $zonedb["SOA"]);
+
                 foreach($zonedb["recordset"] as $recordName => $set){
                     foreach($set["types"] as $recordType){
                         // echo "<pre>";
@@ -52,6 +54,12 @@ input[type="submit"]{
                         // echo "</pre>";
                         foreach($set[$recordType] as $valueSet){
                             $ttl = $valueSet["ttl"];
+                            $name = $recordName;
+                            if(str_ends_with($name, ".")){
+                                $name = preg_replace("/\.$/", "", $name);
+                            }else{
+                                $name = "$name.$authority";
+                            }
                             echo "
                                 <div class=\"DNSrecord\">
                                     <div>
@@ -69,13 +77,19 @@ input[type="submit"]{
                                     <div>
                                         <form method=\"POST\" Action=\"" . getPathClientWebRoot() . "/API/record/delete.php\" >
                                             <input type=\"submit\" value=\"Delete\" />
-                                            <input type=\"hidden\" name=\"record\" value=\"$recordName\"/>
+                                            <input type=\"hidden\" name=\"record\" value=\"$name\"/>
+                                            <input type=\"hidden\" name=\"type\" value=\"$recordType\"/>
+                                            <input type=\"hidden\" name=\"value\" value=\"" . $valueSet["value"] . "\"/>
+                                            <input type=\"hidden\" name=\"returnTo\" value=\"" . $_SERVER['REQUEST_URI'] . "\"/>
                                         </form>
                                     </div>
                                     <div>
                                         <form method=\"POST\" Action=\"" . getPathClientWebRoot() . "cpanel/cpanelSections/updateRecord.php\" >
                                             <input type=\"submit\" value=\"Edit\" />
-                                            <input type=\"hidden\" name=\"record\" value=\"$recordName\"/>
+                                            <input type=\"hidden\" name=\"record\" value=\"$name\"/>
+                                            <input type=\"hidden\" name=\"type\" value=\"$recordType\"/>
+                                            <input type=\"hidden\" name=\"value\" value=\"" . $valueSet["value"] . "\"/>
+                                            <input type=\"hidden\" name=\"returnTo\" value=\"" . $_SERVER['REQUEST_URI'] . "\"/>
                                         </form>
                                     </div>
                                 </div>
@@ -92,17 +106,18 @@ input[type="submit"]{
 
 <?php
 
-// echo "<pre>";
-// $available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
-// print_r($available_zones);
-// $database = bind9_zonedb_decode($available_zones[$available_zones["zones"][0]]["file"]);
-// print_r($database);
-// // echo "\n\n";
-// // echo bind9_zoneconfig_encode($available_zones);
-// // echo "\n\n";
-// // echo bind9_zonedb_encode($database);
+echo "<pre>";
+$available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
+print_r($available_zones);
+$database = bind9_zonedb_decode($available_zones[$available_zones["zones"][0]]["file"]);
+print_r($database);
+// echo "\n\n";
+// echo bind9_zoneconfig_encode($available_zones);
+// echo "\n\n";
+echo bind9_zonedb_encode($database);
 
 
 // echo "</pre>";
 
 ?>
+
