@@ -107,15 +107,15 @@ input[type="submit"]{
 
 <?php
 
-echo "<pre>";
-$available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
-print_r($available_zones);
-$database = bind9_zonedb_decode($available_zones[$available_zones["zones"][0]]["file"]);
-print_r($database);
-// echo "\n\n";
-// echo bind9_zoneconfig_encode($available_zones);
-// echo "\n\n";
-echo bind9_zonedb_encode($database);
+// echo "<pre>";
+// $available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
+// print_r($available_zones);
+// $database = bind9_zonedb_decode($available_zones[$available_zones["zones"][0]]["file"]);
+// print_r($database);
+// // echo "\n\n";
+// // echo bind9_zoneconfig_encode($available_zones);
+// // echo "\n\n";
+// echo bind9_zonedb_encode($database);
 
 
 // echo "</pre>";
