@@ -1,6 +1,6 @@
 .fuse*
-config.php
+config/
 users.php
-userPermissions
-cache
-tokens
+userPermissions/
+cache/
+tokens/
