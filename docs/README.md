@@ -59,12 +59,14 @@ Otherwise the header is set to a meaningful http error and a help string is retu
 
 > **Note:** you are expected to use the token the server generates for you and it is filtered to contain random plaintext hex data in all caps. While you can use cookies to access all non API functions of LBBAPI this is not intended use and therefore will not be supported.
 
+<ins>Every API call that ends up causing a delition/update/creation will trigger a Bind9 server reload and a database serialization bump.</ins>
+
 ## Permissions
 
 - `admin`
 - - Allows doing anything.
 
-The admin permission should only be given to the administrator user and will not work for the API
+The admin permission should only be given to the administrator user.
 
 ## DNS database permissions
 
@@ -106,14 +108,15 @@ POST to https://cooldomain.net/lbbapi/API/record/new.php
     value:shody
 ```
 
-Aditionally we can specify the DNS authority separately (useful for web interactions).
-```
-POST to https://cooldomain.net/lbbapi/API/record/new.php
-    token:algo
-    type:TXT
-    authority:s.cooldomain.net
-    record:femboy
-    value:shody
+### CURL example:
+```BASH
+    curl -X POST http://cooldomain.net/lbbapi/API/record/new.php \
+            -d "token=9694A108D745E7EE41F3815B32DCC14789F6F9733253BB05E53EE6FC312370BD" \
+            -d "record=femboy.s.cooldomain.net" \
+            -d "type=TXT" \
+            -d "value=UwU" \
+            -d "ttl=74" \
+            -o -
 ```
 
 ## Record Deletion
@@ -133,6 +136,79 @@ POST to https://cooldomain.net/lbbapi/API/record/delete.php
     record:femboy.s.cooldomain.net
     value:shody
 ```
+
+### CURL example:
+```BASH
+    curl -X POST http://cooldomain.net/lbbapi/API/record/delete.php \
+            -d "token=9694A108D745E7EE41F3815B32DCC14789F6F9733253BB05E53EE6FC312370BD" \
+            -d "record=femboy.s.cooldomain.net" \
+            -d "type=TXT" \
+            -d "value=UwU" \
+            -d "ttl=74" \
+            -o -
+```
+
+> **Note:** Every record/type/value tuple must be deleted separately.
+
+## Record update
+
+> **Note:** That DNS record names aren't unique but rather the value+record tuple is, so for delition queries both must be given otherwise we would delete the entire recordset for a given domain.
+
+If we were to update the `TXT` record `femboy.s.cooldomain.net` with value "`shody`" to contain "`shody tool`".
+
+The post request should look something like this:
+
+```
+POST to https://cooldomain.net/lbbapi/API/record/updateRecord.php
+    token:algo
+    type:TXT
+    record:femboy.s.cooldomain.net
+    value:shody
+    newValue:shody tool
+    newTTL:60
+```
+
+### CURL example:
+```BASH
+    curl -X POST http://cooldomain.net/lbbapi/API/record/updateRecord.php \
+            -d "token=9694A108D745E7EE41F3815B32DCC14789F6F9733253BB05E53EE6FC312370BD" \
+            -d "record=femboy.s.cooldomain.net" \
+            -d "type=TXT" \
+            -d "value=UwU" \
+            -d "ttl=74" \
+            -d "newValue=shody tool" \
+            -d "newTTL=60" \
+            -o -
+```
+
+Note that the values `newValue` and `newTTL` were added, containing our new value and TTL respectively.
+
+> **Note:** The record name cannot be updated! To update the record name delete it and create a new one with a different name.
+
+**Also note that capitalization is important!**
+
+# Upgrading LBBAPI
+
+> Assuming you followed the installation steps provided you should have a git repository.
+
+It is advisable you backup the entire LBBAPI repository.
+However the currently relevant folders are:
+
+- `LBBAPI/users.php`
+- `LBBAPI/userPermissions`
+- `LBBAPI/tokens`
+- `LBBAPI/config`
+
+These should be in the `.giignore` so they shouldn't be touched by git.
+
+<ins>Be warned this may be subject to change and may not be set in stone so it is your resposibility to make sure no data is lost during an upgrade procedure!</ins>
+
+perform a git pull:
+```
+    git pull
+```
+
+Profit!
 
 # Internal decoding formats
 
