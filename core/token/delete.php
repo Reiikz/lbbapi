@@ -32,7 +32,7 @@ if(!isset($_POST["token"])){
     exit(0);
 }
 
-$tokenPath = getTokenPath($_POST["token"]);
+$tokenPath = getTokenPath(preg_replace("/[^0-9,A,B,C,D.E,F]/", "", $_POST["token"]));
 if(file_exists($tokenPath)){
     unlink($tokenPath);
 }
