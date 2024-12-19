@@ -62,8 +62,8 @@ if(preg_match("/[^0-9]/", $_POST["ttl"])) {
     exit(0);
 }
 
-//record must only include alphanumeric dots and dashes
-if(preg_match("/[^0-9A-Za-z.-]/", $_POST["record"])) {
+//record must only include allowed characters dots and dashes
+if(preg_match($GLOBALS["config"]["AllowedCharacters"], $_POST["record"])) {
     header("HTTP/1.1 400 Bad request");
     echo "<h1>Invalid field record!</h1>";
     exit(0);

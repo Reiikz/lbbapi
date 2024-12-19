@@ -7,6 +7,9 @@ $CONFIG = array(
     "EnableMaxUsers" => true,
     //Enable allowed user count
     "AllowedUserCount" => "1",
+    //Allowed characters in record name, this aught to be a regular expression
+    //Default is only allow record names to contain 0-9 A-z (Alphanumeric) + dots and dashes.
+    "AllowedCharacters" => "/[^0-9A-Za-z.-]/",
     //Bind9 Default zone config file so it can configure new zones and read the existing ones!
     //note that this file needs to be writable by www-data (web server user) and readable by bind9
     //you can for instance make a symlink to this config file and store the database here and also use a symlink to it
