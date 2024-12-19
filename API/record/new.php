@@ -54,6 +54,28 @@ if(!isset($_POST["ttl"])){
     exit(0);
 }
 
+//validate request!
+//make sure ttl is numeric
+if(preg_match("/[^0-9]/", $_POST["ttl"])) {
+    header("HTTP/1.1 400 Bad request");
+    echo "<h1>Invalid field ttl!</h1>";
+    exit(0);
+}
+
+//record must only include alphanumeric dots and dashes
+if(preg_match("/[^0-9A-Za-z.-]/", $_POST["record"])) {
+    header("HTTP/1.1 400 Bad request");
+    echo "<h1>Invalid field record!</h1>";
+    exit(0);
+}
+
+//record type must be a valid DNS record type
+if(!preg_match("/^(A|AAAA|AFSDB|APL|CAA|CDNSKEY|CDS|CERT|CNAME|CSYNC|DHCID|DLV|DNAME|DNSKEY|DS|EUI48|EUI64|HINFO|HIP|HTTPS|IPSECKEY|KEY|KX|LOC|MX|NAPTR|NS|NSEC|NSEC3|NSEC3PARAM|OPENPGPKEY|PTR|RP|RRSIG|SIG|SMIMEA|SOA|SRV|SSHFP|SVCB|TA|TKEY|TLSA|TSIG|TXT|URI|ZONEMD|){1}$/", $_POST["type"])) {
+    header("HTTP/1.1 400 Bad request");
+    echo "<h1>Invalid field type!</h1>";
+    exit(0);
+}
+
 // echo "AB";
 include_once $GLOBALS["webroot"] . "/core/permissions.php";
 // echo "CD";
@@ -79,6 +101,12 @@ if(!userHasAnyOfThesePermissions(array($domainPermission, "admin"), $token)){
     header("HTTP/1.1 403 Forbidden");
     echo "<h1>>:|</h1>";
     exit(0);
+}
+
+if(!str_ends_with($domain, ".")){
+    if(!str_ends_with($domain, $authority)){
+        $domain = $domain . ".$authority";
+    }
 }
 
 // echo "<pre>";
