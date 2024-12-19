@@ -48,6 +48,9 @@ function saveToken($token){
 
 function gatherTokens(){
     $tokenPath = $GLOBALS["webroot"] . "/tokens";
+    if(!is_dir($tokenPath)){
+        return null;
+    }
     $files = scandir($tokenPath);
     $files = array_diff($files, array('.', '..'));
     $tokens = array();
