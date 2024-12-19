@@ -48,6 +48,11 @@ $domain=$_GET["record"];
 ?>
 
 <div class="content">
+    <div class="cpanel-section-title">
+            Update DNS record
+    </div>
+
+    <div class="cpanel-section">
 
     <?php
 
@@ -78,6 +83,9 @@ $domain=$_GET["record"];
             <input type="hidden" name="returnTo" value="<?php echo $_GET["returnTo"]; ?>" />
             <input type="submit" value="Update" />
         </form>
+
+    </div>
+
 
     </div>
 </div>

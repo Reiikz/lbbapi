@@ -49,6 +49,11 @@ textarea {
 </style>
 
 <div class="content">
+    <div class="cpanel-section-title">
+            Manage tokens
+    </div>
+
+    <div class="cpanel-section">
 
     <!-- <pre> -->
 
@@ -140,5 +145,5 @@ textarea {
         </pre>
 
     <!-- </pre> -->
-
+    </div>
 </div>

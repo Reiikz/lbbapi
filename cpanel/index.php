@@ -25,6 +25,8 @@ redirectIfNotLoggedIn();
             <title>
                 LBBAPI: CPANEL
             </title>
+            
+            <link rel="stylesheet" type="text/css" href="<?php echo getPathClientWebRoot(); ?>/resources/stylesheets/main.css"/>
 
             <style>
 

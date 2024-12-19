@@ -1,0 +1,17 @@
+.wrapper {
+    font-family: monospace;
+  }
+  
+  input[type="submit"] {
+    font-family: monospace;
+    border: 0px;
+    border-radius: 4px;
+    padding: 4px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  
+  .cpanel-section-title {
+    padding: 0.5rem;
+    font-size: 1rem;
+  }

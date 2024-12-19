@@ -23,6 +23,11 @@ $available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
 ?>
 
 <div class="content">
+    <div class="cpanel-section-title">
+            Add new DNS record
+    </div>
+
+    <div class="cpanel-section">
 
     <?php
 
@@ -52,5 +57,6 @@ $available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
         }
 
     ?>
-
+    
+    </div>
 </div>

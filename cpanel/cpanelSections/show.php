@@ -37,6 +37,13 @@ input[type="submit"]{
 </style>
 
 <div class="content">
+
+    <div class="cpanel-section-title">
+            DNS Records
+    </div>
+
+    <div class="cpanel-section">
+
     <?php
         foreach($available_zones["zones"] as $zoneName){
             echo "<div class=\"DNSzone\">\n";
@@ -103,6 +110,7 @@ input[type="submit"]{
         }
         
     ?>
+    </div>
 </div>
 
 <?php

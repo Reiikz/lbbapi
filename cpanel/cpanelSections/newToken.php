@@ -56,6 +56,11 @@ textarea {
 </style>
 
 <div class="content">
+    <div class="cpanel-section-title">
+            Add new API token
+    </div>
+
+    <div class="cpanel-section">
 
     <form Action="<?php echo getPathClientWebRoot(); ?>/core/token/new.php" method="POST" >
         
@@ -100,5 +105,7 @@ textarea {
         <div class="submit"><input type="submit" value="Save"/></div>
 
     </form>
+
+    </div>
 
 </div>
