@@ -22,39 +22,6 @@ $available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
 
 ?>
 
-<style>
-
-textarea {
-        width: calc(100% - 2rem);
-        margin: 1rem;
-        height: 6rem;
-    }
-.description {
-    grid-area: description;
-}
-
-.token {
-    grid-area: token;
-}
-
-.tokenValue{
-    display: inline-block;
-    width: fit-content;
-    padding: 10px;
-    margin: 5px;
-    background-color: lightgray; 
-}
-
-.submit{
-    grid-area: submit;
-}
-.content form {
-    display: grid;
-    grid-auto-columns: 1fr 1fr;
-    grid-template: "description description" "token token"  "submit submit";
-}
-</style>
-
 <div class="content">
     <div class="cpanel-section-title">
             Add new API token
@@ -91,13 +58,15 @@ textarea {
 
             $zonePerms = generateZonePermissions();
 
+            echo "<div class='tokenPermissionSection'>\n";
             foreach($zonePerms as $permission){
-                echo "<div><input type='checkbox' name='$permission' value='$permission' >$permission</input></div>";
+                echo "<div><input type='checkbox' name='$permission' value='$permission' >$permission</input></div>\n";
             }
+            echo "</div>\n";
             
-            echo "<div><input type='text' name='userDefined.delete' value='' >Custom delete</input></div>";
-            echo "<div><input type='text' name='userDefined.new' value='' >Custom new</input></div>";
-            echo "<div><input type='text' name='userDefined.update' value='' >Custom Update</input></div>";
+            echo "<div><input type='text' placeholder='algo.dns' name='userDefined.delete' value='' >Custom delete</input></div>\n";
+            echo "<div><input type='text' placeholder='algo.dns' name='userDefined.new' value='' >Custom new</input></div>\n";
+            echo "<div><input type='text' placeholder='algo.dns' name='userDefined.update' value='' >Custom Update</input></div>\n";
             
         ?>
 

@@ -19,35 +19,6 @@ redirectIfNotLoggedIn();
 
 ?>
 
-<style>
-
-textarea {
-  width: 100%;
-  height: 5rem;
-}
-
-.updateSection {
-  display: grid;
-  padding: 1rem;
-  border: 1px solid;
-  margin: 10px;
-}
-
-.token {
-    display: inline-block;
-    width: fit-content;
-    padding: 10px;
-    margin: 5px;
-    background-color: lightgray; 
-}
-
-.permissionSection {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
-</style>
-
 <div class="content">
     <div class="cpanel-section-title">
             Manage tokens
@@ -69,12 +40,12 @@ textarea {
                 foreach($tokens as $tokenid => $token){
                     echo "\n";
     
-                    echo "<div class='updateSection'>\n\n";
+                    echo "<div class='manageTokenSection'>\n\n";
     
                     echo "<form Action='" . getPathClientWebRoot() . "/core/token/new.php' method='POST' >\n\n";
                     
-                    echo "<div>\n";
-                    echo "Token:<div class='token'>$tokenid</div>\n";
+                    echo "<div class='token'>\n";
+                    echo "Token:<div class='tokenValue'>$tokenid</div>\n";
                     echo "</div>\n";
     
                     if(!isset($token["description"])){
@@ -84,7 +55,7 @@ textarea {
                     
                     $generatedPermissionHTML = array();
                     
-                    echo "\n<div class='permissionSection'>\n";
+                    echo "\n<div class='tokenPermissionSection'>\n";
                     $enabledPermissions = array();
                     foreach($token["permissions"] as $permission){
                         array_push($enabledPermissions, $permission);
@@ -105,9 +76,9 @@ textarea {
                     }
                     echo "</div>\n\n";
     
-                    echo "<div><input type='text' name='userDefined.delete' />Custom delete</div>\n";
-                    echo "<div><input type='text' name='userDefined.new' />Custom new</div>\n";
-                    echo "<div><input type='text' name='userDefined.update' />Custom Update</div>\n\n";
+                    echo "<div><input type='text' placeholder='algo.dns' name='userDefined.delete' />Custom delete</div>\n";
+                    echo "<div><input type='text' placeholder='algo.dns' name='userDefined.new' />Custom new</div>\n";
+                    echo "<div><input type='text' placeholder='algo.dns' name='userDefined.update' />Custom Update</div>\n\n";
     
                     echo "<div class='send'>\n";
                     echo "<input type='submit' value='save'/>\n";

@@ -21,20 +21,6 @@ include_once $GLOBALS["webroot"] . "/core/parser.php";
 $available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
 
 ?>
-<style>
-    .DNSrecord {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr min-content min-content;
-        margin: 1rem;
-        background-color: rgba(0,0,0,0.1);
-        padding: 1rem;
-        border-radius: 3px;
-    }
-    
-input[type="submit"]{
-    margin-left: 5px;
-}
-</style>
 
 <div class="content">
 
@@ -66,18 +52,40 @@ input[type="submit"]{
                                 $name = "$name.$authority";
                             }
                             echo "
-                                <div class=\"DNSrecord\">
-                                    <div>
-                                        $recordName
-                                    </div>
-                                    <div>
-                                        $ttl
-                                    </div>
-                                    <div>
-                                        $recordType
-                                    </div>
-                                    <div>
-                                        " . $valueSet["value"] . "
+                                <div class=\"DNSrecord_list\">
+                                    <div class='DNSRecord_description'>
+                                        <div class='DNSrecord_list_section'>
+                                            <div class='DNSrecord_list_value_title'>
+                                                NAME    
+                                            </div>
+                                            <div class='DNSrecord_list_value'>
+                                                $recordName
+                                            </div>
+                                        </div>
+                                        <div class='DNSrecord_list_section'>
+                                            <div class='DNSrecord_list_value_title'>
+                                                TTL    
+                                            </div>
+                                            <div class='DNSrecord_list_value'>
+                                                $ttl
+                                            </div>
+                                        </div>
+                                        <div class='DNSrecord_list_section'>
+                                            <div class='DNSrecord_list_value_title'>
+                                                TYPE    
+                                            </div>
+                                            <div class='DNSrecord_list_value'>
+                                                $recordType
+                                            </div>
+                                        </div>
+                                        <div class='DNSrecord_list_section'>
+                                            <div class='DNSrecord_list_value_title'>
+                                                VALUE    
+                                            </div>
+                                            <div class='DNSrecord_list_value'>
+                                                " . $valueSet["value"] . "
+                                            </div>
+                                        </div>
                                     </div>
                                     <div>
                                         <form method=\"POST\" Action=\"" . getPathClientWebRoot() . "/API/record/delete.php\" >
