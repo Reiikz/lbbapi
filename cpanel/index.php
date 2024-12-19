@@ -25,6 +25,48 @@ redirectIfNotLoggedIn();
             <title>
                 LBBAPI: CPANEL
             </title>
+
+            <style>
+
+.DNSrecord {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr min-content min-content;
+    margin: 1rem;
+    background-color: rgba(0,0,0,0.1);
+    padding: 1rem;
+    border-radius: 3px;
+}
+
+.Menu {
+margin: 1rem;
+width: fit-content;
+height: fit-content;
+}
+
+input[type="submit"]{
+margin-left: 5px;
+}
+
+a:hover {
+cursor: pointer;
+animation-duration: 100ms;
+background-color: lightgray;
+font-size: 1.02rem;
+}
+
+a {
+margin: 1rem;
+border-radius: 4px;
+background-color: rgba(0,0,0,0.1);
+padding: 5px;
+text-decoration: none;
+}
+
+a:visited {
+color: black;
+
+}
+</style>
     </head>
 
     <body>
@@ -44,10 +86,10 @@ redirectIfNotLoggedIn();
 
             <div class="Menu">
 
-                <a href="./?p=show">Show</a>
-                <a href="./?p=add">Add</a>
-                <a href="./?p=tokens">Tokens</a>
-                <a href="./?p=newtoken">New Token</a>
+                <a href="./?p=show">DNS Records</a>
+                <a href="./?p=add">Add Record</a>
+                <a href="./?p=tokens">Manage API Tokens</a>
+                <a href="./?p=newtoken">Add new API Token</a>
 
             </div>
 
