@@ -1,5 +1,8 @@
 .fuse*
-config/
+config.php
+*.db
+*.db.test
+*.conf.local
 users.php
 userPermissions/
 cache/
