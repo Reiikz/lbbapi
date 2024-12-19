@@ -17,7 +17,7 @@ include_once $GLOBALS["webroot"] . "/core/core.php";
 /*
     **************************
 */
-
+$token = null;
 if(!isset($_POST["token"])){
     session_start();
     if(!isset($_SESSION["username"])){
@@ -25,7 +25,9 @@ if(!isset($_POST["token"])){
         echo "<h1>No token!</h1>";
         exit(0);
     }
-} 
+}else{
+    $token=$_POST["token"];
+}
 
 if(!isset($_POST["record"])){
     header("HTTP/1.1 400 Bad request");
@@ -60,8 +62,13 @@ if(!isset($_POST["newTTL"])){
 include_once $GLOBALS["webroot"] . "/core/permissions.php";
 include_once $GLOBALS["webroot"] . "/core/manageDomainDatabase.php";
 
-$domainPermission = $_POST["record"] . ".update";
-if(!userHasAnyOfThesePermissions(array($domainPermission, "admin"))){
+$domainPermission = null;
+if(str_ends_with($_POST["record"], ".")){
+    $domainPermission = $_POST["record"] . "update";
+}else{
+    $domainPermission = $_POST["record"] . ".update";
+}
+if(!userHasAnyOfThesePermissions(array($domainPermission, "admin"), $token)){
     header("HTTP/1.1 403 Forbidden");
     echo "<h1>;|!</h1>";
     exit(0);

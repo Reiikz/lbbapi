@@ -64,12 +64,7 @@ if(isset($_POST["authority"])){
     $authority = $_POST["authority"];
 }
 
-$domain="";
-if(!str_ends_with($_POST["record"], ".")){
-    $domain = $_POST["record"] . ".$authority";
-}else{
-    $domain = $_POST["record"];
-}
+$domain=$_POST["record"];
 
 echo "$domain\n";
 
@@ -79,8 +74,6 @@ if(str_ends_with($domain, ".")){
 }else{
     $domainPermission = "$domain.new";
 }
-
-
 
 if(!userHasAnyOfThesePermissions(array($domainPermission, "admin"), $token)){
     header("HTTP/1.1 403 Forbidden");

@@ -59,6 +59,9 @@ function userHasPermission($permission, $token = null){
             }
         }else{
             $token = readToken($token);
+            if($token == null){
+                return false;
+            }
             $perms = $token["permissions"];
             if(session_status() == PHP_SESSION_ACTIVE){
                 $_SESSION["permissions"] = $perms;

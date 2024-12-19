@@ -51,8 +51,14 @@ if(!isset($_POST["value"])){
 include_once $GLOBALS["webroot"] . "/core/permissions.php";
 include_once $GLOBALS["webroot"] . "/core/manageDomainDatabase.php";
 
-$domainPermission = $_POST["record"] . ".delete";
-if(!userHasAnyOfThesePermissions(array($domainPermission, "admin"))){
+
+$domainPermission = null;
+if(str_ends_with($_POST["record"], ".")){
+    $domainPermission = $_POST["record"] . "delete";
+}else{
+    $domainPermission = $_POST["record"] . ".delete";
+}
+if(!userHasAnyOfThesePermissions(array($domainPermission, "admin"), $token)){
     header("HTTP/1.1 403 Forbidden");
     echo "<h1>;|!</h1>";
     exit(0);

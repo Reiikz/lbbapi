@@ -62,8 +62,6 @@ function isRecord($domain, $type, $value, $db = null){
 }
 
 function recordUpdate($domain, $type, $value, $newValue, $newTTL,  $db = null){
-    
-
     // echo "<pre>";
 
     $ZoneConfig = getCFG($domain);
@@ -91,7 +89,7 @@ function recordUpdate($domain, $type, $value, $newValue, $newTTL,  $db = null){
     }
 
     if(!isRecord($domain, $type, $value, $db)){
-        newRecord($domain, $type, $value, $db);
+        return false;
     }
 
     foreach($db["recordset"][$targetName][$type] as &$set){
@@ -108,6 +106,7 @@ function recordUpdate($domain, $type, $value, $newValue, $newTTL,  $db = null){
     
     file_put_contents($ZoneConfig["file"], $rencodedDB, LOCK_EX);
     chmod($ZoneConfig["file"], 0750);
+    return true;
 }
 
 function newRecord($domain, $type, $value, $ttl, $db = null){

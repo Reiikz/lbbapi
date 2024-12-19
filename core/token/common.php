@@ -24,7 +24,7 @@ function readToken($token){
             mkdir(dirname($tokenPath));
             chmod(dirname($tokenPath), 0750);
         }
-        $_TOKEN = array();
+        return null;
     }else{
         include $tokenPath;
     }
@@ -42,7 +42,7 @@ function saveToken($token){
         mkdir(dirname($tokenPath));
         chmod(dirname($tokenPath), 0750);
     }
-    echo $tokenPath;
+    // echo $tokenPath;
     return saveVariable($token, "_TOKEN", $tokenPath);
 }
 
