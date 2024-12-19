@@ -13,4 +13,6 @@ $CONFIG = array(
     "ZoneConfigFile" => "/var/www/html/lbbapi/config/named.conf.local"
 );
 
+
+//DO NOT REMOVE THIS LINE!!
 $GLOBALS["config"]=$CONFIG;
