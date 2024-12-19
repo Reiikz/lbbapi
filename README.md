@@ -8,6 +8,7 @@ LBBAPI is a light PHP written API for interacting with a bind9 server zone file.
 ### Features
 
 - All PHP!
+- Basic cpanel
 - API
   - Allows DNS record delition creation update
   - Wildcard supporting permission system for multi client API access
