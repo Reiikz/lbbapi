@@ -55,6 +55,10 @@ This is a web API meant to be used with your curl client of choice.
 All successfull requests will return an empty 200.
 Otherwise the header is set to a meaningful http error and a help string is returned.
 
+> Use the cpanel to generate an access token and give it the appropriate permissions.
+
+> **Note:** you are expected to use the token the server generates for you and it is filtered to contain random plaintext hex data in all caps. While you can use cookies to access all non API functions of LBBAPI this is not intended use and therefore will not be supported.
+
 ## Permissions
 
 - `admin`

@@ -12,7 +12,6 @@ if(!isset($GLOBALS["webroot"])){
 
 }
 include_once $GLOBALS["webroot"] . "/core/core.php";
-redirectIfNotLoggedIn();
 /*
     **************************
 */

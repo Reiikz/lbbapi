@@ -66,6 +66,8 @@ function userHasPermission($permission, $token = null){
         }
     }
     
+    // print_r($perms);
+    // print_r($permission);
 
     foreach($perms as $perm){
         if($perm == $permission){
@@ -84,17 +86,17 @@ function userHasPermission($permission, $token = null){
     return false;
 }
 
-function userHasAllThesePermissions($array){
+function userHasAllThesePermissions($array, $token = null){
     $hasEm = true;
     foreach($array as $permission){
-        $hasEm = $hasEm && userHasPermission($permission);
+        $hasEm = $hasEm && userHasPermission($permission, $token);
     }
     return $hasEm;
 }
 
-function userHasAnyOfThesePermissions($array){
+function userHasAnyOfThesePermissions($array, $token = null){
     foreach($array as $permission){
-        if(userHasPermission($permission)){
+        if(userHasPermission($permission, $token)){
             return true;
         }
     }

@@ -54,7 +54,9 @@ if(!isset($_POST["ttl"])){
     exit(0);
 }
 
+// echo "AB";
 include_once $GLOBALS["webroot"] . "/core/permissions.php";
+// echo "CD";
 include_once $GLOBALS["webroot"] . "/core/manageDomainDatabase.php";
 
 $authority="";
@@ -69,12 +71,20 @@ if(!str_ends_with($_POST["record"], ".")){
     $domain = $_POST["record"];
 }
 
-// echo $domain;
+echo "$domain\n";
 
-$domainPermission = "$domain.new";
-if(!userHasAnyOfThesePermissions(array($domainPermission, "admin"))){
+$domainPermission = null;
+if(str_ends_with($domain, ".")){
+    $domainPermission = "$domain" . "new";
+}else{
+    $domainPermission = "$domain.new";
+}
+
+
+
+if(!userHasAnyOfThesePermissions(array($domainPermission, "admin"), $token)){
     header("HTTP/1.1 403 Forbidden");
-    echo "<h1>;|!</h1>";
+    echo "<h1>>:|</h1>";
     exit(0);
 }
 
@@ -83,6 +93,7 @@ if(!userHasAnyOfThesePermissions(array($domainPermission, "admin"))){
 // echo "</pre>";
 
 // echo "<pre>";
+
 newRecord($domain, $_POST["type"], $_POST["value"], $_POST["ttl"]);
 // deleteRecord($domain, $_POST["type"], $_POST["value"]);
 // echo "</pre>";
