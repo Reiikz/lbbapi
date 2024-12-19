@@ -10,6 +10,7 @@ if(file_exists($CONFIG_FILE_PATH)){
     exit(0);
 }
 
+include_once $GLOBALS["webroot"] . "/config/config.php";
 
 function getPathClientWebRoot(){
     if(!isset($GLOBALS["webroot"])){
@@ -51,6 +52,9 @@ function getCacheDir(){
 function reparseZones(){
     include_once $GLOBALS["webroot"] . "/core/parser.php";
     $cacheDir = getCacheDir();
+    if(!is_dir($cacheDir)){
+        mkdir($cacheDir, 0700, true);
+    }
     $cachedCFGPath = $cacheDir . "/cachedcfg.php";
     $cachedCFGSumPath = $cacheDir . "/cachedcfgmd5.php";
     $zoneConfigArray = bind9_zoneconfig_decode($GLOBALS["config"]["ZoneConfigFile"]);
