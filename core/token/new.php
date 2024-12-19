@@ -52,21 +52,24 @@ foreach($zonePerms as $permission){
 
 $userDefinedPermissions = array();
 
-if(isset($_POST["userDefined_delete"])){
-    if(!empty($_POST["userDefined_delete"])){
-        array_push($userDefinedPermissions, $_POST["userDefined_delete"] . ".delete");
-    }
-}
+foreach($_POST as $key => $value){
+    if( 
+        (
+            str_ends_with($key, "_new") ||
+            str_ends_with($key, "_delete") ||
+            str_ends_with($key, "_update")
 
-if(isset($_POST["userDefined_new"])){
-    if(!empty($_POST["userDefined_new"])){
-        array_push($userDefinedPermissions, $_POST["userDefined_new"] . ".new");
-    }
-}
-
-if(isset($_POST["userDefined_update"])){
-    if(!empty($_POST["userDefined_update"])){
-        array_push($userDefinedPermissions, $_POST["userDefined_update"] . ".update");
+        )
+        &&
+        (
+            str_ends_with($value, ".new") ||
+            str_ends_with($value, ".delete") ||
+            str_ends_with($value, ".update")
+        )
+    ){
+        if(!in_array($value, $checkedGeneratedPermissions)){
+            array_push($userDefinedPermissions, $value);
+        }
     }
 }
 

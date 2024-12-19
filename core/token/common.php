@@ -32,6 +32,11 @@ function readToken($token){
     return $_TOKEN;
 }
 
+function getTokenPath($t){
+    $token = preg_replace("/[^0-9,A,B,C,D,E,F]/", "", $t);
+    return $GLOBALS["webroot"] . "/tokens/$token.php";
+}
+
 function saveToken($token){
     $tokenPath = $GLOBALS["webroot"] . "/tokens/" . $token["id"] . ".php";
     if(!is_dir(dirname($tokenPath))){

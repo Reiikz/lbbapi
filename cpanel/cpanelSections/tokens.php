@@ -21,6 +21,11 @@ redirectIfNotLoggedIn();
 
 <style>
 
+textarea {
+  width: 100%;
+  height: 5rem;
+}
+
 .updateSection {
   display: grid;
   padding: 1rem;
@@ -58,7 +63,10 @@ redirectIfNotLoggedIn();
 
             foreach($tokens as $tokenid => $token){
                 echo "\n";
-                echo "<form class='updateSection' Action='" . getPathClientWebRoot() . "/core/token/new.php' method='POST' >\n";
+
+                echo "<div class='updateSection'>\n\n";
+
+                echo "<form Action='" . getPathClientWebRoot() . "/core/token/new.php' method='POST' >\n\n";
                 
                 echo "<div>\n";
                 echo "Token:<div class='token'>$tokenid</div>\n";
@@ -67,11 +75,11 @@ redirectIfNotLoggedIn();
                 if(!isset($token["description"])){
                     $token["description"] = "";
                 }
-                echo "<textarea name='description' Placeholder='description' >" . $token["description"] . "</textarea>\n";
+                echo "\n<textarea name='description' Placeholder='description' >" . $token["description"] . "</textarea>\n";
                 
                 $generatedPermissionHTML = array();
                 
-                echo "<div class='permissionSection'>\n";
+                echo "\n<div class='permissionSection'>\n";
                 $enabledPermissions = array();
                 foreach($token["permissions"] as $permission){
                     array_push($enabledPermissions, $permission);
@@ -90,16 +98,33 @@ redirectIfNotLoggedIn();
 
                     array_push($generatedPermissionHTML, $permission);
                 }
-                echo "</div>\n";
+                echo "</div>\n\n";
 
-                echo "<div class='send'>";
-                echo "<input type='submit' value='save'/>";
-                echo "</div>\n";
+                echo "<div><input type='text' name='userDefined.delete' value='' />Custom delete</div>\n";
+                echo "<div><input type='text' name='userDefined.new' value='' />Custom new</div>\n";
+                echo "<div><input type='text' name='userDefined.update' value='' />Custom Update</div>\n\n";
 
-                echo "<input type='hidden' name='returnTo' value='" . $_SERVER['REQUEST_URI'] . "'/>";
-                echo "<input type='hidden' name='token' value='" . $token['id'] . "'/>";
+                echo "<div class='send'>\n";
+                echo "<input type='submit' value='save'/>\n";
+                echo "</div>\n\n";
+
+                
+
+                echo "<input type='hidden' name='returnTo' value='" . $_SERVER['REQUEST_URI'] . "'/>\n";
+                echo "<input type='hidden' name='token' value='" . $token['id'] . "'/>\n";
 
                 echo "</form>\n";
+
+                echo "<form Action='" . getPathClientWebRoot() . "/core/token/delete.php' Method='POST'>\n";
+
+                echo "<input type='submit' value='Delete'/>\n";
+                echo "<input type='hidden' name='token' value='" . $token['id'] . "'/>\n";
+                echo "<input type='hidden' name='returnTo' value='" . $_SERVER['REQUEST_URI'] . "'/>\n";
+
+                echo "</form>\n";
+
+
+                echo "</div>\n";
 
             }
 
