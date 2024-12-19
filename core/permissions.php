@@ -12,6 +12,7 @@ if(!isset($GLOBALS["webroot"])){
 
 }
 include_once $GLOBALS["webroot"] . "/core/core.php";
+include_once $GLOBALS["webroot"] . "/core/parser.php";
 
 /*
     **************************
@@ -87,6 +88,17 @@ function generateZonePermissions(){
         array_push($permissions, "*.$zoneName.delete");
         array_push($permissions, "*.$zoneName.update");
         array_push($permissions, "*.$zoneName.new");
+        
+        $db = bind9_zonedb_decode($ZoneConfig[$zoneName]["file"]);
+        foreach($db["recordset"] as $recordName => $records){
+            if(str_ends_with($recordName, ".")) continue;
+            array_push($permissions, "$recordName.$zoneName.delete");
+            array_push($permissions, "$recordName.$zoneName.update");
+            array_push($permissions, "$recordName.$zoneName.new");
+            array_push($permissions, "*.$recordName.$zoneName.delete");
+            array_push($permissions, "*.$recordName.$zoneName.update");
+            array_push($permissions, "*.$recordName.$zoneName.new");
+        }
     }
     return $permissions;
 }

@@ -38,7 +38,8 @@ function saveToken($token){
         mkdir(dirname($tokenPath));
         chmod(dirname($tokenPath), 0750);
     }
-    saveVariable($token, "_TOKEN", $tokenPath);
+    echo $tokenPath;
+    return saveVariable($token, "_TOKEN", $tokenPath);
 }
 
 function gatherTokens(){
@@ -48,11 +49,12 @@ function gatherTokens(){
     $tokens = array();
     foreach($files as $file){
         $path = "$tokenPath/$file";
-        echo "$path\n";
-        var_dump(file_exists($path));
-        echo "\n";
-        if(preg_match("/\,php$/", $path)){
+        // echo "$path\n";
+        // var_dump(file_exists($path));
+        // echo "\n";
+        if(preg_match("/\.php$/", $path)){
             include $path;
+            // echo "including";
             $tokens[$_TOKEN["id"]] = $_TOKEN;
         }
     }

@@ -89,7 +89,7 @@ textarea {
             foreach($zonePerms as $permission){
                 echo "<div><input type='checkbox' name='$permission' value='$permission' >$permission</input></div>";
             }
-
+            
             echo "<div><input type='text' name='userDefined.delete' value='' >Custom delete</input></div>";
             echo "<div><input type='text' name='userDefined.new' value='' >Custom new</input></div>";
             echo "<div><input type='text' name='userDefined.update' value='' >Custom Update</input></div>";

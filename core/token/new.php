@@ -18,9 +18,7 @@ redirectIfNotLoggedIn();
 */
 
 if(!isset($_POST["description"])){
-    header("HTTP/1.1 400 Bad request");
-    echo "<h1>No description!</h1>";
-    exit(0);
+    $_POST["description"]="";
 }
 
 if(!isset($_POST["token"])){
@@ -83,12 +81,13 @@ $permissions = array_merge($userDefinedPermissions, $checkedGeneratedPermissions
 $token = array(
     "id" => preg_replace("/[^0-9,A,B,C,D;E,F]/", "", $_POST["token"]),
     "permissions" => $permissions,
+    "description" => $_POST["description"],
 );
 
 
 include_once $GLOBALS["webroot"] . "/core/token/common.php";
 
-saveToken($token);
+echo saveToken($token);
 
 echo "<pre>";
 echo "GENERATED PERMS: " . var_export($zonePerms) . "\n\n";
