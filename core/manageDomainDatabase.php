@@ -40,6 +40,7 @@ function isRecord($domain, $type, $value, $db = null){
         $targetName = preg_replace("/\.$authority\$/", "", $targetName);
         // $targetName = str_replace($authority, "", $targetName);
         $targetName = preg_replace("/\.$/", "", $targetName);
+        $targetName = preg_replace("/\s*/", "", $targetName);
     }
 
     if(!isset($db["recordset"][$targetName])){
@@ -86,6 +87,7 @@ function recordUpdate($domain, $type, $value, $newValue, $newTTL,  $db = null){
         $targetName = preg_replace("/\.$authority\$/", "", $targetName);
         // $targetName = str_replace($authority, "", $targetName);
         $targetName = preg_replace("/\.$/", "", $targetName);
+        $targetName = preg_replace("/\s*/", "", $targetName);
     }
 
     if(!isRecord($domain, $type, $value, $db)){
@@ -131,9 +133,8 @@ function newRecord($domain, $type, $value, $ttl, $db = null){
         $targetName = preg_replace("/\.$authority\$/", "", $targetName);
         // $targetName = str_replace($authority, "", $targetName);
         $targetName = preg_replace("/\.$/", "", $targetName);
+        $targetName = preg_replace("/\s*/", "", $targetName);
     }
-
-    echo $domain;
 
     if(isRecord($domain, $type, $value, $db)){
         return;
@@ -160,7 +161,7 @@ function newRecord($domain, $type, $value, $ttl, $db = null){
         "ttl" => $ttl,
     ));
 
-    // echo "<pre>";
+    
     
     // print_r($db);
 
@@ -169,7 +170,15 @@ function newRecord($domain, $type, $value, $ttl, $db = null){
     $db["SERIAL"]++;
 
     $rencodedDB = bind9_zonedb_encode($db);
-
+    
+    // echo "<pre>";
+    
+    // echo $rencodedDB;
+    // echo "\n\n\n";
+    // file_put_contents($ZoneConfig["file"].".test", $rencodedDB, LOCK_EX);
+    // print_r(bind9_zonedb_decode($ZoneConfig["file"].".test"));
+    // echo "</pre>";
+    // exit();
     
     file_put_contents($ZoneConfig["file"], $rencodedDB, LOCK_EX);
     chmod($ZoneConfig["file"], 0750);
@@ -205,6 +214,7 @@ function deleteRecord($domain, $type, $value, $db = null){
             $targetName = preg_replace("/\.$authority\$/", "", $targetName);
             // $targetName = str_replace($authority, "", $targetName);
             $targetName = preg_replace("/\.$/", "", $targetName);
+            $targetName = preg_replace("/\s*/", "", $targetName);
         }
         // echo "<br/>delete target: $targetName";
         

@@ -78,6 +78,9 @@ if(!userHasAnyOfThesePermissions(array($domainPermission, "admin"))){
     exit(0);
 }
 
+// echo "<pre>";
+// print_r($_POST);
+// echo "</pre>";
 
 // echo "<pre>";
 newRecord($domain, $_POST["type"], $_POST["value"], $_POST["ttl"]);

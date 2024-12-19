@@ -171,8 +171,6 @@ function bind9_zonedb_decode($file){
                 $y = preg_replace("/\;.*$/", "", $x);
             }
 
-            // echo "trimmed: " . trim($y) . "\n";
-            // echo "empty: " . print_r(empty(trim($y))) . "\n";
 
             if((empty(trim($y))) && (trim($y) != "0")) continue;
             
@@ -221,21 +219,52 @@ function bind9_zonedb_decode($file){
                 $database["recordset"] = array();
             }
 
-            $record = preg_split("/\s+/", $y);
+
+            // echo "--------------------\n";
+            $match;
+            preg_match("/^.+(IN)/", $y, $match);
+            $first = preg_replace("/(\n|\r)*/", "", $match[0]);
+            $second = str_replace($first, "", $y);
+            // echo  "$first\n";
+            // echo  "$second\n\n";
+            
+            preg_match("/[^ ]+/", $first, $match);
+            $recordName = preg_replace("/(\n|\r)*/", "", $match[0]);
+            // echo "RECORD NAME: '$recordName'\n";
+
+            $ttl = null;
+            if(!preg_match("/\s+[0-9]+\s+/", $first, $match)){
+                $ttl = $database["DEFAULT_TTL"];
+            }else{
+                $ttl = preg_replace("/(\n|\r)*/", "", $match[0]);
+                $ttl = preg_replace("/\s+/", "", $ttl);
+            }
+            // echo "TTL: '$ttl'\n";
+
+            preg_match("/\s+[a-zA-Z]+\s+/", $second, $match);
+            $recordType = preg_replace("/(\n|\r)*/", "", $match[0]);
+            $recordType = preg_replace("/\s+/", "", $recordType);
+            // echo "RECORD TYPE: '$recordType'\n";
+
+            $recordValue = preg_replace("/^\s+($recordType){1}\s+/", "", $second);
+            $recordValue = preg_replace("/(\n|\r)*/", "", $recordValue);
+            // echo "RECORD TYPE: '$recordValue'\n";
+
+            // echo "------------------\n";
+
+            $record = array();
 
             //offets according to record setup
             $rpos = 0;
             $ttlpos = 1;
-            $inpos = 2;
             $typepos = 3;
             $resolutionpos = 4;
-            if(count($record) < 6){
-                $rpos = 0;
-                $ttlpos = -1;
-                $inpos = 1;
-                $typepos = 2;
-                $resolutionpos = 3;
-            }
+            $record[$rpos]=$recordName;
+            $record[$ttlpos]=$ttl;
+            $record[$typepos]=$recordType;
+            $record[$resolutionpos]=$recordValue;
+
+
 
             $_recordName = $record[$rpos];
             $authority = preg_replace("/\.$/", "", $database["SOA"]);
