@@ -13,6 +13,7 @@ if(!isset($GLOBALS["webroot"])){
 }
 include_once $GLOBALS["webroot"] . "/core/core.php";
 include_once $GLOBALS["webroot"] . "/core/parser.php";
+include_once $GLOBALS["webroot"] . "/core/token/common.php";
 
 /*
     **************************
@@ -35,18 +36,38 @@ function saveUserPermissions($array, $userPermFile = null){
     saveVariable($array, "_PERMISSIONS", $userPermFile);
 }
 
-function userHasPermission($permission){
-    $userPermFile = getUserPermissionFilePath();
-    if(!file_exists($userPermFile)){
-        return false;
-    }
+function userHasPermission($permission, $token = null){
+    $perms = null;
+    if($token == null){
+        $userPermFile = getUserPermissionFilePath();
+        if(!file_exists($userPermFile)){
+            return false;
+        }
+        
+        include $userPermFile; 
 
-    if(!isset($_SESSION["permissions"])){
-        include $userPermFile;    
-        $_SESSION["permissions"] = $_PERMISSIONS;
-    }
+        if(!isset($_SESSION["permissions"])){       
+            $_SESSION["permissions"] = $_PERMISSIONS;
+        }
 
-    foreach($_SESSION["permissions"] as $perm){
+        $perms = $_PERMISSIONS;
+    }else{
+        if(is_array($token)){
+            $perms = $token["permissions"];
+            if(session_status() == PHP_SESSION_ACTIVE){
+                $_SESSION["permissions"] = $perms;
+            }
+        }else{
+            $token = readToken($token);
+            $perms = $token["permissions"];
+            if(session_status() == PHP_SESSION_ACTIVE){
+                $_SESSION["permissions"] = $perms;
+            }
+        }
+    }
+    
+
+    foreach($perms as $perm){
         if($perm == $permission){
             return true;
         }
@@ -58,6 +79,8 @@ function userHasPermission($permission){
             }
         }
     }
+
+
     return false;
 }
 

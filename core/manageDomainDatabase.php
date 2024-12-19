@@ -61,12 +61,7 @@ function isRecord($domain, $type, $value, $db = null){
 }
 
 function recordUpdate($domain, $type, $value, $newValue, $newTTL,  $db = null){
-    $domainPermission = "$domain.update";
-    if(!userHasAnyOfThesePermissions(array($domainPermission, "admin"))){
-        header("HTTP/1.1 403 Forbidden");
-        echo "<h1>;|!</h1>";
-        exit(0);
-    }
+    
 
     // echo "<pre>";
 
@@ -114,12 +109,7 @@ function recordUpdate($domain, $type, $value, $newValue, $newTTL,  $db = null){
 }
 
 function newRecord($domain, $type, $value, $ttl, $db = null){
-    $domainPermission = "$domain.new";
-    if(!userHasAnyOfThesePermissions(array($domainPermission, "admin"))){
-        header("HTTP/1.1 403 Forbidden");
-        echo "<h1>;|!</h1>";
-        exit(0);
-    }
+    
 
     $ZoneConfig = getCFG($domain);
     // echo "</pre>";
@@ -187,12 +177,7 @@ function newRecord($domain, $type, $value, $ttl, $db = null){
 
 function deleteRecord($domain, $type, $value, $db = null){
     if($db == null){
-        $domainPermission = "$domain.delete";
-        if(!userHasAnyOfThesePermissions(array($domainPermission, "admin"))){
-            header("HTTP/1.1 403 Forbidden");
-            echo "<h1>;|!</h1>";
-            exit(0);
-        }
+        
         // echo "<pre>";
 
         $ZoneConfig = getCFG($domain);

@@ -21,7 +21,9 @@ include_once $GLOBALS["webroot"] . "/core/core.php";
 
 
 
-session_start();
+if(session_status() != PHP_SESSION_ACTIVE){
+    session_start();
+} 
 
 if(!isset($_SESSION["username"]))
 {

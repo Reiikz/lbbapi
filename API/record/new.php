@@ -18,6 +18,7 @@ include_once $GLOBALS["webroot"] . "/core/core.php";
     **************************
 */
 
+$token=null;
 if(!isset($_POST["token"])){
     session_start();
     if(!isset($_SESSION["username"])){
@@ -25,7 +26,9 @@ if(!isset($_POST["token"])){
         echo "<h1>No token!</h1>";
         exit(0);
     }
-} 
+}else{
+    $token=$_POST["token"];
+}
 
 if(!isset($_POST["record"])){
     header("HTTP/1.1 400 Bad request");
@@ -67,6 +70,13 @@ if(!str_ends_with($_POST["record"], ".")){
 }
 
 // echo $domain;
+
+$domainPermission = "$domain.new";
+if(!userHasAnyOfThesePermissions(array($domainPermission, "admin"))){
+    header("HTTP/1.1 403 Forbidden");
+    echo "<h1>;|!</h1>";
+    exit(0);
+}
 
 
 // echo "<pre>";
