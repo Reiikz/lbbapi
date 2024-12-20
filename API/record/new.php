@@ -76,6 +76,10 @@ if(!preg_match("/^(A|AAAA|AFSDB|APL|CAA|CDNSKEY|CDS|CERT|CNAME|CSYNC|DHCID|DLV|D
     exit(0);
 }
 
+include_once $GLOBALS["webroot"] . "/core/records/validate.php";
+
+validateRecordTypeQuit($_POST["type"], $_POST["value"]);
+
 // echo "AB";
 include_once $GLOBALS["webroot"] . "/core/permissions.php";
 // echo "CD";

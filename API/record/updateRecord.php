@@ -61,7 +61,7 @@ if(!isset($_POST["newTTL"])){
 
 //validate request!
 //make sure ttl is numeric
-if(preg_match("/[^0-9]/", $_POST["ttl"])) {
+if(preg_match("/[^0-9]/", $_POST["newTTL"])) {
     header("HTTP/1.1 400 Bad request");
     echo "<h1>Invalid field ttl!</h1>";
     exit(0);
@@ -81,8 +81,13 @@ if(!preg_match("/^(A|AAAA|AFSDB|APL|CAA|CDNSKEY|CDS|CERT|CNAME|CSYNC|DHCID|DLV|D
     exit(0);
 }
 
+include_once $GLOBALS["webroot"] . "/core/records/validate.php";
+
+validateRecordTypeQuit($_POST["type"], $_POST["newValue"]);
+
 include_once $GLOBALS["webroot"] . "/core/permissions.php";
 include_once $GLOBALS["webroot"] . "/core/manageDomainDatabase.php";
+
 
 $domainPermission = null;
 if(str_ends_with($_POST["record"], ".")){
