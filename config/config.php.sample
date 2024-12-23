@@ -13,9 +13,7 @@ $CONFIG = array(
     //Bind9 Default zone config file so it can configure new zones and read the existing ones!
     //note that this file needs to be writable by www-data (web server user) and readable by bind9
     //you can for instance make a symlink to this config file and store the database here and also use a symlink to it
-    "ZoneConfigFile" => "/var/www/html/lbbapi/config/named.conf.local"
+    "ZoneConfigFile" => "/var/www/html/lbbapi/config/named.conf.local",
+    //Directory for storing Bind9 DNS zone databases created through the API
+    "dbDirectory" => "/var/www/html/lbbapi/config/"
 );
-
-
-//DO NOT REMOVE THIS LINE!!
-$GLOBALS["config"]=$CONFIG;

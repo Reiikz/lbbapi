@@ -12,6 +12,34 @@ if(file_exists($CONFIG_FILE_PATH)){
 
 include_once $GLOBALS["webroot"] . "/config/config.php";
 
+//sanitize paths from configuration
+
+$CONFIG["ZoneConfigFile"] = preg_replace("/\/{1}$/", "", $CONFIG["ZoneConfigFile"]);
+$CONFIG["dbDirectory"] = preg_replace("/\/{1}$/", "", $CONFIG["dbDirectory"]);
+
+$GLOBALS["config"]=$CONFIG;
+
+function LBBAPI_errorOutOnNoConfigKey($key, $config){
+    if(!array_key_exists($key, $config)){
+        header("HTTP/1.1 500 Internal server error!");
+        echo "<h1>Is the API misconfigured?</h1><br/>";
+        echo "key: $key was missing from configuration";
+        exit(0);
+    }
+}
+
+// verify all necessary config is present
+LBBAPI_errorOutOnNoConfigKey("EnableMaxUsers", $CONFIG);
+LBBAPI_errorOutOnNoConfigKey("AllowedUserCount", $CONFIG);
+LBBAPI_errorOutOnNoConfigKey("AllowedCharacters", $CONFIG);
+LBBAPI_errorOutOnNoConfigKey("ZoneConfigFile", $CONFIG);
+LBBAPI_errorOutOnNoConfigKey("dbDirectory", $CONFIG);
+
+
+function filterForIllegalChars($in){
+    return preg_replace($GLOBALS["config"]["AllowedCharacters"], "", $in);
+}
+
 function getPathClientWebRoot(){
     if(!isset($GLOBALS["webroot"])){
         $path=__FILE__;

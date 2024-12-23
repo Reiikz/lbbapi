@@ -50,6 +50,8 @@ redirectIfNotLoggedIn();
                 <a href="./?p=add">Add Record</a>
                 <a href="./?p=tokens">Manage API Tokens</a>
                 <a href="./?p=newtoken">Add new API Token</a>
+                <a href="./?p=newZone">Add new DNS authority</a>
+                <a href="./?p=zones">Manage DNS authorities</a>
 
             </div>
 
@@ -71,6 +73,15 @@ redirectIfNotLoggedIn();
                             break;
                         case "newtoken":
                             include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/newToken.php";
+                            break;
+                        case "newZone":
+                            include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/newZone.php";
+                            break;
+                        case "zones":
+                            include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/zones.php";
+                            break;
+                        default:
+                            include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/show.php";
                             break;
                     }
                 }else{
