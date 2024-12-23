@@ -109,12 +109,18 @@ function getCFG($domain = null){
         return $_ZONES;
     }
     
+    $selectedZone = null;
     foreach($_ZONES["zones"] as $zone){
         // echo $zone;
         // echo $domain;
         if(str_contains($domain, $zone)){
-            return $_ZONES[$zone];
+            if(strlen($zone) > strlen($selectedZone)){
+                $selectedZone = $zone;
+            }
         }
+    }
+    if($selectedZone != null){
+        return $_ZONES[$selectedZone];
     }
     return null;
 }
