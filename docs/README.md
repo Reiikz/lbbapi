@@ -187,6 +187,33 @@ Note that the values `newValue` and `newTTL` were added, containing our new valu
 
 **Also note that capitalization is important!**
 
+## IP Resolution
+
+LBBAPI features a crude IP resolutionf feature, allowing you to request the server the client IP.
+It does not support proxies! if you are behind a proxy it'll show the IP of the proxy.
+
+sample usage:
+```
+    curl -o - http://cooldomain.net/lbbapi/API/ip.php
+```
+
+sample output:
+```
+    10.69.69.69
+```
+
+You may also request it in json assoc array format:
+
+sample usage:
+```
+    curl -o - http://cooldomain.net/lbbapi/API/ip.php?t=json
+```
+
+sample output:
+```
+    {"ip":"10.69.69.69"}
+```
+
 # Upgrading LBBAPI
 
 > Assuming you followed the installation steps provided you should have a git repository.
