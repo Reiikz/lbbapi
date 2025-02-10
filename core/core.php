@@ -90,3 +90,23 @@ function getCFG($domain = null){
     }
     return null;
 }
+
+function sanitizeDNS($in){
+    $val=preg_replace($GLOBALS["config"]["AllowedCharacters"], "", $in);
+    if(is_array($val)){
+        return $val[0];
+    }else{
+        return $val;
+    }
+}
+
+function getIPv6RecordFromBind9Server($domain){
+    $safeDomain = sanitizeDNS($domain);
+    $output=null;
+    exec("dig -t AAAA +short @" . $GLOBALS["config"]["DNS_SERVER"] . " $safeDomain", $output);
+    if(isset($output[0])){
+        return $output[0];
+    }else{
+        return false;
+    }
+}
