@@ -9,6 +9,7 @@ function bind9_zoneconfig_decode($file){
     // $config=array(
     //     "raw" => "",
     // );
+    $config = array();
     $handle = fopen($file, "r");
     $currentZone = "";
     $currentBlock = "";
@@ -117,8 +118,8 @@ function bind9_zoneconfig_decode($file){
 
         fclose($handle);
     }
-    if(count($config) == 0){
-        return null;
+    if(!isset($config["zones"])){
+        $config["zones"] = array();
     }
     return $config;
 }
@@ -404,7 +405,9 @@ function bind9_zonedb_generate_default($zone, $server){
     if(!preg_match("/\.{1}$/", $zone)){
         $SOA = "$SOA.";
     }
-
+    if(!str_ends_with($server, ".")){
+        $server .= ".";
+    }
     return array(
         "DEFAULT_TTL" => 60,
         "SOA" => $SOA,

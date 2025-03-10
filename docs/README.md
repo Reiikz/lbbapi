@@ -13,6 +13,7 @@ After installing sudo add the following lines to your  `/etc/sudoers` file.
     www-data ALL=NOPASSWD:/usr/bin/systemctl stop bind9
     www-data ALL=NOPASSWD:/usr/bin/systemctl restart bind9
     www-data ALL=NOPASSWD:/usr/bin/systemctl reload bind9
+    www-data ALL=NOPASSWD:/usr/bin/systemctl status bind9
 ```
 > **Note:** That it is asumed your web server's user is www-data and the Bind9 server's unit file is bind9, if it's not adjust acordingly.
 

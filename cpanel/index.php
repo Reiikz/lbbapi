@@ -16,6 +16,8 @@ if(!isset($GLOBALS["webroot"])){
 }
 include_once $GLOBALS["webroot"] . "/core/core.php";
 redirectIfNotLoggedIn();
+include_once $GLOBALS["webroot"] . "/core/permissions.php";
+include_once $GLOBALS["webroot"] . "/core/bind9/status.php";
 /*
     **************************
 */
@@ -42,6 +44,12 @@ redirectIfNotLoggedIn();
                 <form method="POST" action="<?php echo getPathClientWebRoot(); ?>/API/auth/logout.php">
                     <input type="submit" value="Logout"/>
                 </form>
+                <div class="serverStatus">
+                    <?php $bind9State=bind9_shortStatus(); ?>
+                    DNS Server status: <tag class="bind9ServerStatus_<?php echo $bind9State;?>" ><?php echo $bind9State;?></tag>
+                    <br/>
+                    <tag class="smallDisclaimer">This state indicator is not representative of the DNS zone health, just weather bind9 is crashed acording to systemd</tag>
+                </div>
             </div>
 
             <div class="Menu">
@@ -50,8 +58,17 @@ redirectIfNotLoggedIn();
                 <a href="./?p=add">Add Record</a>
                 <a href="./?p=tokens">Manage API Tokens</a>
                 <a href="./?p=newtoken">Add new API Token</a>
-                <a href="./?p=newZone">Add new DNS authority</a>
-                <a href="./?p=zones">Manage DNS authorities</a>
+                
+                <?php
+                    //ADMIN ONLY
+                    if(userHasAnyOfThesePermissions(array("admin"))){
+                        echo "<a href='./?p=newZone'>Add new DNS authority</a>";
+                        echo "<a href='./?p=zones'>Manage DNS authorities</a>";
+                        echo "<form Action='" . getPathClientWebRoot() . "/API/bind9/restart.php' Method='POST'>
+                                    <input type='submit' value='Restart Bind9'/>
+                             </form>";
+                    }
+                ?>
 
             </div>
 

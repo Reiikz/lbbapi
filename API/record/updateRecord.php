@@ -14,9 +14,8 @@ if(!isset($GLOBALS["webroot"])){
 }
 include_once $GLOBALS["webroot"] . "/core/core.php";
 
-/*
-    **************************
-*/
+/****************************/
+
 $token = null;
 if(!isset($_POST["token"])){
     session_start();

@@ -31,17 +31,7 @@ if(!isset($_POST["token"])){
     $token=$_POST["token"];
 }
 
-if(!isset($_POST["zone"])){
-    header("HTTP/1.1 400 Bad request");
-    echo "<h1>Missing field zone!</h1>";
-    exit(0);
-}
 
-if(!isset($_POST["zoneServer"])){
-    header("HTTP/1.1 400 Bad request");
-    echo "<h1>Missing field zone server!</h1>";
-    exit(0);
-}
 
 $zone = filterForIllegalChars($_POST["zone"]);
 $zonePermissions = "$zone.manage";
@@ -58,28 +48,25 @@ include_once $GLOBALS["webroot"] . "/core/parser.php";
 
 $available_zones = bind9_zoneconfig_decode($GLOBALS["config"]["ZoneConfigFile"]);
 
+if (!is_array($available_zones)){
+    header("HTTP/1.1 500 Internal Server Error");
+    echo "<h1>Could not decode zone configuration file, is it empty?</h1>";
+    exit(0);
+}
+
+$zone_config = null;
+
 if(!isset($available_zones[$zone])){
-    array_push($available_zones["zones"], $zone);
-}
-
-$zoneDBFilePath=$GLOBALS["config"]["dbDirectory"] . "/$zone";
-if(str_ends_with($zoneDBFilePath, ".")){
-    $zoneDBFilePath .= "db";
+    header("HTTP/1.1 500 Internal Server Error");
+    echo "<h1>Did not find zone $zone?</h1>";
+    exit(0);
 }else{
-    $zoneDBFilePath .= "db";
+    $zone_config = $available_zones[$zone];
 }
 
-$available_zones[$zone] = array(
-    "type" => "master",
-    "file" => $GLOBALS["config"]["dbDirectory"] . "/$zone.db",
-    "allow-transfer" => array(
-        "none",
-    ),
-);
+unlink($zone_config["file"]);
 
-if(!file_exists($available_zones[$zone]["file"])){
-    file_put_contents( $available_zones[$zone]["file"],  bind9_zonedb_encode(bind9_zonedb_generate_default($zone, filterForIllegalChars($_POST["zoneServer"]))), LOCK_EX );
-}
+unset($available_zones[$zone]);
 
 file_put_contents($GLOBALS["config"]["ZoneConfigFile"], bind9_zoneconfig_encode($available_zones), LOCK_EX);
 
@@ -89,3 +76,6 @@ exec("sudo systemctl reload bind9", $ret);
 if(isset($_POST["returnTo"])){
     header("Location: " . $_POST["returnTo"]);
 }
+
+
+

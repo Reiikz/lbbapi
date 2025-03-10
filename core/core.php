@@ -37,7 +37,7 @@ LBBAPI_errorOutOnNoConfigKey("dbDirectory", $CONFIG);
 
 
 function filterForIllegalChars($in){
-    return preg_replace($GLOBALS["config"]["AllowedCharacters"], "", $in);
+    return preg_replace($GLOBALS["config"]["AllowedCharacters"], "_", $in);
 }
 
 function getPathClientWebRoot(){
@@ -123,4 +123,9 @@ function getCFG($domain = null){
         return $_ZONES[$selectedZone];
     }
     return null;
+}
+
+function LBBAPI_is_integer($number){
+    $number = filter_var($number, FILTER_VALIDATE_INT);
+    return ($number !== FALSE);
 }
