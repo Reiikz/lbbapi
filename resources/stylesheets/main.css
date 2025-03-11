@@ -52,10 +52,12 @@ input[type="submit"] {
     animation-duration: 100ms;
     background-color: rgba(255,255,255,0.2);
     font-size: 1.02rem;
+    margin: 0.28rem;
   }
   
 a {
-    margin: 1rem;
+    font-size: 0.8rem;
+    margin: 0.5rem;
     border-radius: 4px;
     background-color: rgba(0,0,0,0.1);
     padding: 5px;
@@ -177,6 +179,23 @@ input[type="text"] {
     font-size: 0.7rem;
     color: gray;
     padding-left: 1rem;
+}
+
+.Menu > form:hover {
+    font-size: 1.02rem;
+    margin: 0.28rem;
+}
+
+.Menu > form {
+    display: inline-block;
+}
+
+.Menu > a {
+    display: inline-block;
+}
+
+.largerTextBox {
+    width: 20em;
 }
 
 /* .content form {

@@ -54,6 +54,7 @@ include_once $GLOBALS["webroot"] . "/core/bind9/status.php";
 
             <div class="Menu">
 
+                <a href="./?p=updatePassword">Update Password</a>
                 <a href="./?p=show">DNS Records</a>
                 <a href="./?p=add">Add Record</a>
                 <a href="./?p=tokens">Manage API Tokens</a>
@@ -64,6 +65,9 @@ include_once $GLOBALS["webroot"] . "/core/bind9/status.php";
                     if(userHasAnyOfThesePermissions(array("admin"))){
                         echo "<a href='./?p=newZone'>Add new DNS authority</a>";
                         echo "<a href='./?p=zones'>Manage DNS authorities</a>";
+                        echo "<a href='./?p=userPermissions'>Set user permissions</a>";
+                        echo "<a href='./?p=newUser'>Add user</a>";
+                        echo "<a href='./?p=manageUsers'>Manage Users</a>";
                         echo "<form Action='" . getPathClientWebRoot() . "/API/bind9/restart.php' Method='POST'>
                                     <input type='submit' value='Restart Bind9'/>
                              </form>";
@@ -96,6 +100,18 @@ include_once $GLOBALS["webroot"] . "/core/bind9/status.php";
                             break;
                         case "zones":
                             include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/zones.php";
+                            break;
+                        case "userPermissions":
+                            include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/userPermissions.php";
+                            break;
+                        case "manageUsers":
+                            include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/manageUsers.php";
+                            break;
+                        case "newUser":
+                            include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/newUser.php";
+                            break;
+                        case "updatePassword":
+                            include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/updatePassword.php";
                             break;
                         default:
                             include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/show.php";
