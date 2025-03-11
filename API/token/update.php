@@ -50,7 +50,14 @@ if(isset($tokens[$_POST["updateToken"]])){
 
 $newPermissions = array();
 $description = null;
+$maxPermissions=1000;
+$x;
 foreach($_POST as $key => $value){
+    if($x >= $maxPermissions){
+        header("HTTP/1.1 400 Bad request");
+        echo "<h1>You've reached $x permissions, it's too many!</h1>";
+        exit(0);
+    }
     switch($key){
         case "description":
             $description = $value;
@@ -66,6 +73,7 @@ foreach($_POST as $key => $value){
         continue;
     }
     array_push($newPermissions, $value);
+    $x++;
 }
 
 if((!userHasAllThesePermissions($newPermissions, $token)) && (!userHasAnyOfThesePermissions(array("admin"), $token)) ){
