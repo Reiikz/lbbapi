@@ -27,13 +27,18 @@ if(!isset($_POST["token"])){
     exit(0);
 }
 
+$token = null;
+if(isset($_POST["token"])){
+    $token = $_POST["token"];
+}
+
 include_once $GLOBALS["webroot"] . "/core/permissions.php";
 
-if(!userHasAnyOfThesePermissions(array("admin"))){
-    header("HTTP/1.1 403 Forbidden");
-    echo "<h1>Can't create token!</h1>";
-    exit(0);
-}
+// if(!userHasAnyOfThesePermissions(array("admin"))){
+//     header("HTTP/1.1 403 Forbidden");
+//     echo "<h1>Can't create token!</h1>";
+//     exit(0);
+// }
 
 $zones = getCFG()["zones"];
 
@@ -89,6 +94,18 @@ foreach($_POST as $key => $value){
 }
 
 $permissions = array_merge($userDefinedPermissions, $checkedGeneratedPermissions);
+
+$metaPermissions = array();
+
+foreach($permissions as $permission){
+    array_push($metaPermissions, "$permission.manageTokenPermission");
+}
+
+if(!userHasAnyOfThesePermissions(array($metaPermissions, "admin"))){
+    header("HTTP/1.1 403 Forbidden");
+    echo "<h1>This user can't add this permission to a token!</h1>";
+    exit(0);
+}
 
 echo "<pre>\n";
 
