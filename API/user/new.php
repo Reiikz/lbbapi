@@ -67,7 +67,7 @@ if($CONFIG["EnableMaxUsers"]){
                 if(!userHasAnyOfThesePermissions(array("addUsers", "admin"))){
                     //user isn't admin then quit
                     header("HTTP/1.1 403 Forbidden");
-                    echo "<h1>;|!</h1>";
+                    echo "<h1>>:|!</h1>";
                     exit(0);
                 }
             }
@@ -97,6 +97,7 @@ if(isset($USERIDS[$_POST["user"]])){
 array_push($USERS, array(
     "username" => $_POST["user"],
     "password" => password_hash($_POST["password"], PASSWORD_DEFAULT),
+    "username_md5" => md5($_POST["user"]),
 ));
 
 $USERIDS[$_POST["user"]]=count($USERIDS);
@@ -112,6 +113,7 @@ chmod($USERS_FILE_PATH, 0700);
 session_start();
 if(!isset($_SESSION["username"])){
     $_SESSION["username"]=$_POST["user"];
+    $_SESSION["username_md5"]=md5($_POST["user"]);
 }
 
 if(count($USERIDS) == 1){

@@ -24,11 +24,18 @@ include_once $GLOBALS["webroot"] . "/core/bind9/status.php";
     ?>
 
     <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="Cache-Control" content="no-cache">
+
+            
             <title>
                 LBBAPI: CPANEL
             </title>
             
             <link rel="stylesheet" type="text/css" href="<?php echo getPathClientWebRoot(); ?>/resources/stylesheets/main.css"/>
+
+            <script src="<?php echo getPathClientWebRoot() ?>/resources/js/utilities.js" ></script>
+            
     </head>
 
     <body>

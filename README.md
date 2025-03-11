@@ -17,4 +17,6 @@ LBBAPI is a light PHP written API for interacting with a bind9 server zone file.
 - Reloads Bind9 when a change is made and bumps the version number
 - No JS
 
+> if you doubt weather this works, note this gitlab instance's DNS (git.reiikz.net) is powered by this program.
+
 [Documentation](docs/)

@@ -54,6 +54,10 @@ if(!password_verify($_POST["password"], $USERS[$USERIDS[$_POST["user"]]]["passwo
 
 session_start();
 $_SESSION["username"]=$_POST["user"];
+if(!isset($USERS[$USERIDS[$_POST["user"]]]["username_md5"])){
+    $USERS[$USERIDS[$_POST["user"]]]["username_md5"] = md5($_POST["user"]);
+}
+$_SESSION["username_md5"]=$USERS[$USERIDS[$_POST["user"]]]["username_md5"];
 
 header("Location: " . getPathClientWebRoot());
 

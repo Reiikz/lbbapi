@@ -60,6 +60,7 @@ function userHasPermission($permission, $token = null){
         }else{
             $token = readToken($token);
             if($token == null){
+                echo "no token found!<br/>\n";
                 return false;
             }
             $perms = $token["permissions"];
