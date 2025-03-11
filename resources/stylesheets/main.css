@@ -18,6 +18,8 @@ input[type="submit"] {
 .cpanel-section-title {
     padding: 0.5rem;
     font-size: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 0.4rem;
 }
   
 .DNSrecord {
@@ -30,9 +32,12 @@ input[type="submit"] {
   }
   
   .Menu {
-    margin: 1rem;
+    margin: 0px;
     width: fit-content;
     height: fit-content;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 1rem;
+    margin-bottom: 0.4rem;
   }
   
   input[type="submit"]{
