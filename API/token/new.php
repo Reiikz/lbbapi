@@ -76,7 +76,7 @@ foreach($_POST as $key => $value){
     $x++;
 }
 
-if((!userHasAllThesePermissions($permissions, $token)) && (!userHasAnyOfThesePermissions(array("admin"), $token))){
+if((!userHasAllThesePermissions($permissions + array("token.new"), $token)) && (!userHasAnyOfThesePermissions(array("admin"), $token))){
     header("HTTP/1.1 403 Forbidden!");
     echo "<h1>>:|!</h1>";
     exit(0);

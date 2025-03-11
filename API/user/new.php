@@ -94,11 +94,13 @@ if(isset($USERIDS[$_POST["user"]])){
     exit(0);
 }
 
-array_push($USERS, array(
+$newUser = array(
     "username" => $_POST["user"],
     "password" => password_hash($_POST["password"], PASSWORD_DEFAULT),
     "username_md5" => md5($_POST["user"]),
-));
+);
+
+array_push($USERS, $newUser);
 
 $USERIDS[$_POST["user"]]=count($USERIDS);
 
@@ -111,15 +113,22 @@ file_put_contents($USERS_FILE_PATH, $text, LOCK_EX);
 chmod($USERS_FILE_PATH, 0700);
 
 session_start();
-if(!isset($_SESSION["username"])){
-    $_SESSION["username"]=$_POST["user"];
-    $_SESSION["username_md5"]=md5($_POST["user"]);
-}
 
 if(count($USERIDS) == 1){
     include_once $GLOBALS["webroot"] . "/core/permissions.php";
-    $_PERMISSIONS = array("admin");
+    $_PERMISSIONS = array("admin", "token.new", "token.delete", "token.update");
     saveUserPermissions($_PERMISSIONS);
+}else{
+    include_once $GLOBALS["webroot"] . "/core/permissions.php";
+    $_PERMISSIONS = array("token.new", "token.delete", "token.update");
+    if(isset($_SESSION["username"])){
+        saveUserPermissions($_PERMISSIONS, getUserPermissionFilePath($newUser["username"]));
+    }
+}
+
+if(!isset($_SESSION["username"])){
+    $_SESSION["username"]=$_POST["user"];
+    $_SESSION["username_md5"]=md5($_POST["user"]);
 }
 
 header("Location: " . getPathClientWebRoot());

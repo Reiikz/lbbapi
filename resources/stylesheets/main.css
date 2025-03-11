@@ -217,6 +217,14 @@ input[type="text"] {
     width: 20em;
 }
 
+.DNSZone_Title{
+    font-size: 1rem;
+}
+.dnsZoneName {
+    color:lightgreen;
+    font-weight: bold;
+}
+
 /* .content form {
     display: grid;
     grid-auto-columns: 1fr 1fr;

@@ -64,10 +64,15 @@ include_once $GLOBALS["webroot"] . "/core/bind9/status.php";
                 <a href="./?p=updatePassword">Update Password</a>
                 <a href="./?p=show">DNS Records</a>
                 <a href="./?p=add">Add Record</a>
-                <a href="./?p=tokens">Manage API Tokens</a>
-                <a href="./?p=newtoken">Add new API Token</a>
-                
                 <?php
+                    if(userHasAnyOfThesePermissions(array("admin", "token.delete", "token.update"))){
+                        echo "<a href='./?p=tokens'>Manage API Tokens</a>";
+                    }
+                    if(userHasAnyOfThesePermissions(array("admin", "token.new"))){
+                        echo "<a href='./?p=newtoken'>Add new API Token</a>";
+                    }
+
+
                     //ADMIN ONLY
                     if(userHasAnyOfThesePermissions(array("admin"))){
                         echo "<a href='./?p=newZone'>Add new DNS authority</a>";

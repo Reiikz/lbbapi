@@ -33,6 +33,11 @@ redirectIfNotLoggedIn();
             include_once $GLOBALS["webroot"] . "/core/parser.php";
             include_once $GLOBALS["webroot"] . "/core/permissions.php";
             $tokens = gatherTokens();
+
+            if(!userHasAnyOfThesePermissions(array("admin", "token.update", "token.delete"))){
+                echo ">:|!";
+                exit(0);
+            }
             // echo "<pre>";
             // print_r($tokens);
             // echo "</pre>";
@@ -70,6 +75,10 @@ redirectIfNotLoggedIn();
                             $checked = "checked";
                         }
                         if(in_array($permission, $enabledPermissions)){
+                            continue;
+                        }
+
+                        if(!userHasAnyOfThesePermissions(array($permission, "admin"))){
                             continue;
                         }
                         echo "<div><input class='checkbox' type='checkbox' name='" . htmlspecialchars($permission) . "' value='" . htmlspecialchars($permission) . "' $checked />" . htmlspecialchars($permission) . "</div>\n";

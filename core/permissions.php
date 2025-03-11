@@ -21,11 +21,18 @@ include_once $GLOBALS["webroot"] . "/core/token/common.php";
 
 $GLOBALS["PERMISSIONS_LOCATION"]=$GLOBALS["webroot"] . "/userPermissions";
 
-function getUserPermissionFilePath(){
-    if(!isset($_SESSION["md5"])){
-        $_SESSION["md5"]=md5($_SESSION["username"]);
+function getUserPermissionFilePath($username = null){
+    $destFileName = null;
+    if($username == null){
+        if(!isset($_SESSION["username_md5"])){
+            $_SESSION["username_md5"]=md5($_SESSION["username"]);
+        }
+        $destFileName = $_SESSION["username_md5"] . ".php";
+    }else{
+        $destFileName = md5($username) . ".php";
     }
-    $permFile = $GLOBALS["PERMISSIONS_LOCATION"] . "/" . $_SESSION["md5"] . ".php";
+    
+    $permFile = $GLOBALS["PERMISSIONS_LOCATION"] . "/" . $destFileName;
     return $permFile;
 }
 

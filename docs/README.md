@@ -68,6 +68,7 @@ Otherwise the header is set to a meaningful http error and a help string is retu
 - - Allows doing anything.
 
 The admin permission should only be given to the administrator user.
+The admin permission will be automatically set to the first user to register through `/lbbapi/cpanel/auth/register.php`
 
 ## DNS database permissions
 
@@ -90,6 +91,16 @@ Available permissions are:
   - delete new record
 - `example.com.update`
   - update record
+- `example.com.show`
+  - see the record on the control panel
+- `token.new`
+  - allow a certain user to create tokens
+- `token.update`
+  - allow a certain user to update tokens
+- `token.delete`
+  - allow a certain user to delete tokens
+
+> By default all users will have the "token" permissions so which means all users have access to the API by default.
 
 ## Record Creation
 
@@ -187,6 +198,10 @@ Note that the values `newValue` and `newTTL` were added, containing our new valu
 > **Note:** The record name cannot be updated! To update the record name delete it and create a new one with a different name.
 
 **Also note that capitalization is important!**
+
+## Token Management
+
+> IMPORTANT: deleted users retain their tokens, if you need to remove a user and its tokens you may its tokens manually.
 
 # Upgrading LBBAPI
 

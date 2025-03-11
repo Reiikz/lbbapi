@@ -51,7 +51,7 @@ if(isset($tokens[$_POST["updateToken"]])){
 $newPermissions = array();
 $description = null;
 $maxPermissions=1000;
-$x;
+$x = 0;
 foreach($_POST as $key => $value){
     if($x >= $maxPermissions){
         header("HTTP/1.1 400 Bad request");
@@ -76,9 +76,9 @@ foreach($_POST as $key => $value){
     $x++;
 }
 
-if((!userHasAllThesePermissions($newPermissions, $token)) && (!userHasAnyOfThesePermissions(array("admin"), $token)) ){
+if((!userHasAllThesePermissions($newPermissions + array("token.update"), $token)) && (!userHasAnyOfThesePermissions(array("admin"), $token))){
     header("HTTP/1.1 403 Forbidden");
-    echo "<h1>This user/token doesn't have this permissions and therefore can't delegate them!</h1>";
+    echo "<h1>Can't update token, you don't have permission!</h1>";
     exit(0);
 }
 

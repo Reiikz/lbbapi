@@ -40,6 +40,11 @@ if(!isset($_POST["deleteToken"])){
     exit(0);
 }
 
+if((!userHasAnyOfThesePermissions(array("admin", "token.delete"), $token)) ){
+    header("HTTP/1.1 403 Forbidden");
+    echo "<h1>You can't delete your own tokens!</h1>";
+    exit(0);
+}
 
 $tokens = gatherTokens(true, $token);
 
