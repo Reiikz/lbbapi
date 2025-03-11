@@ -208,6 +208,10 @@ input[type="text"] {
 .Menu > form {
     display: inline-block;
 }
+.Menu > form > input[type=submit]:hover {
+    font-size: 1.02rem;
+    margin: 0.28rem;
+}
 
 .Menu > a {
     display: inline-block;
