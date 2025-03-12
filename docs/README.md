@@ -99,6 +99,8 @@ Available permissions are:
   - allow a certain user to update tokens
 - `token.delete`
   - allow a certain user to delete tokens
+- `restartBind9`
+  - allow restart the bind9 service
 
 > By default all users will have the "token" permissions so which means all users have access to the API by default.
 

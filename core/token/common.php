@@ -26,7 +26,11 @@ function readToken($token){
         }
         if(explode('.', basename($file))[0] == $token){
             $tokenPath = $file;
+            break;
         }
+    }
+    if(!str_ends_with($tokenPath, ".php")){
+        return null;
     }
     $_TOKEN = null;
     if(!file_exists($tokenPath)){
@@ -36,7 +40,7 @@ function readToken($token){
         }
         return null;
     }else{
-        include $tokenPath;
+        include "$tokenPath";
     }
     return $_TOKEN;
 }

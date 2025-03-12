@@ -60,6 +60,9 @@ $available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
 
             echo "<div class='tokenPermissionSection'>\n";
             foreach($zonePerms as $permission){
+                if(!userHasAnyOfThesePermissions(array("admin", $permission))){
+                    continue;
+                }
                 echo "<div><input type='checkbox' name='$permission' value='$permission' >$permission</input></div>\n";
             }
             echo "</div>\n";
