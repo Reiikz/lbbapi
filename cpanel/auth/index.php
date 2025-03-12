@@ -16,6 +16,14 @@ if(!isset($GLOBALS["webroot"])){
 }
 include_once $GLOBALS["webroot"] . "/core/core.php";
 
+//why are you here if you're logged in?
+if(session_status() != PHP_SESSION_ACTIVE){
+    session_start();
+}
+if(isset($_SESSION["username"])){
+    header("Location: " . getPathClientWebRoot() . "/cpanel");
+    exit(0);
+}
 /*
     **************************
 */
