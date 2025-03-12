@@ -9,15 +9,11 @@ $CONFIG = array(
     "AllowedUserCount" => "1",
     //Allowed characters in record name, this aught to be a regular expression
     //Default is only allow record names to contain 0-9 A-z (Alphanumeric) + dots and dashes.
-    "AllowedCharacters" => "/[^0-9A-Za-z.-]/",
+    "AllowedCharacters" => "/[^0-9A-Za-z.-_]/",
     //Bind9 Default zone config file so it can configure new zones and read the existing ones!
     //note that this file needs to be writable by www-data (web server user) and readable by bind9
     //you can for instance make a symlink to this config file and store the database here and also use a symlink to it
     "ZoneConfigFile" => "/var/www/html/lbbapi/config/named.conf.local",
-    //DNS SERVER TO RUN AGAINST, this should be your bind9 server that reads the database this API controlls
-    "DNS_SERVER" => "localhost"
+    //Directory for storing Bind9 DNS zone databases created through the API
+    "dbDirectory" => "/var/www/html/lbbapi/config/"
 );
-
-
-//DO NOT REMOVE THIS LINE!!
-$GLOBALS["config"]=$CONFIG;

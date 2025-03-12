@@ -13,6 +13,7 @@ After installing sudo add the following lines to your  `/etc/sudoers` file.
     www-data ALL=NOPASSWD:/usr/bin/systemctl stop bind9
     www-data ALL=NOPASSWD:/usr/bin/systemctl restart bind9
     www-data ALL=NOPASSWD:/usr/bin/systemctl reload bind9
+    www-data ALL=NOPASSWD:/usr/bin/systemctl status bind9
 ```
 > **Note:** That it is asumed your web server's user is www-data and the Bind9 server's unit file is bind9, if it's not adjust acordingly.
 
@@ -67,6 +68,7 @@ Otherwise the header is set to a meaningful http error and a help string is retu
 - - Allows doing anything.
 
 The admin permission should only be given to the administrator user.
+The admin permission will be automatically set to the first user to register through `/lbbapi/cpanel/auth/register.php`
 
 ## DNS database permissions
 
@@ -89,6 +91,18 @@ Available permissions are:
   - delete new record
 - `example.com.update`
   - update record
+- `example.com.show`
+  - see the record on the control panel
+- `token.new`
+  - allow a certain user to create tokens
+- `token.update`
+  - allow a certain user to update tokens
+- `token.delete`
+  - allow a certain user to delete tokens
+- `restartBind9`
+  - allow restart the bind9 service
+
+> By default all users will have the "token" permissions so which means all users have access to the API by default.
 
 ## Record Creation
 
@@ -187,32 +201,9 @@ Note that the values `newValue` and `newTTL` were added, containing our new valu
 
 **Also note that capitalization is important!**
 
-## IP Resolution
+## Token Management
 
-LBBAPI features a crude IP resolutionf feature, allowing you to request the server the client IP.
-It does not support proxies! if you are behind a proxy it'll show the IP of the proxy.
-
-sample usage:
-```
-    curl -o - http://cooldomain.net/lbbapi/API/ip.php
-```
-
-sample output:
-```
-    10.69.69.69
-```
-
-You may also request it in json assoc array format:
-
-sample usage:
-```
-    curl -o - http://cooldomain.net/lbbapi/API/ip.php?t=json
-```
-
-sample output:
-```
-    {"ip":"10.69.69.69"}
-```
+> IMPORTANT: deleted users retain their tokens, if you need to remove a user and its tokens you may its tokens manually.
 
 # Upgrading LBBAPI
 

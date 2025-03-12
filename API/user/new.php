@@ -53,9 +53,24 @@ if(file_exists($USERS_FILE_PATH)){
 if($CONFIG["EnableMaxUsers"]){
     if(isset($USERS)){
         if(count($USERS) >= $CONFIG["AllowedUserCount"]){
-            header("HTTP/1.1 500 Server error!");
-            echo "<h1>Max user</h1>";
-            exit(0);
+            if(session_status() != PHP_SESSION_ACTIVE){
+                session_start();
+            } 
+            // no session, then exit if max user reached
+            if(!isset($_SESSION["username"])){
+                header("HTTP/1.1 500 Server error!");
+                echo "<h1>Max user</h1>";
+                exit(0);
+            }else{
+                //if we have a session let's check if user is admin
+                include_once $GLOBALS["webroot"] . "/core/permissions.php";
+                if(!userHasAnyOfThesePermissions(array("addUsers", "admin"))){
+                    //user isn't admin then quit
+                    header("HTTP/1.1 403 Forbidden");
+                    echo "<h1>>:|!</h1>";
+                    exit(0);
+                }
+            }
         }
     }
 }
@@ -79,10 +94,13 @@ if(isset($USERIDS[$_POST["user"]])){
     exit(0);
 }
 
-array_push($USERS, array(
+$newUser = array(
     "username" => $_POST["user"],
     "password" => password_hash($_POST["password"], PASSWORD_DEFAULT),
-));
+    "username_md5" => md5($_POST["user"]),
+);
+
+array_push($USERS, $newUser);
 
 $USERIDS[$_POST["user"]]=count($USERIDS);
 
@@ -95,12 +113,22 @@ file_put_contents($USERS_FILE_PATH, $text, LOCK_EX);
 chmod($USERS_FILE_PATH, 0700);
 
 session_start();
-$_SESSION["username"]=$_POST["user"];
 
 if(count($USERIDS) == 1){
     include_once $GLOBALS["webroot"] . "/core/permissions.php";
-    $_PERMISSIONS = array("admin");
+    $_PERMISSIONS = array("admin", "token.new", "token.delete", "token.update");
     saveUserPermissions($_PERMISSIONS);
+}else{
+    include_once $GLOBALS["webroot"] . "/core/permissions.php";
+    $_PERMISSIONS = array("token.new", "token.delete", "token.update");
+    if(isset($_SESSION["username"])){
+        saveUserPermissions($_PERMISSIONS, getUserPermissionFilePath($newUser["username"]));
+    }
+}
+
+if(!isset($_SESSION["username"])){
+    $_SESSION["username"]=$_POST["user"];
+    $_SESSION["username_md5"]=md5($_POST["user"]);
 }
 
 header("Location: " . getPathClientWebRoot());

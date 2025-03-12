@@ -18,6 +18,8 @@ input[type="submit"] {
 .cpanel-section-title {
     padding: 0.5rem;
     font-size: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 0.4rem;
 }
   
 .DNSrecord {
@@ -30,9 +32,12 @@ input[type="submit"] {
   }
   
   .Menu {
-    margin: 1rem;
+    margin: 0px;
     width: fit-content;
     height: fit-content;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 1rem;
+    margin-bottom: 0.4rem;
   }
   
   input[type="submit"]{
@@ -52,10 +57,12 @@ input[type="submit"] {
     animation-duration: 100ms;
     background-color: rgba(255,255,255,0.2);
     font-size: 1.02rem;
+    margin: 0.28rem;
   }
   
 a {
-    margin: 1rem;
+    font-size: 0.8rem;
+    margin: 0.5rem;
     border-radius: 4px;
     background-color: rgba(0,0,0,0.1);
     padding: 5px;
@@ -114,6 +121,12 @@ input[type="text"] {
     margin-bottom: 5px;
 }
 
+input[type="password"] {
+    color: white;
+    background-color: rgba(0,0,0,0);
+    margin-bottom: 5px;
+}
+
 .description {
     grid-area: description;
 }
@@ -124,20 +137,49 @@ input[type="text"] {
 
 .tokenValue{
     display: inline-block;
+    color: yellowgreen;
     width: fit-content;
     padding: 10px;
     margin: 5px;
     background-color: rgba(255,255,255,0.05); 
 }
 
+
+.tokenMeta {
+    display: inline-block;
+}
+.tokenUserDisplay {
+    display: inline-block;
+    color: greenyellow;
+    font-weight: bold;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 2px;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.tokenDate{
+    display: inline-block;
+}
+
 .submit{
     grid-area: submit;
 }
 
-.manageTokenSection {
+.DNS_AuthoritySection, .manageTokenSection {
     margin: 5px;;
     border: 1px solid white;
     padding: 10px;
+}
+
+.DNS_AuthorityUpdateForm > form {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.DNS_AuthorityUpdateForm > form > input[type="submit"] {
+    width: fit-content;
+    margin: 6px;
 }
 
 .tokenPermissionSection {
@@ -145,8 +187,158 @@ input[type="text"] {
     grid-template-columns: max-content max-content max-content;
 }
 
-/* .content form {
+.bind9ServerStatus_OK {
+    background-color: green;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.bind9ServerStatus_FAILED {
+    background-color: red;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.bind9ServerStatus_UNKNOWN {
+    background-color: orange;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.smallDisclaimer {
+    font-size: 0.7rem;
+    color: gray;
+    padding-left: 1rem;
+}
+
+.Menu > form:hover {
+    font-size: 1.02rem;
+    margin: 0.28rem;
+}
+
+.Menu > form {
+    display: inline-block;
+}
+.Menu > form > input[type=submit]:hover {
+    font-size: 1.02rem;
+    margin: 0.28rem;
+}
+
+.Menu > a {
+    display: inline-block;
+}
+
+.largerTextBox {
+    width: 20em;
+}
+
+.DNSZone_Title{
+    margin-left: 2rem;
+    font-size: 1rem;
+}
+.dnsZoneName {
+    color:lightgreen;
+    font-weight: bold;
+}
+
+.singleFormWrapper {
+    color:  white;
+    font-family: monospace;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 100vh;
+}
+
+.loginForm > .imageLogo {
+    grid-area: logo;
+    padding-right: 1rem;
+}
+
+.loginForm > .imageLogo > img {
+    width: 9rem;
+}
+
+.loginForm > form {
+    grid-area: form;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.loginForm >.formTitle {
+    grid-area: formTitle;
+    margin-bottom: 8px;
+}
+
+.loginForm {
     display: grid;
-    grid-auto-columns: 1fr 1fr;
-    grid-template: "description description" "token token"  "submit submit";
-} */
+    grid-template-areas:    "formTitle formTitle"
+                            "logo form"
+                            ". goToLogin";
+    border: 1px solid rgba(255,255,255,0.2);
+    justify-items: center;
+    padding: 2rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.simpleA:hover {
+    font-size: 0.7rem;
+    padding: 0.2rem;
+    padding-bottom: 0.4rem;
+    margin: 0px;
+}
+
+.simpleA {
+    font-size: 0.7rem;
+    padding: 0.2rem;
+    padding-bottom: 0.4rem;
+    margin: 0px;
+}
+
+
+.loginForm > .loginButtton:hover {
+    background-color: rgba(255,255,255,0.2);
+}
+
+.loginForm > .loginButtton {
+    width: fit-content;
+    background-color: transparent;
+    grid-area: goToLogin;
+    text-decoration: underline;
+    text-align: center;
+    padding-bottom: 1.2em;
+    padding: 0.7em;
+    margin-top: 0.9rem;
+}
+
+.imageLogo {
+    grid-area: imageLogo;
+}
+
+.imageLogo >img {
+    width: 2.5rem;
+}
+
+.serverStatus {
+    grid-area: serverStatus;
+}
+
+.userSection {
+    grid-area: userSection;
+    text-align: right;
+}
+
+.userSection form {
+    display: inline-block;
+}
+
+.header {
+    display: grid;
+    grid-template-areas:    "imageLogo serverStatus userSection";
+}

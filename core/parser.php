@@ -9,6 +9,7 @@ function bind9_zoneconfig_decode($file){
     // $config=array(
     //     "raw" => "",
     // );
+    $config = array();
     $handle = fopen($file, "r");
     $currentZone = "";
     $currentBlock = "";
@@ -117,8 +118,8 @@ function bind9_zoneconfig_decode($file){
 
         fclose($handle);
     }
-    if(count($config) == 0){
-        return null;
+    if(!isset($config["zones"])){
+        $config["zones"] = array();
     }
     return $config;
 }
@@ -136,14 +137,14 @@ function bind9_zoneconfig_encode($zones){
                     $out .= "   " . $zonedata_key . " " . $field_data . ";\n";
                 }
             }else{
-                $out .= "   " . $zonedata_key . "{ ";
+                $out .= "   " . $zonedata_key . " { ";
                 foreach($field_data as $fdk => $fdv){
                     $out .= "$fdv; ";
                 }
                 $out .=  " }; \n";
             }
         }
-        $out .= "\n};";
+        $out .= "};\n\n";
     }
     if(strlen($out) < 3){
         return null;
@@ -302,6 +303,9 @@ function bind9_zonedb_decode($file){
             // echo $y;
         }
         fclose($handle);
+        if(!isset($database["recordset"])){
+            $database["recordset"] = array();
+        }
         if(count($database) > 0){
             return $database;
         }
@@ -388,4 +392,31 @@ function bind9_zonedb_encode($dbarray){
     }else{
         return $out;
     }
+}
+
+function bind9_zonedb_generate_default($zone, $server){
+    if(empty($zone)){
+        header("HTTP/1.1 400 Bad request!");
+        echo "<h1>DNS zone cannot be an empty string bind9_zonedb_generate()</h1>";
+        exit(0);
+        return;
+    }
+    $SOA = $zone;
+    if(!preg_match("/\.{1}$/", $zone)){
+        $SOA = "$SOA.";
+    }
+    if(!str_ends_with($server, ".")){
+        $server .= ".";
+    }
+    return array(
+        "DEFAULT_TTL" => 60,
+        "SOA" => $SOA,
+        "SOA_SERVER" => $server,
+        "SERIAL" => 0,
+        "REFRESH" => 3600,
+        "RETRY" => 31536000,
+        "EXPIRE" => 604800,
+        "NEGATIVE_CACHE_TTL" => 300,
+        "recordset" => array(),
+    );
 }

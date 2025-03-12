@@ -34,18 +34,25 @@ redirectIfNotLoggedIn();
             include_once $GLOBALS["webroot"] . "/core/permissions.php";
             $tokens = gatherTokens();
 
+            if(!userHasAnyOfThesePermissions(array("admin", "token.update", "token.delete"))){
+                echo ">:|!";
+                exit(0);
+            }
+            // echo "<pre>";
+            // print_r($tokens);
+            // echo "</pre>";
             $generatedPermissions = generateZonePermissions();
-            
+
             if($tokens != null){
                 foreach($tokens as $tokenid => $token){
                     echo "\n";
     
                     echo "<div class='manageTokenSection'>\n\n";
     
-                    echo "<form Action='" . getPathClientWebRoot() . "/core/token/new.php' method='POST' >\n\n";
+                    echo "<form Action='" . getPathClientWebRoot() . "/API/token/update.php' method='POST' >\n\n";
                     
                     echo "<div class='token'>\n";
-                    echo "Token:<div class='tokenValue'>$tokenid</div>\n";
+                    echo "Token:<div OnClick='copyInnerText(this);' OnDBClick='copyInnerText(this);' class='tokenValue'>$tokenid</div> <div class='tokenMeta' >Created by user: <div class='tokenUserDisplay' >" . $token["username"] . "</div> at <div class='tokenDate'>" . date("d/m/Y h:i:s a", $token["createdAt"]) . "</div></div>\n";
                     echo "</div>\n";
     
                     if(!isset($token["description"])){
@@ -70,6 +77,10 @@ redirectIfNotLoggedIn();
                         if(in_array($permission, $enabledPermissions)){
                             continue;
                         }
+
+                        if(!userHasAnyOfThesePermissions(array($permission, "admin"))){
+                            continue;
+                        }
                         echo "<div><input class='checkbox' type='checkbox' name='" . htmlspecialchars($permission) . "' value='" . htmlspecialchars($permission) . "' $checked />" . htmlspecialchars($permission) . "</div>\n";
     
                         array_push($generatedPermissionHTML, $permission);
@@ -82,19 +93,17 @@ redirectIfNotLoggedIn();
     
                     echo "<div class='send'>\n";
                     echo "<input type='submit' value='save'/>\n";
-                    echo "</div>\n\n";
-    
-                    
+                    echo "</div>\n\n";                
     
                     echo "<input type='hidden' name='returnTo' value='" . $_SERVER['REQUEST_URI'] . "'/>\n";
-                    echo "<input type='hidden' name='token' value='" . $token['id'] . "'/>\n";
+                    echo "<input type='hidden' name='updateToken' value='" . $token['id'] . "'/>\n";
     
                     echo "</form>\n";
     
-                    echo "<form Action='" . getPathClientWebRoot() . "/core/token/delete.php' Method='POST'>\n";
+                    echo "<form Action='" . getPathClientWebRoot() . "/API/token/delete.php' Method='POST'>\n";
     
                     echo "<input type='submit' value='Delete'/>\n";
-                    echo "<input type='hidden' name='token' value='" . $token['id'] . "'/>\n";
+                    echo "<input type='hidden' name='deleteToken' value='" . $token['id'] . "'/>\n";
                     echo "<input type='hidden' name='returnTo' value='" . $_SERVER['REQUEST_URI'] . "'/>\n";
     
                     echo "</form>\n";

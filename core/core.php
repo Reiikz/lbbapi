@@ -12,6 +12,34 @@ if(file_exists($CONFIG_FILE_PATH)){
 
 include_once $GLOBALS["webroot"] . "/config/config.php";
 
+//sanitize paths from configuration
+
+$CONFIG["ZoneConfigFile"] = preg_replace("/\/{1}$/", "", $CONFIG["ZoneConfigFile"]);
+$CONFIG["dbDirectory"] = preg_replace("/\/{1}$/", "", $CONFIG["dbDirectory"]);
+
+$GLOBALS["config"]=$CONFIG;
+
+function LBBAPI_errorOutOnNoConfigKey($key, $config){
+    if(!array_key_exists($key, $config)){
+        header("HTTP/1.1 500 Internal server error!");
+        echo "<h1>Is the API misconfigured?</h1><br/>";
+        echo "key: $key was missing from configuration";
+        exit(0);
+    }
+}
+
+// verify all necessary config is present
+LBBAPI_errorOutOnNoConfigKey("EnableMaxUsers", $CONFIG);
+LBBAPI_errorOutOnNoConfigKey("AllowedUserCount", $CONFIG);
+LBBAPI_errorOutOnNoConfigKey("AllowedCharacters", $CONFIG);
+LBBAPI_errorOutOnNoConfigKey("ZoneConfigFile", $CONFIG);
+LBBAPI_errorOutOnNoConfigKey("dbDirectory", $CONFIG);
+
+
+function filterForIllegalChars($in){
+    return preg_replace($GLOBALS["config"]["AllowedCharacters"], "_", $in);
+}
+
 function getPathClientWebRoot(){
     if(!isset($GLOBALS["webroot"])){
         $path=__FILE__;
@@ -81,32 +109,23 @@ function getCFG($domain = null){
         return $_ZONES;
     }
     
+    $selectedZone = null;
     foreach($_ZONES["zones"] as $zone){
         // echo $zone;
         // echo $domain;
         if(str_contains($domain, $zone)){
-            return $_ZONES[$zone];
+            if(strlen($zone) > strlen($selectedZone)){
+                $selectedZone = $zone;
+            }
         }
+    }
+    if($selectedZone != null){
+        return $_ZONES[$selectedZone];
     }
     return null;
 }
 
-function sanitizeDNS($in){
-    $val=preg_replace($GLOBALS["config"]["AllowedCharacters"], "", $in);
-    if(is_array($val)){
-        return $val[0];
-    }else{
-        return $val;
-    }
-}
-
-function getIPv6RecordFromBind9Server($domain){
-    $safeDomain = sanitizeDNS($domain);
-    $output=null;
-    exec("dig -t AAAA +short @" . $GLOBALS["config"]["DNS_SERVER"] . " $safeDomain", $output);
-    if(isset($output[0])){
-        return $output[0];
-    }else{
-        return false;
-    }
+function LBBAPI_is_integer($number){
+    $number = filter_var($number, FILTER_VALIDATE_INT);
+    return ($number !== FALSE);
 }

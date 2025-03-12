@@ -29,7 +29,7 @@ $available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
 
     <div class="cpanel-section">
 
-    <form Action="<?php echo getPathClientWebRoot(); ?>/core/token/new.php" method="POST" >
+    <form Action="<?php echo getPathClientWebRoot(); ?>/API/token/new.php" method="POST" >
         
         <div class="description">Description:<textarea name="description" placeholder="Description" ></textarea></div>
 
@@ -38,12 +38,12 @@ $available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
             $token = strtoupper($token);
         ?>
 
-        <input type="hidden" name="token" value="<?php echo $token?>" />
+        <input type="hidden" name="newToken" value="<?php echo $token?>" />
         <input type="hidden" name="returnTo" value="<?php echo getPathClientWebRoot();?>/cpanel/?p=tokens" />
         
         <div class="token">
         Token:
-            <div class="tokenValue">
+            <div OnClick='copyInnerText(this);' OnDBClick='copyInnerText(this);' class="tokenValue">
             <?php
                 echo $token;
             ?>
@@ -60,6 +60,9 @@ $available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
 
             echo "<div class='tokenPermissionSection'>\n";
             foreach($zonePerms as $permission){
+                if(!userHasAnyOfThesePermissions(array("admin", $permission))){
+                    continue;
+                }
                 echo "<div><input type='checkbox' name='$permission' value='$permission' >$permission</input></div>\n";
             }
             echo "</div>\n";

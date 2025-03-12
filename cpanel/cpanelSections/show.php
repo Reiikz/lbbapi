@@ -33,7 +33,7 @@ $available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
     <?php
         foreach($available_zones["zones"] as $zoneName){
             echo "<div class=\"DNSzone\">\n";
-                echo "<div class=\"DNSZone_Title\">$zoneName</div>\n";
+                echo "<div class=\"DNSZone_Title\">DNS Start Of Authority: <tag class='dnsZoneName'>$zoneName</tag></div>\n";
                 
                 $zonedb = bind9_zonedb_decode($available_zones[$zoneName]["file"]);
 
@@ -51,6 +51,11 @@ $available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
                             if(!str_ends_with($name, ".")){
                                 $name = "$name.$authority";
                             }
+
+                            if(!userHasAnyOfThesePermissions(array("$name.show", "admin"))){
+                                continue;
+                            }
+
                             echo "
                                 <div class=\"DNSrecord_list\">
                                     <div class='DNSRecord_description'>
