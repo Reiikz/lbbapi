@@ -121,6 +121,12 @@ input[type="text"] {
     margin-bottom: 5px;
 }
 
+input[type="password"] {
+    color: white;
+    background-color: rgba(0,0,0,0);
+    margin-bottom: 5px;
+}
+
 .description {
     grid-area: description;
 }
@@ -227,6 +233,7 @@ input[type="text"] {
 }
 
 .DNSZone_Title{
+    margin-left: 2rem;
     font-size: 1rem;
 }
 .dnsZoneName {
@@ -234,8 +241,104 @@ input[type="text"] {
     font-weight: bold;
 }
 
-/* .content form {
+.singleFormWrapper {
+    color:  white;
+    font-family: monospace;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 100vh;
+}
+
+.imageLogo {
+    grid-area: logo;
+    padding-right: 1rem;
+}
+
+.loginForm > .imageLogo > img {
+    width: 9rem;
+}
+
+.loginForm > form {
+    grid-area: form;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.loginForm >.formTitle {
+    grid-area: formTitle;
+    margin-bottom: 8px;
+}
+
+.loginForm {
     display: grid;
-    grid-auto-columns: 1fr 1fr;
-    grid-template: "description description" "token token"  "submit submit";
-} */
+    grid-template-areas:    "formTitle formTitle"
+                            "logo form"
+                            ". goToLogin";
+    border: 1px solid rgba(255,255,255,0.2);
+    justify-items: center;
+    padding: 2rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.simpleA:hover {
+    font-size: 0.7rem;
+    padding: 0.2rem;
+    padding-bottom: 0.4rem;
+    margin: 0px;
+}
+
+.simpleA {
+    font-size: 0.7rem;
+    padding: 0.2rem;
+    padding-bottom: 0.4rem;
+    margin: 0px;
+}
+
+
+.loginForm > .loginButtton:hover {
+    background-color: rgba(255,255,255,0.2);
+}
+
+.loginForm > .loginButtton {
+    width: fit-content;
+    background-color: transparent;
+    grid-area: goToLogin;
+    text-decoration: underline;
+    text-align: center;
+    padding-bottom: 1.2em;
+    padding: 0.7em;
+    margin-top: 0.9rem;
+}
+
+.imageLogo {
+    grid-area: imageLogo;
+}
+
+.imageLogo >img {
+    width: 2.5rem;
+}
+
+.serverStatus {
+    grid-area: serverStatus;
+}
+
+.userSection {
+    grid-area: userSection;
+    text-align: right;
+}
+
+.userSection form {
+    display: inline-block;
+}
+
+.header {
+    display: grid;
+    grid-template-areas:    "imageLogo serverStatus userSection";
+}

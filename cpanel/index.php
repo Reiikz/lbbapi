@@ -33,6 +33,7 @@ include_once $GLOBALS["webroot"] . "/core/bind9/status.php";
             </title>
             
             <link rel="stylesheet" type="text/css" href="<?php echo getPathClientWebRoot(); ?>/resources/stylesheets/main.css"/>
+            <link rel="icon" type="image/x-icon" href="<?php echo getPathClientWebRoot(); ?>/resources/images/Logo.ico">
 
             <script src="<?php echo getPathClientWebRoot() ?>/resources/js/utilities.js" ></script>
             
@@ -43,14 +44,19 @@ include_once $GLOBALS["webroot"] . "/core/bind9/status.php";
         <div class="wrapper">
 
             <div class="header">
-                Username: 
-                <?php
-                    echo $_SESSION["username"];
-                ?>
+                <div class='imageLogo'>
+                    <img src="<?php echo getPathClientWebRoot(); ?>/resources/images/Logo.ico"/><br/>
+                </div>
 
-                <form method="POST" action="<?php echo getPathClientWebRoot(); ?>/API/auth/logout.php">
-                    <input type="submit" value="Logout"/>
-                </form>
+                <div class="userSection">
+                    <?php
+                        echo $_SESSION["username"];
+                    ?>
+
+                    <form method="POST" action="<?php echo getPathClientWebRoot(); ?>/API/auth/logout.php">
+                        <input type="submit" value="Logout"/>
+                    </form>
+                </div>
                 <div class="serverStatus">
                     <?php $bind9State=bind9_shortStatus(); ?>
                     DNS Server status: <tag class="bind9ServerStatus_<?php echo $bind9State;?>" ><?php echo $bind9State;?></tag>
