@@ -100,7 +100,20 @@ if(!userHasAnyOfThesePermissions(array($domainPermission, "admin"), $token)){
     exit(0);
 }
 
-recordUpdate($_POST["record"], $_POST["type"], $_POST["value"], $_POST["newValue"], $_POST["newTTL"]);
+if($_POST["type"] == "AAAA"){
+    if(!recordUpdate($_POST["record"], $_POST["type"], $_POST["value"], $_POST["newValue"], $_POST["newTTL"])){
+        include_once $GLOBALS["webroot"] . "/ThirdParty/php-pear/Net_IPv6/IPv6.php";
+        if(! recordUpdate($_POST["record"], $_POST["type"], Net_IPv6::compress($_POST["value"], true), Net_IPv6::compress($_POST["newValue"], true), $_POST["newTTL"]) ) {
+            if(!recordUpdate($_POST["record"], $_POST["type"], Net_IPv6::uncompress($_POST["value"], true), Net_IPv6::uncompress($_POST["newValue"], true), $_POST["newTTL"]) ){
+                header("HTTP/1.1 500 Internal server error");
+                echo "<h1>Could not update record!!</h1>";
+                exit(0);
+            }
+        }
+    }
+}else{
+    recordUpdate($_POST["record"], $_POST["type"], $_POST["value"], $_POST["newValue"], $_POST["newTTL"]);
+}
 
 if(isset($_POST["returnTo"])){
     header("Location: " . $_POST["returnTo"]);

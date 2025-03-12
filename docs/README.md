@@ -17,6 +17,11 @@ After installing sudo add the following lines to your  `/etc/sudoers` file.
 ```
 > **Note:** That it is asumed your web server's user is www-data and the Bind9 server's unit file is bind9, if it's not adjust acordingly.
 
+### Dependancies:
+
+php-pear Net_IPv6 is used, it has been included as a standalone file as the currently available version on the repo is not compatible with php 8.1 due to a deprecated syntax I've simply patched this.
+The only function that was needed from it was this: https://pear.php.net/manual/en/package.networking.net-ipv6.compress.php
+
 ## Web server confuration recomendations:
 
 - You should disable indexing.
