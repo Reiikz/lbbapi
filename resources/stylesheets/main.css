@@ -253,7 +253,7 @@ input[type="password"] {
     min-height: 100vh;
 }
 
-.imageLogo {
+.loginForm > .imageLogo {
     grid-area: logo;
     padding-right: 1rem;
 }
