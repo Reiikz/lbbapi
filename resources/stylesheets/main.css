@@ -321,8 +321,12 @@ input[type="password"] {
     grid-area: imageLogo;
 }
 
-.imageLogo >img {
-    width: 2.5rem;
+.imageLogo > a > img {
+    width: 3rem;
+}
+
+.imageLogo > a {
+     all: unset;
 }
 
 .serverStatus {

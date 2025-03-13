@@ -45,7 +45,9 @@ include_once $GLOBALS["webroot"] . "/core/bind9/status.php";
 
             <div class="header">
                 <div class='imageLogo'>
-                    <img src="<?php echo getPathClientWebRoot(); ?>/resources/images/Logo.ico"/><br/>
+                    <a href="<?php echo getPathClientWebRoot(); ?>/cpanel/?p=show">
+                        <img src="<?php echo getPathClientWebRoot(); ?>/resources/images/Logo.ico"/><br/>
+                    </a>
                 </div>
 
                 <div class="userSection">
