@@ -48,6 +48,12 @@ if(!isset($_POST["value"])){
     exit(0);
 }
 
+if(!isset($_POST["authority"])){
+    header("HTTP/1.1 400 Bad request");
+    echo "<h1>No authority!</h1>";
+    exit(0);
+}
+
 include_once $GLOBALS["webroot"] . "/core/permissions.php";
 include_once $GLOBALS["webroot"] . "/core/manageDomainDatabase.php";
 
@@ -64,7 +70,7 @@ if(!userHasAnyOfThesePermissions(array($domainPermission, "admin"), $token)){
     exit(0);
 }
 
-deleteRecord($_POST["record"], $_POST["type"], $_POST["value"]);
+deleteRecord($_POST["record"], $_POST["authority"], $_POST["type"], $_POST["value"]);
 
 if(isset($_POST["returnTo"])){
     header("Location: " . $_POST["returnTo"]);

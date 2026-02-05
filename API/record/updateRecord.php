@@ -58,6 +58,12 @@ if(!isset($_POST["newTTL"])){
     exit(0);
 }
 
+if(!isset($_POST["authority"])){
+    header("HTTP/1.1 400 Bad request");
+    echo "<h1>No authority!</h1>";
+    exit(0);
+}
+
 //validate request!
 //make sure ttl is numeric
 if(preg_match("/[^0-9]/", $_POST["newTTL"])) {
@@ -100,7 +106,7 @@ if(!userHasAnyOfThesePermissions(array($domainPermission, "admin"), $token)){
     exit(0);
 }
 
-recordUpdate($_POST["record"], $_POST["type"], $_POST["value"], $_POST["newValue"], $_POST["newTTL"]);
+recordUpdate($_POST["record"], $_POST["authority"], $_POST["type"], $_POST["value"], $_POST["newValue"], $_POST["newTTL"]);
 
 if(isset($_POST["returnTo"])){
     header("Location: " . $_POST["returnTo"]);

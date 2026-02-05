@@ -99,6 +99,7 @@ $available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
                                             <input type=\"hidden\" name=\"type\" value=\"$recordType\"/>
                                             <input type=\"hidden\" name=\"value\" value=\"" . $valueSet["value"] . "\"/>
                                             <input type=\"hidden\" name=\"returnTo\" value=\"" . $_SERVER['REQUEST_URI'] . "\"/>
+                                            <input type=\"hidden\" name=\"authority\" value=\"$authority\"/>
                                         </form>
                                     </div>
                                     <div>

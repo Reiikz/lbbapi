@@ -60,6 +60,8 @@ Otherwise the header is set to a meaningful http error and a help string is retu
 
 > **Note:** you are expected to use the token the server generates for you and it is filtered to contain random plaintext hex data in all caps. While you can use cookies to access all non API functions of LBBAPI this is not intended use and therefore will not be supported.
 
+> **Note:** All API requests are to include an "´authority´" Key indicating the desired DNS authority zone for the update to be sent to.
+
 <ins>Every API call that ends up causing a delition/update/creation will trigger a Bind9 server reload and a database serialization bump.</ins>
 
 ## Permissions
@@ -120,6 +122,7 @@ POST to https://cooldomain.net/lbbapi/API/record/new.php
     type:TXT
     record:femboy.s.cooldomain.net
     value:shody
+    authority:cooldomain.net
 ```
 
 ### CURL example:
@@ -130,6 +133,7 @@ POST to https://cooldomain.net/lbbapi/API/record/new.php
             -d "type=TXT" \
             -d "value=UwU" \
             -d "ttl=74" \
+            -d "authority=cooldomain.net" \
             -o -
 ```
 
@@ -149,6 +153,7 @@ POST to https://cooldomain.net/lbbapi/API/record/delete.php
     type:TXT
     record:femboy.s.cooldomain.net
     value:shody
+    authority:cooldomain.net
 ```
 
 ### CURL example:
@@ -159,6 +164,7 @@ POST to https://cooldomain.net/lbbapi/API/record/delete.php
             -d "type=TXT" \
             -d "value=UwU" \
             -d "ttl=74" \
+            -d "authority=cooldomain.net" \
             -o -
 ```
 
@@ -180,6 +186,7 @@ POST to https://cooldomain.net/lbbapi/API/record/updateRecord.php
     value:shody
     newValue:shody tool
     newTTL:60
+    authority:cooldomain.net
 ```
 
 ### CURL example:
@@ -192,6 +199,7 @@ POST to https://cooldomain.net/lbbapi/API/record/updateRecord.php
             -d "ttl=74" \
             -d "newValue=shody tool" \
             -d "newTTL=60" \
+            -d "authority=cooldomain.net" \
             -o -
 ```
 

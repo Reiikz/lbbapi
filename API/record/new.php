@@ -54,6 +54,12 @@ if(!isset($_POST["ttl"])){
     exit(0);
 }
 
+if(!isset($_POST["authority"])){
+    header("HTTP/1.1 400 Bad request");
+    echo "<h1>No authority!</h1>";
+    exit(0);
+}
+
 //validate request!
 //make sure ttl is numeric
 if(preg_match("/[^0-9]/", $_POST["ttl"])) {
@@ -96,6 +102,8 @@ $domain=$_POST["record"];
 if(!str_ends_with($domain, ".")){
     if(!str_ends_with($domain, $authority)){
         $domain = $domain . ".$authority";
+    }else{
+        $domain = "$domain.";
     }
 }
 
@@ -122,7 +130,7 @@ if(!userHasAnyOfThesePermissions(array($domainPermission, "admin"), $token)){
 
 // echo "<pre>";
 
-newRecord($domain, $_POST["type"], $_POST["value"], $_POST["ttl"]);
+newRecord($domain, $authority, $_POST["type"], $_POST["value"], $_POST["ttl"]);
 // deleteRecord($domain, $_POST["type"], $_POST["value"]);
 // echo "</pre>";
 

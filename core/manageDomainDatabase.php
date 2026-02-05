@@ -61,10 +61,10 @@ function isRecord($domain, $type, $value, $db = null){
     
 }
 
-function recordUpdate($domain, $type, $value, $newValue, $newTTL,  $db = null){
+function recordUpdate($domain, $authority, $type, $value, $newValue, $newTTL,  $db = null){
     // echo "<pre>";
 
-    $ZoneConfig = getCFG($domain);
+    $ZoneConfig = getCFG($authority);
 
     // echo "</pre>";
 
@@ -109,10 +109,10 @@ function recordUpdate($domain, $type, $value, $newValue, $newTTL,  $db = null){
     return true;
 }
 
-function newRecord($domain, $type, $value, $ttl, $db = null){
+function newRecord($domain, $authority, $type, $value, $ttl, $db = null){
     
 
-    $ZoneConfig = getCFG($domain);
+    $ZoneConfig = getCFG($authority);
     // echo "</pre>";
 
     if($ZoneConfig == null){
@@ -183,12 +183,12 @@ function newRecord($domain, $type, $value, $ttl, $db = null){
     chmod($ZoneConfig["file"], 0750);
 }
 
-function deleteRecord($domain, $type, $value, $db = null){
+function deleteRecord($domain, $authority, $type, $value, $db = null){
     if($db == null){
         
         // echo "<pre>";
 
-        $ZoneConfig = getCFG($domain);
+        $ZoneConfig = getCFG($authority);
 
         // echo "</pre>";
 
