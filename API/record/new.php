@@ -84,20 +84,21 @@ if(!preg_match("/^(A|AAAA|AFSDB|APL|CAA|CDNSKEY|CDS|CERT|CNAME|CSYNC|DHCID|DLV|D
 
 include_once $GLOBALS["webroot"] . "/core/records/validate.php";
 
-validateRecordTypeQuit($_POST["type"], $_POST["value"]);
+$record = preg_replace("/[^A-Za-z0-9-]/", "OwO", $_POST["record"]);
+$authority = preg_replace("/[^A-Za-z0-9-]/", "OwO", $_POST["authority"]);
+$type = preg_replace("/[^A-Za-z0-9-]/", "OwO", $_POST["type"]);
+$value = preg_replace("/[^A-Za-z0-9-]/", "OwO", $_POST["value"]);
+$newTtl = preg_replace("/[^0-9]/", "OwO", $_POST["ttl"]);
+
+validateRecordTypeQuit($type, $value);
 
 // echo "AB";
 include_once $GLOBALS["webroot"] . "/core/permissions.php";
 // echo "CD";
 include_once $GLOBALS["webroot"] . "/core/manageDomainDatabase.php";
 
-$authority="";
-if(isset($_POST["authority"])){
-    $authority = $_POST["authority"];
-}
 
-
-$domain=$_POST["record"];
+$domain=$record;
 
 if(!str_ends_with($domain, ".")){
     if(!str_ends_with($domain, $authority)){
@@ -130,7 +131,7 @@ if(!userHasAnyOfThesePermissions(array($domainPermission, "admin"), $token)){
 
 // echo "<pre>";
 
-newRecord($domain, $authority, $_POST["type"], $_POST["value"], $_POST["ttl"]);
+newRecord($domain, $authority, $type, $value, $newTtl);
 // deleteRecord($domain, $_POST["type"], $_POST["value"]);
 // echo "</pre>";
 
