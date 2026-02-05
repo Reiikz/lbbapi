@@ -57,10 +57,10 @@ if(!isset($_POST["authority"])){
 include_once $GLOBALS["webroot"] . "/core/permissions.php";
 include_once $GLOBALS["webroot"] . "/core/manageDomainDatabase.php";
 
-$record = preg_replace("/[^A-Za-z0-9-]/", "OwO", $_POST["record"]);
-$authority = preg_replace("/[^A-Za-z0-9-]/", "OwO", $_POST["authority"]);
-$type = preg_replace("/[^A-Za-z0-9-]/", "OwO", $_POST["type"]);
-$value = preg_replace("/[^A-Za-z0-9-]/", "OwO", $_POST["value"]);
+$record = preg_replace("/[^A-Za-z0-9-.]/", "OwO", $_POST["record"]);
+$authority = preg_replace("/[^A-Za-z0-9-.]/", "OwO", $_POST["authority"]);
+$type = preg_replace("/[^A-Za-z0-9-.]/", "OwO", $_POST["type"]);
+$value = preg_replace("/[^A-Za-z0-9-.]/", "OwO", $_POST["value"]);
 
 $domainPermission = null;
 if(str_ends_with($record, ".")){

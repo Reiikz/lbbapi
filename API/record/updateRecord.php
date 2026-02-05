@@ -106,15 +106,14 @@ if(!userHasAnyOfThesePermissions(array($domainPermission, "admin"), $token)){
     exit(0);
 }
 
-$record = preg_replace("/[^A-Za-z0-9-]/", "OwO", $_POST["record"]);
-$authority = preg_replace("/[^A-Za-z0-9-]/", "OwO", $_POST["authority"]);
-$type = preg_replace("/[^A-Za-z0-9-]/", "OwO", $_POST["type"]);
-$value = preg_replace("/[^A-Za-z0-9-]/", "OwO", $_POST["value"]);
-$newValue = preg_replace("/[^A-Za-z0-9-]/", "OwO", $_POST["newValue"]);
+$record = preg_replace("/[^A-Za-z0-9-.]/", "OwO", $_POST["record"]);
+$authority = preg_replace("/[^A-Za-z0-9-.]/", "OwO", $_POST["authority"]);
+$type = preg_replace("/[^A-Za-z0-9-.]/", "OwO", $_POST["type"]);
+$value = preg_replace("/[^A-Za-z0-9-.]/", "OwO", $_POST["value"]);
+$newValue = preg_replace("/[^A-Za-z0-9-.]/", "OwO", $_POST["newValue"]);
 $newTtl = preg_replace("/[^0-9]/", "OwO", $_POST["newTTL"]);
 
-
-recordUpdate($record $authority, $type, $value, $newValue, $newTtl);
+recordUpdate($record, $authority, $type, $value, $newValue, $newTtl);
 
 if(isset($_POST["returnTo"])){
     header("Location: " . $_POST["returnTo"]);

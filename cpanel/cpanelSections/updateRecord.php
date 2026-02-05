@@ -77,7 +77,6 @@ $domain=$_GET["record"];
             <input type="hidden" name="type" value="<?php echo $_GET["type"]; ?>" />
             <input type="hidden" name="value" value="<?php echo $_GET["value"]; ?>" />
             Value: <input type="text" name="newValue" value="<?php echo $_GET["value"]; ?>" />
-            <input type="hidden" name="newTTL" value="<?php echo $_GET["ttl"]; ?>" />
             TTL: <input type="text" name="newTTL" value="<?php echo $_GET["ttl"]; ?>" />
 
             <input type="hidden" name="returnTo" value="<?php echo $_GET["returnTo"]; ?>" />
