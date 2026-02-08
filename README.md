@@ -5,6 +5,14 @@
 
 LBBAPI is a light PHP written API for interacting with a bind9 server zone file.
 
+### Branches
+
+- master - Stable (has been in production for at least a few days).
+- RC - (Release Canidadate) Possibly broken Hotfix Merge to master avoid if possible.
+- Hotfix - Bugfix implementation testing possibly broken.
+- dev - Development branch, most likely broken, do not use.
+- Other branches or branches starting with dev- are development branches, do not use.
+
 ### Features
 
 - All PHP!
