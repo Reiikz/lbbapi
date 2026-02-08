@@ -125,7 +125,6 @@ if($_POST["type"] == "AAAA"){
                 exit(0);
             }
         }
-    }
 }else{
     recordUpdate($record, $authority, $type, $value, $newValue, $newTtl);
 }
