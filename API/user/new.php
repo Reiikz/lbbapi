@@ -30,6 +30,12 @@ if(!isset($_POST["password"])){
     exit(0);
 }
 
+if(strlen($_POST["password"]) > 64){
+    header("HTTP/1.1 400 Bad request");
+    echo "<h1>No password</h1>";
+    exit(0);
+}
+
 if(!isset($_POST["password2"])){
     header("HTTP/1.1 400 Bad request");
     echo "<h1>Please repeat your password</h1>";

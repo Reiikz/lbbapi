@@ -58,6 +58,12 @@ if(!isset($_POST["newTTL"])){
     exit(0);
 }
 
+if(!isset($_POST["authority"])){
+    header("HTTP/1.1 400 Bad request");
+    echo "<h1>No authority!</h1>";
+    exit(0);
+}
+
 //validate request!
 //make sure ttl is numeric
 if(preg_match("/[^0-9]/", $_POST["newTTL"])) {
@@ -100,11 +106,20 @@ if(!userHasAnyOfThesePermissions(array($domainPermission, "admin"), $token)){
     exit(0);
 }
 
+$record = preg_replace("/[^A-Za-z0-9-.]/", "OwO", $_POST["record"]);
+$authority = preg_replace("/[^A-Za-z0-9-.]/", "OwO", $_POST["authority"]);
+$type = preg_replace("/[^A-Za-z0-9-.]/", "OwO", $_POST["type"]);
+$value = $_POST["value"];
+$newValue = $_POST["newValue"];
+$newTtl = preg_replace("/[^0-9]/", "OwO", $_POST["newTTL"]);
+
 if($_POST["type"] == "AAAA"){
-    if(!recordUpdate($_POST["record"], $_POST["type"], $_POST["value"], $_POST["newValue"], $_POST["newTTL"])){
+    if(!recordUpdate($record, $authority, $type, $value, $newValue, $newTtl)){
         include_once $GLOBALS["webroot"] . "/ThirdParty/php-pear/Net_IPv6/IPv6.php";
-        if(! recordUpdate($_POST["record"], $_POST["type"], Net_IPv6::compress($_POST["value"], true), Net_IPv6::compress($_POST["newValue"], true), $_POST["newTTL"]) ) {
-            if(!recordUpdate($_POST["record"], $_POST["type"], Net_IPv6::uncompress($_POST["value"], true), Net_IPv6::uncompress($_POST["newValue"], true), $_POST["newTTL"]) ){
+        if(! recordUpdate($record, $authority, $type, Net_IPv6::compress($value), Net_IPv6::compress($newValue), $newTtl))
+        //if(! recordUpdate($_POST["record"], $_POST["type"], Net_IPv6::compress($_POST["value"], true), Net_IPv6::compress($_POST["newValue"], true), $_POST["newTTL"]) ) {
+            //if(!recordUpdate($_POST["record"], $_POST["type"], Net_IPv6::uncompress($_POST["value"], true), Net_IPv6::uncompress($_POST["newValue"], true), $_POST["newTTL"]) ){
+            if(! recordUpdate($record, $authority, $type, Net_IPv6::uncompress($value), Net_IPv6::uncompress($newValue), $newTtl)){
                 header("HTTP/1.1 500 Internal server error");
                 echo "<h1>Could not update record!!</h1>";
                 exit(0);
@@ -112,7 +127,7 @@ if($_POST["type"] == "AAAA"){
         }
     }
 }else{
-    recordUpdate($_POST["record"], $_POST["type"], $_POST["value"], $_POST["newValue"], $_POST["newTTL"]);
+    recordUpdate($record, $authority, $type, $value, $newValue, $newTtl);
 }
 
 if(isset($_POST["returnTo"])){

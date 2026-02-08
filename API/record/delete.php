@@ -48,15 +48,25 @@ if(!isset($_POST["value"])){
     exit(0);
 }
 
+if(!isset($_POST["authority"])){
+    header("HTTP/1.1 400 Bad request");
+    echo "<h1>No authority!</h1>";
+    exit(0);
+}
+
 include_once $GLOBALS["webroot"] . "/core/permissions.php";
 include_once $GLOBALS["webroot"] . "/core/manageDomainDatabase.php";
 
+$record = preg_replace("/[^A-Za-z0-9-.]/", "OwO", $_POST["record"]);
+$authority = preg_replace("/[^A-Za-z0-9-.]/", "OwO", $_POST["authority"]);
+$type = preg_replace("/[^A-Za-z0-9-.]/", "OwO", $_POST["type"]);
+$value = $_POST["value"];
 
 $domainPermission = null;
-if(str_ends_with($_POST["record"], ".")){
-    $domainPermission = $_POST["record"] . "delete";
+if(str_ends_with($record, ".")){
+    $domainPermission = $record . "delete";
 }else{
-    $domainPermission = $_POST["record"] . ".delete";
+    $domainPermission = $record . ".delete";
 }
 if(!userHasAnyOfThesePermissions(array($domainPermission, "admin"), $token)){
     header("HTTP/1.1 403 Forbidden");
@@ -64,7 +74,7 @@ if(!userHasAnyOfThesePermissions(array($domainPermission, "admin"), $token)){
     exit(0);
 }
 
-deleteRecord($_POST["record"], $_POST["type"], $_POST["value"]);
+deleteRecord($record, $authority, $type, $value);
 
 if(isset($_POST["returnTo"])){
     header("Location: " . $_POST["returnTo"]);

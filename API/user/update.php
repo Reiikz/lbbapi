@@ -32,6 +32,12 @@ if(isset($_POST["token"])){
 //if we got password we chaning it
 if(isset($_POST["password"])){
     if(!empty($_POST["password"])){
+        if(strlen($_POST["password"]) > 64){
+            header("HTTP/1.1 400 Bad request");
+            echo "<h1>No password</h1>";
+            exit(0);
+        }
+
         if(!isset($_POST["password2"])){
             header("HTTP/1.1 400 Bad request");
             echo "<h1>password2 not given</h1>";
