@@ -13,6 +13,10 @@ LBBAPI is a light PHP written API for interacting with a bind9 server zone file.
 - dev - Development branch, most likely broken, do not use.
 - Other branches or branches starting with dev- are development branches, do not use.
 
+release process:
+- dev* -> RC -> master
+- Hotfix -> RC -> master
+
 ### Features
 
 - All PHP!
@@ -27,4 +31,16 @@ LBBAPI is a light PHP written API for interacting with a bind9 server zone file.
 
 > if you doubt weather this works, note this gitlab instance's DNS (git.reiikz.net) is powered by this program.
 
-[Documentation](docs/)
+### [Documentation](docs/)
+
+### Reporting issues
+
+Register an account on this gitlab instance (git.reiikz.net) verify it with the admin as per the instructions in the registration page.
+
+Open an issue.
+
+### Contributing
+
+Register an account on this gitlab instance (git.reiikz.net) verify it with the admin as per the instructions in the registration page.
+
+Make a pull request.
