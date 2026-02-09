@@ -1,5 +1,11 @@
 <?php
 
+session_start();
+if(isset($_SESSION["username"])){
+    header("Location: " . getPathClientWebRoot() . "/cpanel");
+    exit(0);
+}
+
 include_once APP_ROOT . "/core/core.php";
 
 if(!isset($_POST["user"])){
@@ -41,8 +47,6 @@ if(!password_verify($_POST["password"], $USERS[$USERIDS[$_POST["user"]]]["passwo
     exit(0);
 }
 
-
-session_start();
 $_SESSION["username"]=$_POST["user"];
 if(!isset($USERS[$USERIDS[$_POST["user"]]]["username_md5"])){
     $USERS[$USERIDS[$_POST["user"]]]["username_md5"] = md5($_POST["user"]);
