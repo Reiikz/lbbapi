@@ -73,6 +73,48 @@ Check your web server documentation but some common usernames for the web server
 - www-data (Debian based)
 - http  (Arch based)
 
+### Reverse proxy considerations
+
+For redirections to work properly when reverse proxied with a prefix rather than virtual host your reverse proxy must set the `X-Forwarded-Prefix` header.
+
+Telling lbbapi what its forwarded prefix is.
+
+To accomplish this in apache we can add the following connfiguration to our virtual host in the reverse proxy.
+
+```xml
+
+        SSLProxyEngine on       
+        ProxyPreserveHost On RequestHeader
+        ProxyPass /lbbapi/ "http://lbbapi-server.local/"
+        ProxyPassReverse /lbbapi/ "http://lbbapi-server.local/"
+        <Location /lbbapi>
+                RequestHeader set X-Forwarded-Prefix "/lbbapi"
+                RequestHeader set X-Forwarded-Proto "https"
+        </Location>
+
+```
+>**Note:** trailing slashes are important!
+> if you are terminating an SSL connection you must includee `X-Forwarded-Proto` otherwise you can remove this line.
+
+Note that by wrapping the request header configuration in `<Location /lbbapi>` We've told apache to to only set the header when the user is trying to access /lbbapi, this is important if you're proxying other services in subdirectories.
+
+Don't forget to enable the neecessary modules
+
+```sh
+a2enmod proxy headers
+```
+
+In debian you can verify the configuration with
+```sh
+    apache2ctl configtest
+```
+
+Finalyy restart the service
+
+```sh
+    systemctl restart apache2
+```
+
 # API
 
 This is a web API meant to be used with your curl client of choice.
@@ -257,6 +299,16 @@ perform a git pull:
 ```
     git pull
 ```
+
+Profit!
+
+## Manual upgrade from release
+
+If you downloaded a release archive, make a backup of thee entire folder before begining just in case.
+
+Delete everything but the directoriees `config` `tokens` `userPermissions` and the file `users.php`.
+
+Then proceed extract the new archive and combine the directories.
 
 Profit!
 

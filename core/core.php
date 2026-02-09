@@ -53,7 +53,11 @@ function getPathClientWebRoot(){
     }
     return str_replace($_SERVER["DOCUMENT_ROOT"], "", APP_ROOT);
     */
-    return str_replace($_SERVER["DOCUMENT_ROOT"], "", APP_ROOT);
+    $prefix = $_SERVER['HTTP_X_FORWARDED_PREFIX'] ?? "";
+
+    // echo $prefix . str_replace($_SERVER["DOCUMENT_ROOT"], "", APP_ROOT) ."<br/>";
+    // exit(0);
+    return $prefix . str_replace($_SERVER["DOCUMENT_ROOT"], "", APP_ROOT);
 }
 
 function saveVariable($subject, $subjectName, $file = null){
