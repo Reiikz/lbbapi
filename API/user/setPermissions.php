@@ -1,22 +1,7 @@
 <?php
 
+include_once APP_ROOT . "/core/core.php";
 
-/*
-    We want this to be usable anywhere in the web server so we must find our root path!
-*/
-
-if(!isset($GLOBALS["webroot"])){
-    $path=__FILE__;
-    while(!file_exists("$path/.stop")){
-        $path=dirname($path);
-    }
-    $GLOBALS["webroot"]=$path;
-
-}
-include_once $GLOBALS["webroot"] . "/core/core.php";
-/*
-    **************************
-*/
 
 $token = null;
 if(isset($_POST["token"])){
@@ -33,7 +18,7 @@ if(($token == null) && (!isset($_SESSION["username"]))){
     exit(0);
 }
 
-include_once $GLOBALS["webroot"] . "/core/permissions.php";
+include_once APP_ROOT . "/core/permissions.php";
 
 if(!userHasAnyOfThesePermissions(array("admin"), $token)){
     header("HTTP/1.1 403 Forbidden!");
@@ -72,7 +57,7 @@ if(empty($username)){
     exit(0);
 }
 
-$permissionFile = $GLOBALS["webroot"] . "/userPermissions/" . md5($username) . ".php";
+$permissionFile = APP_ROOT . "/userPermissions/" . md5($username) . ".php";
 $text = "<?php\n\n";
 $test .= "unset(\$_PERMISSIONS);\n\n";
 $text .= "\$_PERMISSIONS = " . var_export($_PERMISSIONS, TRUE) . ";";

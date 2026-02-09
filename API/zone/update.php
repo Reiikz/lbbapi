@@ -1,20 +1,6 @@
 <?php
 
-/*
-    We want this to be usable anywhere in the web server so we must find our root path!
-*/
-
-if(!isset($GLOBALS["webroot"])){
-    $path=__FILE__;
-    while(!file_exists("$path/.stop")){
-        $path=dirname($path);
-    }
-    $GLOBALS["webroot"]=$path;
-
-}
-include_once $GLOBALS["webroot"] . "/core/core.php";
-
-/****************************/
+include_once APP_ROOT . "/core/core.php";
 
 $token = null;
 if(!isset($_POST["token"])){
@@ -159,7 +145,7 @@ if($_POST[$check] < 0){
 $zone = filterForIllegalChars($_POST["zone"]);
 $zonePermissions = "$zone.manage";
 
-include_once $GLOBALS["webroot"] . "/core/permissions.php";
+include_once APP_ROOT . "/core/permissions.php";
 if(!userHasAnyOfThesePermissions(array($zonePermissions, "admin"), $token)){
     header("HTTP/1.1 403 Forbidden");
     echo "<h1>>:|</h1>";

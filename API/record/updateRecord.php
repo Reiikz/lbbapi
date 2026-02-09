@@ -1,20 +1,7 @@
 <?php
 
-/*
-    We want this to be usable anywhere in the web server so we must find our root path!
-*/
+include_once APP_ROOT . "/core/core.php";
 
-if(!isset($GLOBALS["webroot"])){
-    $path=__FILE__;
-    while(!file_exists("$path/.stop")){
-        $path=dirname($path);
-    }
-    $GLOBALS["webroot"]=$path;
-
-}
-include_once $GLOBALS["webroot"] . "/core/core.php";
-
-/****************************/
 
 $token = null;
 if(!isset($_POST["token"])){
@@ -86,12 +73,12 @@ if(!preg_match("/^(A|AAAA|AFSDB|APL|CAA|CDNSKEY|CDS|CERT|CNAME|CSYNC|DHCID|DLV|D
     exit(0);
 }
 
-include_once $GLOBALS["webroot"] . "/core/records/validate.php";
+include_once APP_ROOT . "/core/records/validate.php";
 
 validateRecordTypeQuit($_POST["type"], $_POST["newValue"]);
 
-include_once $GLOBALS["webroot"] . "/core/permissions.php";
-include_once $GLOBALS["webroot"] . "/core/manageDomainDatabase.php";
+include_once APP_ROOT . "/core/permissions.php";
+include_once APP_ROOT . "/core/manageDomainDatabase.php";
 
 
 $domainPermission = null;
@@ -115,7 +102,7 @@ $newTtl = preg_replace("/[^0-9]/", "OwO", $_POST["newTTL"]);
 
 if($_POST["type"] == "AAAA"){
     if(!recordUpdate($record, $authority, $type, $value, $newValue, $newTtl)){
-        include_once $GLOBALS["webroot"] . "/ThirdParty/php-pear/Net_IPv6/IPv6.php";
+        include_once APP_ROOT . "/ThirdParty/php-pear/Net_IPv6/IPv6.php";
         if(! recordUpdate($record, $authority, $type, Net_IPv6::compress($value), Net_IPv6::compress($newValue), $newTtl))
         //if(! recordUpdate($_POST["record"], $_POST["type"], Net_IPv6::compress($_POST["value"], true), Net_IPv6::compress($_POST["newValue"], true), $_POST["newTTL"]) ) {
             //if(!recordUpdate($_POST["record"], $_POST["type"], Net_IPv6::uncompress($_POST["value"], true), Net_IPv6::uncompress($_POST["newValue"], true), $_POST["newTTL"]) ){

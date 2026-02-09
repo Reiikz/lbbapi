@@ -1,22 +1,6 @@
 <?php
 
-/*
-    We want this to be usable anywhere in the web server so we must find our root path!
-*/
-
-if(!isset($GLOBALS["webroot"])){
-    $path=__FILE__;
-    while(!file_exists("$path/.stop")){
-        $path=dirname($path);
-    }
-    $GLOBALS["webroot"]=$path;
-
-}
-include_once $GLOBALS["webroot"] . "/core/core.php";
-
-/*
-    **************************
-*/
+include_once APP_ROOT . "/core/core.php";
 
 $token=null;
 if(!isset($_POST["token"])){
@@ -82,7 +66,7 @@ if(!preg_match("/^(A|AAAA|AFSDB|APL|CAA|CDNSKEY|CDS|CERT|CNAME|CSYNC|DHCID|DLV|D
     exit(0);
 }
 
-include_once $GLOBALS["webroot"] . "/core/records/validate.php";
+include_once APP_ROOT . "/core/records/validate.php";
 
 $record = preg_replace("/[^A-Za-z0-9-.]/", "OwO", $_POST["record"]);
 $authority = preg_replace("/[^A-Za-z0-9-.]/", "OwO", $_POST["authority"]);
@@ -93,9 +77,9 @@ $newTtl = preg_replace("/[^0-9]/", "OwO", $_POST["ttl"]);
 validateRecordTypeQuit($type, $value);
 
 // echo "AB";
-include_once $GLOBALS["webroot"] . "/core/permissions.php";
+include_once APP_ROOT . "/core/permissions.php";
 // echo "CD";
-include_once $GLOBALS["webroot"] . "/core/manageDomainDatabase.php";
+include_once APP_ROOT . "/core/manageDomainDatabase.php";
 
 
 $domain=$record;

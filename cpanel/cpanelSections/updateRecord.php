@@ -1,22 +1,8 @@
 <?php
-/*
-    We want this to be usable anywhere in the web server so we must find our root path!
-*/
 
-if(!isset($GLOBALS["webroot"])){
-    $path=__FILE__;
-    while(!file_exists("$path/.stop")){
-        $path=dirname($path);
-    }
-    $GLOBALS["webroot"]=$path;
-
-}
-include_once $GLOBALS["webroot"] . "/core/core.php";
+include_once APP_ROOT . "/core/core.php";
 redirectIfNotLoggedIn();
-/*
-    **************************
-*/
-include_once $GLOBALS["webroot"] . "/core/parser.php";
+include_once APP_ROOT . "/core/parser.php";
 
 $available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
 
@@ -56,7 +42,7 @@ $domain=$_GET["record"];
 
     <?php
 
-        include_once $GLOBALS["webroot"] . "/core/manageDomainDatabase.php";
+        include_once APP_ROOT . "/core/manageDomainDatabase.php";
         
         echo "<div class='DNSZone_Tittle'>\n";
         echo "Zone: $authority\n";

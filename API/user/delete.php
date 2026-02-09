@@ -1,22 +1,6 @@
 <?php
 
-
-/*
-    We want this to be usable anywhere in the web server so we must find our root path!
-*/
-
-if(!isset($GLOBALS["webroot"])){
-    $path=__FILE__;
-    while(!file_exists("$path/.stop")){
-        $path=dirname($path);
-    }
-    $GLOBALS["webroot"]=$path;
-
-}
-include_once $GLOBALS["webroot"] . "/core/core.php";
-/*
-    **************************
-*/
+include_once APP_ROOT . "/core/core.php";
 
 if(!isset($_POST["username"])){
     header("HTTP/1.1 400 Bad request");
@@ -30,19 +14,19 @@ if(isset($_POST["token"])){
 }
 
 $updatedUser=false;
-include_once $GLOBALS["webroot"] . "/core/permissions.php";
+include_once APP_ROOT . "/core/permissions.php";
 if(session_status() != PHP_SESSION_ACTIVE){
     session_start();
 } 
 if(userHasAnyOfThesePermissions(array("deleteUsers", "admin"), $token)){
-    include_once $GLOBALS["webroot"] . "/users.php";
+    include_once APP_ROOT . "/users.php";
 
     $username=$_POST["username"];
     $id=$USERIDS[$username];
     unset($USERIDS[$username]);
     unset($USERS[$id]);
 
-    $permissionsFile = $GLOBALS["webroot"] . "/userPermissions/" . md5($username) . ".php";
+    $permissionsFile = APP_ROOT . "/userPermissions/" . md5($username) . ".php";
 
     if(file_exists($permissionsFile)){
         unlink($permissionsFile);
@@ -51,7 +35,7 @@ if(userHasAnyOfThesePermissions(array("deleteUsers", "admin"), $token)){
 }
 
 if($updatedUser){
-    $USERS_FILE_PATH = $GLOBALS["webroot"] . "/users.php";
+    $USERS_FILE_PATH = APP_ROOT . "/users.php";
     $text = "<?php\n\n";
     $text .= "\$USERS = " . var_export($USERS, TRUE) . ";";
     $text .= "\n\n";

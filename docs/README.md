@@ -2,7 +2,7 @@
 
 ## Dependancies:
 ### You'll need:
-- PHP enabled web server.
+- Apache with PHP and rewrite mod enabled.
 - Bind9 Server.
 - The sudo command for allowing the web server to restart/reload the bind9 server.
 - Systemd enabled OS.
@@ -16,6 +16,25 @@ After installing sudo add the following lines to your  `/etc/sudoers` file.
     www-data ALL=NOPASSWD:/usr/bin/systemctl status bind9
 ```
 > **Note:** That it is asumed your web server's user is www-data and the Bind9 server's unit file is bind9, if it's not adjust acordingly.
+
+Make sure the option `AllowOverride` in `/etc/apache2/apache2.conf` pertaining to the app directory is set to `All`
+```xml
+        <Directory /var/www/>
+            Options Indexes FollowSymLinks
+            AllowOverride All
+            Require all granted
+        </Directory>
+```
+
+
+And enable apache rewrite.
+
+In debian you can run the following:
+
+```sh
+a2enmod rewrite
+systemctl restart apache2
+```
 
 ### Dependancies:
 

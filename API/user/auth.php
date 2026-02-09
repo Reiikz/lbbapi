@@ -1,22 +1,6 @@
 <?php
 
-
-/*
-    We want this to be usable anywhere in the web server so we must find our root path!
-*/
-
-if(!isset($GLOBALS["webroot"])){
-    $path=__FILE__;
-    while(!file_exists("$path/.stop")){
-        $path=dirname($path);
-    }
-    $GLOBALS["webroot"]=$path;
-
-}
-include_once $GLOBALS["webroot"] . "/core/core.php";
-/*
-    **************************
-*/
+include_once APP_ROOT . "/core/core.php";
 
 if(!isset($_POST["user"])){
     header("HTTP/1.1 400 Bad request");
@@ -36,7 +20,7 @@ if(strlen($_POST["password"]) > 64){
     exit(0);
 }
 
-$USERS_FILE_PATH = $GLOBALS["webroot"] . "/users.php";
+$USERS_FILE_PATH = APP_ROOT . "/users.php";
 
 if(file_exists($USERS_FILE_PATH)){
     include_once $USERS_FILE_PATH;

@@ -1,23 +1,9 @@
 <?php
-/*
-    We want this to be usable anywhere in the web server so we must find our root path!
-*/
 
-if(!isset($GLOBALS["webroot"])){
-    $path=__FILE__;
-    while(!file_exists("$path/.stop")){
-        $path=dirname($path);
-    }
-    $GLOBALS["webroot"]=$path;
-
-}
-include_once $GLOBALS["webroot"] . "/core/core.php";
-/*
-    **************************
-*/
+include_once APP_ROOT . "/core/core.php";
 
 function readToken($token){
-    $tokenPath = $GLOBALS["webroot"] . "/tokens";
+    $tokenPath = APP_ROOT . "/tokens";
 
     $it = new RecursiveDirectoryIterator($tokenPath);
     foreach(new RecursiveIteratorIterator($it) as $file){
@@ -48,13 +34,13 @@ function readToken($token){
 function getTokenPath($t, $user = null){
     $token = preg_replace("/[^0-9,A,B,C,D,E,F]/", "", $t);
     if($user != null){
-        return $GLOBALS["webroot"] . "/tokens/$user/$token.php";    
+        return APP_ROOT . "/tokens/$user/$token.php";    
     }
-    return $GLOBALS["webroot"] . "/tokens/$token.php";
+    return APP_ROOT . "/tokens/$token.php";
 }
 
 function saveToken(&$token){
-    $tokenPath = $GLOBALS["webroot"] . "/tokens/" . $token["username_md5"] . "/" . $token["id"] . ".php";
+    $tokenPath = APP_ROOT . "/tokens/" . $token["username_md5"] . "/" . $token["id"] . ".php";
     if(!is_dir(dirname($tokenPath))){
         mkdir(dirname($tokenPath));
         chmod(dirname($tokenPath), 0750);
@@ -86,7 +72,7 @@ function _gatherTokensInPath($tokenPath){
 
 function gatherTokens($gatherAll = true, $token = null){
     //Make sure we can do the necessary checks
-    include_once $GLOBALS["webroot"] . "/core/permissions.php";
+    include_once APP_ROOT . "/core/permissions.php";
 
     if(session_status() != PHP_SESSION_ACTIVE){
         session_start();
@@ -101,7 +87,7 @@ function gatherTokens($gatherAll = true, $token = null){
     //*****/////
 
     $tokens = array();
-    $tokenPath = $GLOBALS["webroot"] . "/tokens";
+    $tokenPath = APP_ROOT . "/tokens";
 
     if($willGatherAll){
         $files = scandir($tokenPath);

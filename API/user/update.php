@@ -1,22 +1,6 @@
 <?php
 
-
-/*
-    We want this to be usable anywhere in the web server so we must find our root path!
-*/
-
-if(!isset($GLOBALS["webroot"])){
-    $path=__FILE__;
-    while(!file_exists("$path/.stop")){
-        $path=dirname($path);
-    }
-    $GLOBALS["webroot"]=$path;
-
-}
-include_once $GLOBALS["webroot"] . "/core/core.php";
-/*
-    **************************
-*/
+include_once APP_ROOT . "/core/core.php";
 
 if(!isset($_POST["username"])){
     header("HTTP/1.1 400 Bad request");
@@ -65,7 +49,7 @@ if(isset($_POST["password"])){
         if(isset($_SESSION["username"])){
             if($_SESSION["username"] == $_POST["username"]){
 
-                include_once $GLOBALS["webroot"] . "/users.php";
+                include_once APP_ROOT . "/users.php";
 
                 if(password_verify($_POST["originalPassword"], $USERS[$USERIDS[$_SESSION["username"]]]["password"])){
                     $USERS[$USERIDS[$_SESSION["username"]]]["password"] = password_hash($_POST["password"], PASSWORD_DEFAULT);
@@ -73,8 +57,8 @@ if(isset($_POST["password"])){
 
                 $updatedUser = true;
             }else{
-                include_once $GLOBALS["webroot"] . "/users.php";
-                include_once $GLOBALS["webroot"] . "/core/permissions.php";
+                include_once APP_ROOT . "/users.php";
+                include_once APP_ROOT . "/core/permissions.php";
                 if(userHasAnyOfThesePermissions(array("admin"), $token)){
                     if(password_verify($_POST["originalPassword"], $USERS[$USERIDS[$_SESSION["username"]]]["password"])){
                         $USERS[$USERIDS[$_POST["username"]]]["password"] = password_hash($_POST["password"], PASSWORD_DEFAULT);
@@ -91,7 +75,7 @@ if(isset($_POST["password"])){
 }
 
 if($updatedUser){
-    $USERS_FILE_PATH = $GLOBALS["webroot"] . "/users.php";
+    $USERS_FILE_PATH = APP_ROOT . "/users.php";
     $text = "<?php\n\n";
     $text .= "\$USERS = " . var_export($USERS, TRUE) . ";";
     $text .= "\n\n";

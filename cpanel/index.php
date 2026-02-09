@@ -2,25 +2,12 @@
 <htmL>
 
     <?php
-/*
-    We want this to be usable anywhere in the web server so we must find our root path!
-*/
 
-if(!isset($GLOBALS["webroot"])){
-    $path=__FILE__;
-    while(!file_exists("$path/.stop")){
-        $path=dirname($path);
-    }
-    $GLOBALS["webroot"]=$path;
-
-}
-include_once $GLOBALS["webroot"] . "/core/core.php";
+include_once APP_ROOT . "/core/core.php";
 redirectIfNotLoggedIn();
-include_once $GLOBALS["webroot"] . "/core/permissions.php";
-include_once $GLOBALS["webroot"] . "/core/bind9/status.php";
-/*
-    **************************
-*/
+include_once APP_ROOT . "/core/permissions.php";
+include_once APP_ROOT . "/core/bind9/status.php";
+
     ?>
 
     <head>
@@ -101,44 +88,44 @@ include_once $GLOBALS["webroot"] . "/core/bind9/status.php";
                 if(isset($_GET["p"])){
                     switch($_GET["p"]){
                         case "show":
-                            include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/show.php";
+                            include_once APP_ROOT . "/cpanel/cpanelSections/show.php";
                             break;
                         case "add":
-                            include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/add.php";
+                            include_once APP_ROOT . "/cpanel/cpanelSections/add.php";
                             break;
                         case "update":
-                            include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/updateRecord.php";
+                            include_once APP_ROOT . "/cpanel/cpanelSections/updateRecord.php";
                             break;
                         case "tokens":
-                            include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/tokens.php";
+                            include_once APP_ROOT . "/cpanel/cpanelSections/tokens.php";
                             break;
                         case "newtoken":
-                            include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/newToken.php";
+                            include_once APP_ROOT . "/cpanel/cpanelSections/newToken.php";
                             break;
                         case "newZone":
-                            include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/newZone.php";
+                            include_once APP_ROOT . "/cpanel/cpanelSections/newZone.php";
                             break;
                         case "zones":
-                            include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/zones.php";
+                            include_once APP_ROOT . "/cpanel/cpanelSections/zones.php";
                             break;
                         case "userPermissions":
-                            include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/userPermissions.php";
+                            include_once APP_ROOT . "/cpanel/cpanelSections/userPermissions.php";
                             break;
                         case "manageUsers":
-                            include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/manageUsers.php";
+                            include_once APP_ROOT . "/cpanel/cpanelSections/manageUsers.php";
                             break;
                         case "newUser":
-                            include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/newUser.php";
+                            include_once APP_ROOT . "/cpanel/cpanelSections/newUser.php";
                             break;
                         case "updatePassword":
-                            include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/updatePassword.php";
+                            include_once APP_ROOT . "/cpanel/cpanelSections/updatePassword.php";
                             break;
                         default:
-                            include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/show.php";
+                            include_once APP_ROOT . "/cpanel/cpanelSections/show.php";
                             break;
                     }
                 }else{
-                    include_once $GLOBALS["webroot"] . "/cpanel/cpanelSections/show.php";
+                    include_once APP_ROOT . "/cpanel/cpanelSections/show.php";
                 }
 
             ?>

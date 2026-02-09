@@ -1,22 +1,8 @@
 <?php
 
 
-/*
-    We want this to be usable anywhere in the web server so we must find our root path!
-*/
+include_once APP_ROOT . "/core/core.php";
 
-if(!isset($GLOBALS["webroot"])){
-    $path=__FILE__;
-    while(!file_exists("$path/.stop")){
-        $path=dirname($path);
-    }
-    $GLOBALS["webroot"]=$path;
-
-}
-include_once $GLOBALS["webroot"] . "/core/core.php";
-/*
-    **************************
-*/
 
 if(!isset($_POST["user"])){
     header("HTTP/1.1 400 Bad request");
@@ -50,7 +36,7 @@ if($_POST["password2"] != $_POST["password"]){
 
 // save user to file
 
-$USERS_FILE_PATH = $GLOBALS["webroot"] . "/users.php";
+$USERS_FILE_PATH = APP_ROOT . "/users.php";
 
 if(file_exists($USERS_FILE_PATH)){
     include_once $USERS_FILE_PATH;
@@ -69,7 +55,7 @@ if($CONFIG["EnableMaxUsers"]){
                 exit(0);
             }else{
                 //if we have a session let's check if user is admin
-                include_once $GLOBALS["webroot"] . "/core/permissions.php";
+                include_once APP_ROOT . "/core/permissions.php";
                 if(!userHasAnyOfThesePermissions(array("addUsers", "admin"))){
                     //user isn't admin then quit
                     header("HTTP/1.1 403 Forbidden");
@@ -121,11 +107,11 @@ chmod($USERS_FILE_PATH, 0700);
 session_start();
 
 if(count($USERIDS) == 1){
-    include_once $GLOBALS["webroot"] . "/core/permissions.php";
+    include_once APP_ROOT . "/core/permissions.php";
     $_PERMISSIONS = array("admin", "token.new", "token.delete", "token.update");
     saveUserPermissions($_PERMISSIONS);
 }else{
-    include_once $GLOBALS["webroot"] . "/core/permissions.php";
+    include_once APP_ROOT . "/core/permissions.php";
     $_PERMISSIONS = array("token.new", "token.delete", "token.update");
     if(isset($_SESSION["username"])){
         saveUserPermissions($_PERMISSIONS, getUserPermissionFilePath($newUser["username"]));
