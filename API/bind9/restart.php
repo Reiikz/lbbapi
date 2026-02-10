@@ -28,4 +28,4 @@ if(!userHasAnyOfThesePermissions(array("restartBind9", "admin"), $token)){
 
 exec("sudo systemctl restart bind9", $ret);
 
-header("Location: " . getPathClientWebRoot());
+header("Location: " . getPathClientWebRoot() . "/");

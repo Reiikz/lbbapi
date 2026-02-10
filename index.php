@@ -35,5 +35,5 @@ if (key_exists($_GET["requestedPath"], PAGES)){
     readfile($path);
     exit(0);
 } else{
-    header("Location: " .  getPathClientWebRoot() . "/cpanel");
+    header("Location: " .  getPathClientWebRoot() . "/cpanel/");
 }

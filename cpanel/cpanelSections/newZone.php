@@ -20,7 +20,7 @@ $available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
             Zone server: <input type="text" Placeholder="zone.net" name="zoneServer" />
         </div>
         <?php
-            echo "<input type=\"hidden\" name=\"returnTo\" value=\"" . strtok($_SERVER['REQUEST_URI'], '?') . "\"/>";
+            echo "<input type=\"hidden\" name=\"returnTo\" value=\"" . getPathClientWebRoot(), '/') . "\"/>";
         ?>
         <div>
             <input type="submit" value="Save" />

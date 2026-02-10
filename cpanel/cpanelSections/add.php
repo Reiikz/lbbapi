@@ -37,7 +37,7 @@ $available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
             echo "<input type='text' name='value' placeholder='Record value'/>\n";
             echo "<input type='hidden' name='authority' Value='$zone'/>";
             echo "<input type='submit' Value='Add'/>";
-            echo "<input type=\"hidden\" name=\"returnTo\" value=\"" . strtok($_SERVER['REQUEST_URI'], '?') . "\"/>";
+            echo "<input type=\"hidden\" name=\"returnTo\" value=\"" . getPathClientWebRoot() . "/\"/>";
 
             echo "</form>\n";
         }

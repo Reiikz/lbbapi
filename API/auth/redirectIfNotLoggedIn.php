@@ -11,6 +11,6 @@ if(session_status() != PHP_SESSION_ACTIVE){
 
 if(!isset($_SESSION["username"]))
 {
-    header("Location: " . getPathClientWebRoot() . "/cpanel/auth");
+    header("Location: " . getPathClientWebRoot() . "/cpanel/auth/");
     exit(0);
 }

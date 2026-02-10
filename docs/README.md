@@ -17,25 +17,6 @@ After installing sudo add the following lines to your  `/etc/sudoers` file.
 ```
 > **Note:** That it is asumed your web server's user is www-data and the Bind9 server's unit file is bind9, if it's not adjust acordingly.
 
-Make sure the option `AllowOverride` in `/etc/apache2/apache2.conf` pertaining to the app directory is set to `All`
-```xml
-        <Directory /var/www/>
-            Options Indexes FollowSymLinks
-            AllowOverride All
-            Require all granted
-        </Directory>
-```
-
-
-And enable apache rewrite.
-
-In debian you can run the following:
-
-```sh
-a2enmod rewrite
-systemctl restart apache2
-```
-
 ### Dependancies:
 
 php-pear Net_IPv6 is used, it has been included as a standalone file as the currently available version on the repo is not compatible with php 8.1 due to a deprecated syntax I've simply patched this.
@@ -73,35 +54,69 @@ Check your web server documentation but some common usernames for the web server
 - www-data (Debian based)
 - http  (Arch based)
 
+### Configuring the apache web server
+
+LBBAPI relies on rewrite rules on the .htaccess files to redirect all requests to the top level index.php
+To allow apache to do this you will need to make sure the option `AllowOverride` in `/etc/apache2/apache2.conf` pertaining to the app directory is set to `All`
+```xml
+        <Directory /var/www/>
+            Options Indexes FollowSymLinks
+            AllowOverride All
+            Require all granted
+        </Directory>
+```
+
+
+And enable apache rewrite.
+
+In debian you can run the following:
+
+```sh
+a2enmod rewrite
+systemctl restart apache2
+```
+
 ### Reverse proxy considerations
 
-For redirections to work properly when reverse proxied with a prefix rather than virtual host your reverse proxy must set the `X-Forwarded-Prefix` header.
+This section discusses the necessary configurations for a reverse proxy setup, ignore if you're not using a reverse proxy.
 
-Telling lbbapi what its forwarded prefix is.
+For redirections to work properly when reverse proxied with a prefix rather than virtual host your reverse proxy must set the `X-Forwarded-Prefix`, `X-Forwarded-For`, `X-Forwarded-Proto` and headers.
+
+Telling lbbapi what its forwarded prefix is, what the protocol is, and the original IP that sent the request.
 
 To accomplish this in apache we can add the following connfiguration to our virtual host in the reverse proxy.
 
 ```xml
 
+        RemoteIPHeader X-Forwarded-For
+        RequestHeader set X-Forwarded-Proto "https"
         SSLProxyEngine on       
         ProxyPreserveHost On RequestHeader
         ProxyPass /lbbapi/ "http://lbbapi-server.local/"
         ProxyPassReverse /lbbapi/ "http://lbbapi-server.local/"
         <Location /lbbapi>
+                RewriteRule ^(.*)$ index.php?requestedPath=$1 [QSA]
                 RequestHeader set X-Forwarded-Prefix "/lbbapi"
-                RequestHeader set X-Forwarded-Proto "https"
+                
+                # We need to add trailing slashes to all directories as we don't want to
+                # Use DirectorySlash in the backend because it messes with our HTTPS
+                # Detection, go bother the apache devs about it, this is massively silly
+                RewriteCond %{REQUEST_FILENAME} -d
+                RewriteCond %{REQUEST_URI} !/$
+                RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1/ [R=301,L]
         </Location>
 
 ```
 >**Note:** trailing slashes are important!
-> if you are terminating an SSL connection you must includee `X-Forwarded-Proto` otherwise you can remove this line.
+> Remember setting X-Forwarded-Proto to `http` if your reverse proxy is not terminating https, however it is highly unadvasable to use LBBAPI on an unencrypted channel.
 
-Note that by wrapping the request header configuration in `<Location /lbbapi>` We've told apache to to only set the header when the user is trying to access /lbbapi, this is important if you're proxying other services in subdirectories.
+Note that by wrapping the request header `X-Forwarded-Prefix` configuration in `<Location /lbbapi>` We've told apache to to only set the header when the user is trying to access /lbbapi, this is important if you're proxying other services in subdirectories.
 
-Don't forget to enable the neecessary modules
+Don't forget to enable the neecessary modules.
 
 ```sh
-a2enmod proxy headers
+a2enmod proxy headers proxy_fcgi rewrite
+
 ```
 
 In debian you can verify the configuration with
@@ -110,6 +125,36 @@ In debian you can verify the configuration with
 ```
 
 Finalyy restart the service
+
+```sh
+    systemctl restart apache2
+```
+
+That's all for the proxy side.
+On the backend side you need to configure the following on the apache2 virtual host:
+
+```xml
+    RemoteIPTrustedProxy <reverse proxy IP>
+    RemoteIPHeader X-Forwarded-For
+    SetEnvIf X-Forwarded-Proto https HTTPS=on
+
+    # Since we trust our almigty proxy to provide us canonized stuff we just don't
+    # do it 'coz we're lazy... actually is because Apache's reverse proxy is massively
+    # silly and it breaks our protocol because DirectorySlash for some god damn reason
+    # doesn't integrate with X-Forwarded-Proto go bother them about it
+    UseCanonicalName Off
+    UseCanonicalPhysicalPort Off
+    DirectorySlash Off
+```
+>**Note:** Don't forget to replace the `<rever proxy IP>` with your reverse proxy's IP IE: 10.67.67.67
+
+You'll need to enable remoteip on this side too
+
+```sh
+    a2enmod remoteip
+```
+
+Finaly restart the service
 
 ```sh
     systemctl restart apache2

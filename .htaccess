@@ -4,7 +4,8 @@ Require all granted
 RewriteEngine On
 
 # Redirect everything else to index.php with ?path=<requested path>
-RewriteRule ^(.*)$ index.php?requestedPath=$1 [L,QSA]
+
+RewriteRule ^(.*)$ index.php?requestedPath=$1 [QSA]
 
 
 

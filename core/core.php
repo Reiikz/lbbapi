@@ -36,9 +36,34 @@ LBBAPI_errorOutOnNoConfigKey("AllowedCharacters", $CONFIG);
 LBBAPI_errorOutOnNoConfigKey("ZoneConfigFile", $CONFIG);
 LBBAPI_errorOutOnNoConfigKey("dbDirectory", $CONFIG);
 
+function getClientIP(){
+    if(array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)){
+        return $_SERVER["HTTP_X_FORWARDED_FOR"];
+    }
+    return $_SERVER['REMOTE_ADDR'];
+}
 
 function filterForIllegalChars($in){
     return preg_replace($GLOBALS["config"]["AllowedCharacters"], "_", $in);
+}
+
+function getProto(){
+    if(isset($_SERVER['HTTPS'])){
+        if($_SERVER['HTTPS'] == "on" || $_SERVER['HTTPS'] == 1 || $_SERVER['HTTPS'] == true){
+            return "https";
+        }else{
+            return "http";
+        }
+    }else{
+        if(isset($_SERVER["HTTP_X_FORWARDED_PROTO"])){
+            if($_SERVER["HTTP_X_FORWARDED_PROTO"] == "https"){
+                return "https";
+            }else{
+                return "http";
+            }
+        }
+    }
+    return null;
 }
 
 function getPathClientWebRoot(){
@@ -54,10 +79,11 @@ function getPathClientWebRoot(){
     return str_replace($_SERVER["DOCUMENT_ROOT"], "", APP_ROOT);
     */
     $prefix = $_SERVER['HTTP_X_FORWARDED_PREFIX'] ?? "";
+    $proto = getProto();
+    $host = $_SERVER["HTTP_HOST"];
+    $path = $prefix . str_replace($_SERVER["DOCUMENT_ROOT"], "", APP_ROOT);
 
-    // echo $prefix . str_replace($_SERVER["DOCUMENT_ROOT"], "", APP_ROOT) ."<br/>";
-    // exit(0);
-    return $prefix . str_replace($_SERVER["DOCUMENT_ROOT"], "", APP_ROOT);
+    return "$proto://$host$path";
 }
 
 function saveVariable($subject, $subjectName, $file = null){

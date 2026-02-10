@@ -81,7 +81,7 @@ redirectIfNotLoggedIn();
                     echo "<input type='submit' value='save'/>\n";
                     echo "</div>\n\n";                
     
-                    echo "<input type='hidden' name='returnTo' value='" . $_SERVER['REQUEST_URI'] . "'/>\n";
+                    echo "<input type='hidden' name='returnTo' value='" . getPathClientWebRoot() . "/'/>\n";
                     echo "<input type='hidden' name='updateToken' value='" . $token['id'] . "'/>\n";
     
                     echo "</form>\n";
@@ -90,7 +90,7 @@ redirectIfNotLoggedIn();
     
                     echo "<input type='submit' value='Delete'/>\n";
                     echo "<input type='hidden' name='deleteToken' value='" . $token['id'] . "'/>\n";
-                    echo "<input type='hidden' name='returnTo' value='" . $_SERVER['REQUEST_URI'] . "'/>\n";
+                    echo "<input type='hidden' name='returnTo' value='" . getPathClientWebRoot() . "/'/>\n";
     
                     echo "</form>\n";
     

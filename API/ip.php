@@ -1,9 +1,5 @@
 <?php
 
-function getClientIP(){
-    return $_SERVER['REMOTE_ADDR'];
-}
-
 if(isset($_GET["t"])){
     switch($_GET["t"]){
         case "plain":

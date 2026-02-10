@@ -13,7 +13,7 @@ redirectIfNotLoggedIn();
     <div class="cpanel-section">
         <form Action="<?php echo getPathClientWebRoot(); ?>/API/user/update.php" Method="POST">
             <input type="hidden" name="username" value="<?php echo $_SESSION["username"]; ?>" />
-            <input type="hidden" name="returnTo" value="<?php echo getPathClientWebRoot(); ?>" />
+            <input type="hidden" name="returnTo" value="<?php echo getPathClientWebRoot(); ?>/" />
             <input type="password" name="originalPassword" Placeholder="Old password" class="largerTextBox" />    
             <input type="password" name="password" Placeholder="New password" class="largerTextBox" />
             <input type="password" name="password2" Placeholder="Repeat new password" class="largerTextBox" />

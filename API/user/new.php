@@ -123,4 +123,4 @@ if(!isset($_SESSION["username"])){
     $_SESSION["username_md5"]=md5($_POST["user"]);
 }
 
-header("Location: " . getPathClientWebRoot());
+header("Location: " . getPathClientWebRoot() . "/");

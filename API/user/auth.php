@@ -2,7 +2,7 @@
 
 session_start();
 if(isset($_SESSION["username"])){
-    header("Location: " . getPathClientWebRoot() . "/cpanel");
+    header("Location: " . getPathClientWebRoot() . "/cpanel/");
     exit(0);
 }
 
@@ -37,13 +37,13 @@ if(file_exists($USERS_FILE_PATH)){
 }
 
 if(!isset($USERIDS[$_POST["user"]])){
-    header("Location: " . getPathClientWebRoot() . "/cpanel/auth");
+    header("Location: " . getPathClientWebRoot() . "/cpanel/auth/");
     exit(0);
 }
 
 
 if(!password_verify($_POST["password"], $USERS[$USERIDS[$_POST["user"]]]["password"]) ) {
-    header("Location: " . getPathClientWebRoot() . "/cpanel/auth");
+    header("Location: " . getPathClientWebRoot() . "/cpanel/auth/");
     exit(0);
 }
 
@@ -53,5 +53,5 @@ if(!isset($USERS[$USERIDS[$_POST["user"]]]["username_md5"])){
 }
 $_SESSION["username_md5"]=$USERS[$USERIDS[$_POST["user"]]]["username_md5"];
 
-header("Location: " . getPathClientWebRoot());
+header("Location: " . getPathClientWebRoot() . "/");
 

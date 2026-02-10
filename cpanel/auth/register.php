@@ -10,7 +10,7 @@ if(session_status() != PHP_SESSION_ACTIVE){
     session_start();
 }
 if(isset($_SESSION["username"])){
-    header("Location: " . getPathClientWebRoot() . "/cpanel");
+    header("Location: " . getPathClientWebRoot() . "/cpanel/");
     exit(0);
 }
 

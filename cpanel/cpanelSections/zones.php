@@ -125,7 +125,7 @@ $available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
                             
                             echo "<input type='submit' value='Save' > \n";
 
-                            echo "<input type=\"hidden\" name=\"returnTo\" value=\"" . strtok($_SERVER['REQUEST_URI'], '?') . "?p=zones\"/>";
+                            echo "<input type=\"hidden\" name=\"returnTo\" value=\"" . getPathClientWebRoot() . "?p=zones\"/>";
                         echo "</form>\n";
                     echo "</div>\n";
 
@@ -133,7 +133,7 @@ $available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
                         echo "<form Action='" . getPathClientWebRoot() . "/API/zone/delete.php' Method='POST'>\n";
                             echo "<input type='hidden' name='zone' value='" . $zoneName . "' > \n";
                             echo "<input type='submit' value='Delete' > \n";
-                            echo "<input type=\"hidden\" name=\"returnTo\" value=\"" . strtok($_SERVER['REQUEST_URI'], '?') . "?p=zones\"/>";
+                            echo "<input type=\"hidden\" name=\"returnTo\" value=\"" . getPathClientWebRoot() . "/?p=zones\"/>";
                         echo "</form>\n";
                     echo "</div>\n";
 

@@ -37,12 +37,12 @@ include_once APP_ROOT . "/users.php";
                         echo "<input class='largerTextBox' type='password' name='password2' Placeholder='Repeat new password for " . $value["username"] . "'/>\n";
                         echo "<input type='submit' value='save'/>\n";
                         echo "<input type='hidden' name='username' value='" . $value["username"] . "'/>\n";
-                        echo "<input type='hidden' name='returnTo' value='" . getPathClientWebRoot() . "'/>\n";
+                        echo "<input type='hidden' name='returnTo' value='" . getPathClientWebRoot() . "/'/>\n";
                         
                     echo "</form>\n";
                     echo "<form Action='" . getPathClientWebRoot() . "/API/user/delete.php' Method='POST'>\n";
                         echo "<input type='hidden' name='username' value='" . $value["username"] . "'/>\n";
-                        echo "<input type='hidden' name='returnTo' value='" . getPathClientWebRoot() . "'/>\n";
+                        echo "<input type='hidden' name='returnTo' value='" . getPathClientWebRoot() . "/'/>\n";
                         echo "<input type='submit' value='Delete user'/>";
                     echo "</form>\n";
                 echo "</div>";
