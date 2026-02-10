@@ -28,6 +28,7 @@ define("PAGES", array(
     "API/ip.php" => "API/ip.php",
 
     "cpanel/auth/index.php" => "cpanel/auth/index.php",
+    "cpanel/auth/" => "cpanel/auth/index.php",
     "cpanel/auth" => "cpanel/auth/index.php",
     "cpanel/auth/register.php" => "cpanel/auth/register.php",
     "cpanel/index.php" => "cpanel/index.php",
