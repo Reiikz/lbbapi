@@ -31,6 +31,7 @@ if(!isset($_POST["zoneServer"])){
 }
 
 $zone = filterForIllegalChars($_POST["zone"]);
+$zone = preg_replace("/\.$/", "", $zone, 1);
 $zonePermissions = "$zone.manage";
 
 
