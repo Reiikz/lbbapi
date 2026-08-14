@@ -153,159 +153,49 @@ function bind9_zoneconfig_encode($zones){
     }
 }
 
+enum BIND9_PARSER_CTX : string {
+    case DEFAULT="DEFAULT";
+    case E_TTL="EXPECTING TTL"
+}
+
+function bind9_parser_evalContext_buffer(&$buffer, &$database, &$dataBuffer){
+
+}
+
+function bind9_parser_matchNext($buffer, $context){
+    switch($context){
+        case BIND9_PARSER_CTX::DEFAULT:{
+            
+            if(preg_match("/.*($).*/", $buffer)){
+                return BIND9_PARSER_CTX::E_TTL;
+            }
+
+            break;
+        }
+    }
+    return false;
+}
+
 function bind9_zonedb_decode($file){
     $database = array();
     $handle = fopen($file, "r");
     $db_params_gathered = 0;
     $db_params_gathering = false;
     $buffer = "";
+    $dataBuffer=null;
+    $nextContext=null;
     if ($handle) {
-        while (($x = fgets($handle)) !== false) {
-            $y = $x;
-            // echo $x;
-            
-            if(str_starts_with($y, ";")){
-                continue;
+        while (($x = fgetc($handle)) !== false) {
+
+            $buffer += $x;
+
+            if(($nextContext = bind9_parser_matchNext($buffer))!== false){
+                
             }
 
-            if(str_contains($x, ";")){
-                $y = preg_replace("/\;.*$/", "", $x);
-            }
-
-
-            if((empty(trim($y))) && (trim($y) != "0")) continue;
-            
-            if(str_starts_with($y, "\$TTL")){
-                $value = preg_replace("/[^0-9]/", "", $y);
-                // print_r($d);
-                $database["DEFAULT_TTL"] = $value;
-                continue;
-            }
-
-            if(preg_match("/\@\s+IN\s+SOA\s+/", $y) || $db_params_gathering){
-                $db_params_gathering = true;
-                if(!preg_match("/\((.*)\)/", $buffer)){
-                    $buffer .= "$y";
-                    $buffer = str_replace("\n", "", $buffer);
-                    // echo $buffer . "\n";
-                    if(!preg_match("/\((.*)\)/", $buffer))
-                        continue;
-                }
-                // echo $buffer;
-
-                $s = preg_split("/\s+/", $buffer);
-                $database["SOA"] = $s[3];
-                $z = 4;
-                while($s[$z] != "("){
-                    $database["SOA_SERVER"]=$s[$z];
-                    $z++;
-                    if($z >= count($s)){
-                        break;
-                    }
-                }
-
-                $database["SERIAL"]=$s[6];
-                $database["REFRESH"]=$s[7];
-                $database["RETRY"]=$s[8];
-                $database["EXPIRE"]=$s[9];
-                $database["NEGATIVE_CACHE_TTL"]=$s[10];
-
-                // print_r($s);
-
-                $db_params_gathering = false;
-                continue;
-            }
-
-            if(!isset($database["recordset"])){
-                $database["recordset"] = array();
-            }
-
-
-            // echo "--------------------\n";
-            $match;
-            preg_match("/^.+(IN)/", $y, $match);
-            $first = preg_replace("/(\n|\r)*/", "", $match[0]);
-            $second = str_replace($first, "", $y);
-            // echo  "$first\n";
-            // echo  "$second\n\n";
-            
-            preg_match("/[^ ]+/", $first, $match);
-            $recordName = preg_replace("/(\n|\r)*/", "", $match[0]);
-            // echo "RECORD NAME: '$recordName'\n";
-
-            $ttl = null;
-            if(!preg_match("/\s+[0-9]+\s+/", $first, $match)){
-                $ttl = $database["DEFAULT_TTL"];
-            }else{
-                $ttl = preg_replace("/(\n|\r)*/", "", $match[0]);
-                $ttl = preg_replace("/\s+/", "", $ttl);
-            }
-            // echo "TTL: '$ttl'\n";
-
-            preg_match("/\s+[a-zA-Z]+\s+/", $second, $match);
-            $recordType = preg_replace("/(\n|\r)*/", "", $match[0]);
-            $recordType = preg_replace("/\s+/", "", $recordType);
-            // echo "RECORD TYPE: '$recordType'\n";
-
-            $recordValue = preg_replace("/^\s+($recordType){1}\s+/", "", $second);
-            $recordValue = preg_replace("/(\n|\r)*/", "", $recordValue);
-            // echo "RECORD TYPE: '$recordValue'\n";
-
-            // echo "------------------\n";
-
-            $record = array();
-
-            //offets according to record setup
-            $rpos = 0;
-            $ttlpos = 1;
-            $typepos = 3;
-            $resolutionpos = 4;
-            $record[$rpos]=$recordName;
-            $record[$ttlpos]=$ttl;
-            $record[$typepos]=$recordType;
-            $record[$resolutionpos]=$recordValue;
-
-
-
-            $_recordName = $record[$rpos];
-            $authority = preg_replace("/\.$/", "", $database["SOA"]);
-            if($_recordName == "@"){
-                $_recordName = $authority . ".";
-            }
-
-            if(!isset($database["recordset"][$_recordName])){
-                $database["recordset"][$_recordName] = array();
-            }
-
-            if(!isset($database["recordset"][$_recordName]["types"])){
-                $database["recordset"][$_recordName]["types"] = array();
-            }
-
-            if(!in_array($record[$typepos], $database["recordset"][$_recordName]["types"])){
-                array_push($database["recordset"][$_recordName]["types"], $record[$typepos]);
-            }
-
-            if(!isset($database["recordset"][$_recordName][$record[$typepos]])){
-                $database["recordset"][$_recordName][$record[$typepos]] = array();
-            }
-            $ttl = "";
-            if($ttlpos == -1){
-                $ttl = $database["DEFAULT_TTL"];
-            }else{
-                $ttl = $record[$ttlpos];
-            }
-            
-            array_push($database["recordset"][$_recordName][$record[$typepos]], array(
-                "value" => $record[$resolutionpos],
-                "ttl" => $ttl,
-            ));
-
-            // echo $y;
         }
-        fclose($handle);
-        if(!isset($database["recordset"])){
-            $database["recordset"] = array();
-        }
+
+
         if(count($database) > 0){
             return $database;
         }
