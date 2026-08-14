@@ -104,11 +104,9 @@ if($_POST["type"] == "AAAA"){
     if(!recordUpdate($record, $authority, $type, $value, $newValue, $newTtl)){
         include_once APP_ROOT . "/ThirdParty/php-pear/Net_IPv6/IPv6.php";
         if(! recordUpdate($record, $authority, $type, Net_IPv6::compress($value), Net_IPv6::compress($newValue), $newTtl))
-        //if(! recordUpdate($_POST["record"], $_POST["type"], Net_IPv6::compress($_POST["value"], true), Net_IPv6::compress($_POST["newValue"], true), $_POST["newTTL"]) ) {
-            //if(!recordUpdate($_POST["record"], $_POST["type"], Net_IPv6::uncompress($_POST["value"], true), Net_IPv6::uncompress($_POST["newValue"], true), $_POST["newTTL"]) ){
             if(! recordUpdate($record, $authority, $type, Net_IPv6::uncompress($value), Net_IPv6::uncompress($newValue), $newTtl)){
                 header("HTTP/1.1 500 Internal server error");
-                echo "<h1>Could not update record!!</h1>";
+                echo "<h1>Could not update record after decompression!!</h1>";
                 exit(0);
             }
         }
