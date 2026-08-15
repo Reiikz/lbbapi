@@ -15,5 +15,7 @@ $CONFIG = array(
     //you can for instance make a symlink to this config file and store the database here and also use a symlink to it
     "ZoneConfigFile" => "/var/www/html/lbbapi/config/named.conf.local",
     //Directory for storing Bind9 DNS zone databases created through the API
-    "dbDirectory" => "/var/www/html/lbbapi/config/"
+    "dbDirectory" => "/var/www/html/lbbapi/config/",
+    //Enable php errors
+    "ErrorsOn" => false
 );

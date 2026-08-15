@@ -20,6 +20,12 @@ $CONFIG["dbDirectory"] = preg_replace("/\/{1}$/", "", $CONFIG["dbDirectory"]);
 
 $GLOBALS["config"]=$CONFIG;
 
+if($GLOBALS["config"]["ErrorsOn"]){
+    error_reporting(E_ALL);
+    ini_set('display_errors', '1');
+    ini_set('display_startup_errors', '1');
+}
+
 function LBBAPI_errorOutOnNoConfigKey($key, $config){
     if(!array_key_exists($key, $config)){
         header("HTTP/1.1 500 Internal server error!");
@@ -162,4 +168,14 @@ function getCFG($domain = null){
 function LBBAPI_is_integer($number){
     $number = filter_var($number, FILTER_VALIDATE_INT);
     return ($number !== FALSE);
+}
+
+function neatDump($in){
+    echo("<pre>");
+    print_r($in);
+    echo("</pre>");
+}
+
+function echoln($in){
+    echo("<pre>$in</pre><br/>");
 }

@@ -155,21 +155,71 @@ function bind9_zoneconfig_encode($zones){
 
 enum BIND9_PARSER_CTX : string {
     case DEFAULT="DEFAULT";
-    case E_TTL="EXPECTING TTL"
+    case E_TTL="EXPECTING TTL";
+    case E_TTL_VALUE="EXPECTING TTL VALUE";
+    case E_START_OF_AUTHORITY="EXPECTING START OF AUTHORITY";
 }
 
-function bind9_parser_evalContext_buffer(&$buffer, &$database, &$dataBuffer){
-
+enum DNSDBS : string {
+    case DEFAULT_TTL="DEFAULT_TTL";
 }
 
-function bind9_parser_matchNext($buffer, $context){
+function bind9_parser_cleanComments(&$buffer){
+    $buffer = preg_replace("/;.*/", "", $buffer);
+}
+
+//read the data from the current context and clears the buffer
+function bind9_parser_evalContext_buffer(&$buffer, &$database, $context){
+
+    switch($context){
+
+        case BIND9_PARSER_CTX::E_TTL:{
+            $buffer = "";
+            break;
+        }
+
+        case BIND9_PARSER_CTX::E_TTL_VALUE:{
+            bind9_parser_cleanComments($buffer);
+            $buffer = preg_replace("/[^0-9]+/", "", $buffer);
+            $database[DNSDBS::DEFAULT_TTL->value]=(int)$buffer;
+            $buffer="";
+            break;
+        }
+
+        case BIND9_PARSER_CTX::E_START_OF_AUTHORITY:{
+            
+            break;
+        }
+    }
+}
+
+//returns next context and removes the keyword from the buffer if buffer is found to tontain the next context switch
+function bind9_parser_matchNext(&$buffer, $context){
     switch($context){
         case BIND9_PARSER_CTX::DEFAULT:{
             
-            if(preg_match("/.*($).*/", $buffer)){
+            if(preg_match("/\$/", $buffer)){
                 return BIND9_PARSER_CTX::E_TTL;
             }
 
+            break;
+        }
+
+        case BIND9_PARSER_CTX::E_TTL:{
+            $match="/.*(TTL).*/";
+            if(preg_match($match, $buffer)){
+                $buffer = preg_replace($match, "", $buffer);
+                return BIND9_PARSER_CTX::E_TTL_VALUE;
+            }
+            break;
+        }
+
+        case BIND9_PARSER_CTX::E_TTL_VALUE:{
+            $match="/.*(@).+(IN).+(SOA)/";
+            if(preg_match($match, $buffer)){
+                $buffer = preg_replace($match, "", $buffer);
+                return BIND9_PARSER_CTX::E_TTL_VALUE;
+            }
             break;
         }
     }
@@ -179,27 +229,29 @@ function bind9_parser_matchNext($buffer, $context){
 function bind9_zonedb_decode($file){
     $database = array();
     $handle = fopen($file, "r");
-    $db_params_gathered = 0;
-    $db_params_gathering = false;
     $buffer = "";
-    $dataBuffer=null;
     $nextContext=null;
+    $context=BIND9_PARSER_CTX::DEFAULT;
     if ($handle) {
         while (($x = fgetc($handle)) !== false) {
 
-            $buffer += $x;
+            $buffer .= $x;
 
-            if(($nextContext = bind9_parser_matchNext($buffer))!== false){
-                
+            if(($nextContext = bind9_parser_matchNext($buffer, $context))!== false){
+                bind9_parser_evalContext_buffer($buffer, $database, $context);
+                $context = $nextContext;
             }
 
         }
 
 
         if(count($database) > 0){
+            neatDump("PARSED DATABASE WAS::::::");
+            neatDump($database);
             return $database;
         }
     }
+    
     return null;
 }
 
