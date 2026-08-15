@@ -158,14 +158,26 @@ enum BIND9_PARSER_CTX : string {
     case E_TTL="EXPECTING TTL";
     case E_TTL_VALUE="EXPECTING TTL VALUE";
     case E_START_OF_AUTHORITY="EXPECTING START OF AUTHORITY";
+    case E_DATABASE_CONFIG="EXPECTING DATABASE CONFIGURATION";
+    case E_BEGIN_RECORD="EXPECTING BEGINING OF RECORD ENTRY";
 }
 
 enum DNSDBS : string {
     case DEFAULT_TTL="DEFAULT_TTL";
+    case START_OF_AUTHORITY="SOA";
+    case START_MAIN_SERVER="SOA_SERVER";
+    case SERIAL="SERIAL";
+    case REFRESH="REFRESH";
+    case RETRY="RETRY";
+    case EXPIRE="EXPIRE";
+    case NEGATIVE_CACHE_TTL="NEGATIVE_CACHE_TTL";
+    case RECORDSET="recordset";
 }
 
+//removes comments and empty lines
 function bind9_parser_cleanComments(&$buffer){
     $buffer = preg_replace("/;.*/", "", $buffer);
+    $buffer = preg_replace('/^[ \t]*[\r\n]+/m', '', $buffer);
 }
 
 //read the data from the current context and clears the buffer
@@ -187,7 +199,27 @@ function bind9_parser_evalContext_buffer(&$buffer, &$database, $context){
         }
 
         case BIND9_PARSER_CTX::E_START_OF_AUTHORITY:{
-            
+            bind9_parser_cleanComments($buffer);
+            $buffer = trim($buffer);
+            $buffer = preg_split("/\s+/", $buffer);
+            $database[DNSDBS::START_OF_AUTHORITY->value]=$buffer[0];
+            $database[DNSDBS::START_MAIN_SERVER->value]=$buffer[1];
+            $buffer = "";
+            break;
+        }
+
+        case BIND9_PARSER_CTX::E_DATABASE_CONFIG:{
+            bind9_parser_cleanComments($buffer);
+            $buffer = trim($buffer);
+            $buffer = preg_replace("/[\r\n]/", "", $buffer);
+            $buffer = preg_split("/\s+/", $buffer);
+            $database[DNSDBS::SERIAL->value]=$buffer[0];
+            $database[DNSDBS::REFRESH->value]=$buffer[1];
+            $database[DNSDBS::RETRY->value]=$buffer[2];
+            $database[DNSDBS::EXPIRE->value]=$buffer[3];
+            $database[DNSDBS::NEGATIVE_CACHE_TTL->value]=$buffer[4];
+            $database[DNSDBS::RECORDSET->value]=array();
+            $buffer = "";
             break;
         }
     }
@@ -218,7 +250,25 @@ function bind9_parser_matchNext(&$buffer, $context){
             $match="/.*(@).+(IN).+(SOA)/";
             if(preg_match($match, $buffer)){
                 $buffer = preg_replace($match, "", $buffer);
-                return BIND9_PARSER_CTX::E_TTL_VALUE;
+                return BIND9_PARSER_CTX::E_START_OF_AUTHORITY;
+            }
+            break;
+        }
+
+        case BIND9_PARSER_CTX::E_START_OF_AUTHORITY:{
+            $match="/\(/";
+            if(preg_match($match, $buffer)){
+                $buffer = preg_replace($match, "", $buffer);
+                return BIND9_PARSER_CTX::E_DATABASE_CONFIG;
+            }
+            break;
+        }
+
+        case BIND9_PARSER_CTX::E_DATABASE_CONFIG:{
+            $match="/\)/";
+            if(preg_match($match, $buffer)){
+                $buffer = preg_replace($match, "", $buffer);
+                return BIND9_PARSER_CTX::E_BEGIN_RECORD;
             }
             break;
         }
