@@ -424,8 +424,10 @@ function bind9_zonedb_decode($file){
             }
 
         }
-        // in the case the file ends abruptly without a trailing carage return we add our own
+        // in the case the file ends abruptly without a trailing cariage return we add our own
         // and re run our parsing logic in case we didn't finish with the very last record
+        // as the parser waits for a charage return to collect the record data and load it
+        // into the DB otherwise we will have an empty entry and it will cause an error
         $buffer .= "\n";
         bind9_parser_evalContext_buffer($buffer, $database, $nextContext);
         if(($nextContext = bind9_parser_matchNext($buffer, $context))!== false){
