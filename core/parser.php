@@ -424,7 +424,14 @@ function bind9_zonedb_decode($file){
             }
 
         }
-
+        // in the case the file ends abruptly without a trailing carage return we add our own
+        // and re run our parsing logic in case we didn't finish with the very last record
+        $buffer .= "\n";
+        bind9_parser_evalContext_buffer($buffer, $database, $nextContext);
+        if(($nextContext = bind9_parser_matchNext($buffer, $context))!== false){
+            bind9_parser_evalContext_buffer($buffer, $database, $context);
+            $context = $nextContext;
+        }
 
         if(count($database) > 0){
             // neatDump("PARSED DATABASE WAS::::::");
