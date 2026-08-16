@@ -32,7 +32,7 @@ include_once APP_ROOT . "/core/bind9/status.php";
 
             <div class="header">
                 <div class='imageLogo'>
-                    <a href="<?php echo getPathClientWebRoot(); ?>/cpanel/?p=show">
+                    <a href="<?php echo getPathClientWebRoot(); ?>/cpanel/?p=listZones">
                         <img src="<?php echo getPathClientWebRoot(); ?>/resources/images/Logo.ico"/><br/>
                     </a>
                 </div>
@@ -120,12 +120,15 @@ include_once APP_ROOT . "/core/bind9/status.php";
                         case "updatePassword":
                             include_once APP_ROOT . "/cpanel/cpanelSections/updatePassword.php";
                             break;
+                        case "listZones":
+                            include_once APP_ROOT . "/cpanel/cpanelSections/listZones.php";
+                            break;
                         default:
                             include_once APP_ROOT . "/cpanel/cpanelSections/show.php";
                             break;
                     }
                 }else{
-                    include_once APP_ROOT . "/cpanel/cpanelSections/show.php";
+                    include_once APP_ROOT . "/cpanel/cpanelSections/listZones.php";
                 }
 
             ?>

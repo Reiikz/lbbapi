@@ -18,14 +18,21 @@ $available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
     <div class="cpanel-section">
 
     <?php
+        $zoneFilter = null;
+        if(isset($_GET["zone"])){
+            $zoneFilter = $_GET["zone"];
+        }
         foreach($available_zones["zones"] as $zoneName){
+            if($zoneFilter !== null){
+                if($zoneFilter != $zoneName) continue;
+            }
             echo "<div class=\"DNSzone\">\n";
                 echo "<div class=\"DNSZone_Title\">DNS Start Of Authority: <tag class='dnsZoneName'>$zoneName</tag></div>\n";
                 
                 $zonedb = bind9_zonedb_decode($available_zones[$zoneName]["file"]);
 
                 $authority = preg_replace("/\.$/", "", $zonedb["SOA"]);
-                neatDump($zonedb);
+                // neatDump($zonedb);
                 foreach($zonedb["recordset"] as $recordName => $set){
                     // neatDump($set);
                     foreach($set["types"] as $recordType){
