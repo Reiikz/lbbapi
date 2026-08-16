@@ -28,6 +28,8 @@ if($GLOBALS["config"]["ErrorsOn"]){
 
 function LBBAPI_errorOutOnNoConfigKey($key, $config){
     if(!array_key_exists($key, $config)){
+        ini_set('error_prepend_string', '<pre style="color: #d9534f; background: #f8f9fa; padding: 12px; border-radius: 4px;">');
+        ini_set('error_append_string', '</pre>');
         header("HTTP/1.1 500 Internal server error!");
         echo "<h1>Is the API misconfigured?</h1><br/>";
         echo "key: $key was missing from configuration";

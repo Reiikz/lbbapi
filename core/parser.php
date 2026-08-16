@@ -160,6 +160,10 @@ enum BIND9_PARSER_CTX : string {
     case E_START_OF_AUTHORITY="EXPECTING START OF AUTHORITY";
     case E_DATABASE_CONFIG="EXPECTING DATABASE CONFIGURATION";
     case E_BEGIN_RECORD="EXPECTING BEGINING OF RECORD ENTRY";
+    case E_RECORD_TTL="EXPECTING RECORD TTL";
+    case E_RECORD_IN="EXPECTING RECORD IN";
+    case E_RECORD_TYPE="EXPECTING RECORD TYPE";
+    case E_RECORD_DATA="EXPECTING RECORD DATA";
 }
 
 enum DNSDBS : string {
@@ -172,6 +176,10 @@ enum DNSDBS : string {
     case EXPIRE="EXPIRE";
     case NEGATIVE_CACHE_TTL="NEGATIVE_CACHE_TTL";
     case RECORDSET="recordset";
+    case RECORDSET_TYPES="types";
+    case RECORDSET_VALUES="values";
+    case RECORDSET_TTL="ttl";
+    case RECORDSET_VALUE="value";
 }
 
 //removes comments and empty lines
@@ -220,6 +228,71 @@ function bind9_parser_evalContext_buffer(&$buffer, &$database, $context){
             $database[DNSDBS::NEGATIVE_CACHE_TTL->value]=$buffer[4];
             $database[DNSDBS::RECORDSET->value]=array();
             $buffer = "";
+            break;
+        }
+
+        case BIND9_PARSER_CTX::E_BEGIN_RECORD:{
+            bind9_parser_cleanComments($buffer);
+            $buffer = trim($buffer);
+            if($buffer == "@"){
+                $buffer = $database[DNSDBS::START_OF_AUTHORITY->value];
+            }
+            if(!isset($database[DNSDBS::RECORDSET->value][$buffer])){
+                $database[DNSDBS::RECORDSET->value][$buffer] = array();
+                $database[DNSDBS::RECORDSET->value]["```r"]=$buffer;
+            }
+            $buffer = "";
+            break;
+        }
+
+        case BIND9_PARSER_CTX::E_RECORD_TTL:{
+            bind9_parser_cleanComments($buffer);
+            $buffer = trim($buffer);
+            $buffer = preg_replace("/[^0-9]/", "", $buffer);
+            $database[DNSDBS::RECORDSET->value]["```r-ttl"]=(int)$buffer;
+            $buffer = "";
+            break;
+        }
+
+        case BIND9_PARSER_CTX::E_RECORD_TYPE:{
+            bind9_parser_cleanComments($buffer);
+            $buffer = trim($buffer);
+            $database[DNSDBS::RECORDSET->value]["```r-type"]="$buffer";
+            $buffer = "";
+            if(!isset($database[DNSDBS::RECORDSET->value]["```r-ttl"]) || $database[DNSDBS::RECORDSET->value]["```r-ttl"] == 0){
+                $database[DNSDBS::RECORDSET->value]["```r-ttl"] = $database[DNSDBS::DEFAULT_TTL->value];
+            }
+            // neatDump($buffer);
+            
+            break;
+        }
+
+        case BIND9_PARSER_CTX::E_RECORD_DATA:{
+            $data = trim($buffer);
+            $buffer = "";
+            $type = $database[DNSDBS::RECORDSET->value]["```r-type"];
+            $ttl = $database[DNSDBS::RECORDSET->value]["```r-ttl"];
+            $entry = $database[DNSDBS::RECORDSET->value]["```r"];
+            $database[DNSDBS::RECORDSET->value]["```r-ttl"] = 0;
+
+            if(!isset($database[DNSDBS::RECORDSET->value][$entry][DNSDBS::RECORDSET_TYPES->value])){
+                $database[DNSDBS::RECORDSET->value][$entry][DNSDBS::RECORDSET_TYPES->value] = array();
+            }
+            if(!in_array($type, $database[DNSDBS::RECORDSET->value][$entry][DNSDBS::RECORDSET_TYPES->value])){
+                array_push($database[DNSDBS::RECORDSET->value][$entry][DNSDBS::RECORDSET_TYPES->value], $type);
+            }
+
+            if(!isset($database[DNSDBS::RECORDSET->value][$entry][$type][DNSDBS::RECORDSET_VALUES->value]) ){
+                $database[DNSDBS::RECORDSET->value][$entry][$type] = array();
+            }
+            array_push($database[DNSDBS::RECORDSET->value][$entry][$type],
+                array(
+                    DNSDBS::RECORDSET_VALUE->value => $data,
+                    DNSDBS::RECORDSET_TTL->value => $ttl
+                )
+            );
+            
+            
             break;
         }
     }
@@ -272,6 +345,62 @@ function bind9_parser_matchNext(&$buffer, $context){
             }
             break;
         }
+
+        case BIND9_PARSER_CTX::E_BEGIN_RECORD:{
+            $match="/^@/m";
+            if(preg_match($match, $buffer)){
+                // $buffer = preg_replace($match, "", $buffer);
+                return BIND9_PARSER_CTX::E_RECORD_TTL;
+            }
+
+            $match="/^[0-9a-zA-Z]+[0-9a-zA-Z.]+\s+/m";
+            if(preg_match($match, $buffer)){
+                // $buffer = preg_replace($match, "", $buffer);
+                return BIND9_PARSER_CTX::E_RECORD_TTL;
+            }
+            break;
+        }
+
+        case BIND9_PARSER_CTX::E_RECORD_TTL:{
+            // we check both for record TTL and IN as record TTL may not necessarily be set
+            $match="/\s+[0-9]+\s+/";
+            if(preg_match($match, $buffer)){
+                // $buffer = preg_replace($match, "", $buffer);
+                return BIND9_PARSER_CTX::E_RECORD_IN;
+            }
+
+            $match="/\s+IN\s+/";
+            if(preg_match($match, $buffer)){
+                $buffer = preg_replace($match, "", $buffer);
+                return BIND9_PARSER_CTX::E_RECORD_TYPE;
+            }
+            break;
+        }
+
+        case BIND9_PARSER_CTX::E_RECORD_IN:{
+            $match="/IN+\s/";
+            if(preg_match($match, $buffer)){
+                $buffer = preg_replace($match, "", $buffer);
+                return BIND9_PARSER_CTX::E_RECORD_TYPE;
+            }
+            break;
+        }
+
+        case BIND9_PARSER_CTX::E_RECORD_TYPE:{
+            $match="/\s+[A-Za-z]+\s+/";
+            if(preg_match($match, $buffer)){
+                return BIND9_PARSER_CTX::E_RECORD_DATA;
+            }
+            break;
+        }
+
+        case BIND9_PARSER_CTX::E_RECORD_DATA:{
+            $match="/.+(\n\r|\r\n|\n)$/";
+            if(preg_match($match, $buffer)){
+                return BIND9_PARSER_CTX::E_BEGIN_RECORD;
+            }
+            break;
+        }
     }
     return false;
 }
@@ -296,8 +425,8 @@ function bind9_zonedb_decode($file){
 
 
         if(count($database) > 0){
-            neatDump("PARSED DATABASE WAS::::::");
-            neatDump($database);
+            // neatDump("PARSED DATABASE WAS::::::");
+            // neatDump($database);
             return $database;
         }
     }
