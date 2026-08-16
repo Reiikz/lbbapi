@@ -282,7 +282,7 @@ function bind9_parser_evalContext_buffer(&$buffer, &$database, $context){
                 array_push($database[DNSDBS::RECORDSET->value][$entry][DNSDBS::RECORDSET_TYPES->value], $type);
             }
 
-            if(!isset($database[DNSDBS::RECORDSET->value][$entry][$type][DNSDBS::RECORDSET_VALUES->value]) ){
+            if(!isset($database[DNSDBS::RECORDSET->value][$entry][$type])){
                 $database[DNSDBS::RECORDSET->value][$entry][$type] = array();
             }
             array_push($database[DNSDBS::RECORDSET->value][$entry][$type],
@@ -291,6 +291,8 @@ function bind9_parser_evalContext_buffer(&$buffer, &$database, $context){
                     DNSDBS::RECORDSET_TTL->value => $ttl
                 )
             );
+
+            // neatDump("Add Record $entry type $type with ttl $ttl of value $data");
             
             
             break;
