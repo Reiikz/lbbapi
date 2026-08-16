@@ -353,7 +353,7 @@ function bind9_parser_matchNext(&$buffer, $context){
                 return BIND9_PARSER_CTX::E_RECORD_TTL;
             }
 
-            $match="/^[0-9a-zA-Z]+[0-9a-zA-Z.]+\s+/m";
+            $match="/^[0-9a-zA-Z-]+[0-9a-zA-Z.-]+\s+/m";
             if(preg_match($match, $buffer)){
                 // $buffer = preg_replace($match, "", $buffer);
                 return BIND9_PARSER_CTX::E_RECORD_TTL;
@@ -427,6 +427,9 @@ function bind9_zonedb_decode($file){
         if(count($database) > 0){
             // neatDump("PARSED DATABASE WAS::::::");
             // neatDump($database);
+            unset($database[DNSDBS::RECORDSET->value]["```r"]);
+            unset($database[DNSDBS::RECORDSET->value]["```r-ttl"]);
+            unset($database[DNSDBS::RECORDSET->value]["```r-type"]);
             return $database;
         }
     }

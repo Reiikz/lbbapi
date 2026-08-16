@@ -33,6 +33,8 @@ $available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
             echo "<option value='CNAME'>CNAME</option>\n";
             echo "<option value='TXT'>TXT</option>\n";
             echo "<option value='NS'>NS</option>\n";
+            echo "<option value='MX'>MX</option>\n";
+            echo "<option value='SRV'>SRV</option>\n";
             echo "</select>\n";
             echo "<input type='text' name='value' placeholder='Record value'/>\n";
             echo "<input type='hidden' name='authority' Value='$zone'/>";

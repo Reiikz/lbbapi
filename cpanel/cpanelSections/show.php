@@ -25,13 +25,10 @@ $available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
                 $zonedb = bind9_zonedb_decode($available_zones[$zoneName]["file"]);
 
                 $authority = preg_replace("/\.$/", "", $zonedb["SOA"]);
-
+                // neatDump($zonedb);
                 foreach($zonedb["recordset"] as $recordName => $set){
+                    // neatDump($set);
                     foreach($set["types"] as $recordType){
-                        // echo "<pre>";
-                        // print_r($set);
-                        // print_r($recordType);
-                        // echo "</pre>";
                         foreach($set[$recordType] as $valueSet){
                             $ttl = $valueSet["ttl"];
                             $name = $recordName;
