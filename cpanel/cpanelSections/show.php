@@ -84,12 +84,12 @@ $available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
                                         </div>
                                     </div>
                                     <div>
-                                        <form method=\"POST\" Action=\"" . getPathClientWebRoot() . "/API/record/delete.php\" >
+                                        <form method=\"POST\" Action=\"" . getPathClientWebRoot() . "/cpanel/?p=confirmDelete\" >
                                             <input type=\"submit\" value=\"Delete\" />
                                             <input type=\"hidden\" name=\"record\" value=\"$name\"/>
                                             <input type=\"hidden\" name=\"type\" value=\"$recordType\"/>
                                             <input type=\"hidden\" name=\"value\" value=\"" . $valueSet["value"] . "\"/>
-                                            <input type=\"hidden\" name=\"returnTo\" value=\"" . getPathClientWebRoot() . "/\"/>
+                                            <input type=\"hidden\" name=\"returnTo\" value=\"" . $_SERVER['REQUEST_URI'] . "\"/>
                                             <input type=\"hidden\" name=\"authority\" value=\"$authority\"/>
                                         </form>
                                     </div>
@@ -101,7 +101,7 @@ $available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
                                             <input type=\"hidden\" name=\"type\" value=\"$recordType\"/>
                                             <input type=\"hidden\" name=\"ttl\" value=\"$ttl\"/>
                                             <input type=\"hidden\" name=\"value\" value=\"" . $valueSet["value"] . "\"/>
-                                            <input type=\"hidden\" name=\"returnTo\" value=\"" . getPathClientWebRoot() . "/\"/>
+                                            <input type=\"hidden\" name=\"returnTo\" value=\"" . $_SERVER['REQUEST_URI'] . "\"/>
                                             <input type=\"submit\" value=\"Edit\" />
                                         </form>
                                     </div>

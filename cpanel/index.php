@@ -123,6 +123,9 @@ include_once APP_ROOT . "/core/bind9/status.php";
                         case "listZones":
                             include_once APP_ROOT . "/cpanel/cpanelSections/listZones.php";
                             break;
+                        case "confirmDelete":
+                            include_once APP_ROOT . "/cpanel/cpanelSections/confirmDelition.php";
+                            break;
                         default:
                             include_once APP_ROOT . "/cpanel/cpanelSections/show.php";
                             break;
