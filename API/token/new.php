@@ -18,7 +18,30 @@ if(!isset($_POST["newToken"])){
 $token = null;
 if(isset($_POST["token"])){
     $token = $_POST["token"];
-    if(!userHasAnyOfThesePermissions(array("token.create"), $token)){
+    if(!userHasAnyOfThesePermissions(array("token.delete", "admin"), $token, $secret)){
+        header("HTTP/1.1 403 Forbidden");
+        echo "<h1>This token can't delete other other tokens token.delete!</h1>";
+        exit(0);
+    }
+}
+
+$secret=null;
+if($token != null){
+    if(session_status() != PHP_SESSION_ACTIVE){
+        session_start();   
+    }
+    if(!isset($_POST["secret"])){
+        header("HTTP/1.1 403 Bad request");
+        echo "<h1>No secret!</h1>";
+        exit(0);
+    }else{
+        $secret=$_POST["secret"];
+    }
+}
+
+if($token != null){
+    $token = $_POST["token"];
+    if(!userHasAnyOfThesePermissions(array("token.create", "admin"), $token, $secret)){
         header("HTTP/1.1 403 Forbidden");
         echo "<h1>This token can't create other other tokens token.create!</h1>";
         exit(0);
@@ -50,6 +73,9 @@ foreach($_POST as $key => $value){
             $description = $value;
             continue 2;
         case "returnTo":
+            $returnTo = $value;
+            continue 2;
+        case "secret":
             $returnTo = $value;
             continue 2;
     }
@@ -85,8 +111,19 @@ if(isset($_SESSION["username_md5"])){
     $usermd5 = $accessToken["username_md5"];
 }
 
+$secret = null;
+if(!isset($_POST["secret"])){
+    header("HTTP/1.1 400 Bad request");
+    echo "<h1>no secret value!</h1>";
+    exit(0);
+}else{
+    $secret = $_POST["secret"];
+}
+
+
 $_TOKEN=array(
     "id" => $newToken,
+    "secret" => password_hash($secret, PASSWORD_DEFAULT),
     "permissions" => $permissions,
     "description" => $description,
     "username" => $user,

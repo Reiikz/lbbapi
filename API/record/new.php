@@ -14,6 +14,20 @@ if(!isset($_POST["token"])){
     $token=$_POST["token"];
 }
 
+$secret=null;
+if($token != null){
+    if(session_status() != PHP_SESSION_ACTIVE){
+        session_start();   
+    }
+    if(!isset($_POST["secret"])){
+        header("HTTP/1.1 403 Bad request");
+        echo "<h1>No secret!</h1>";
+        exit(0);
+    }else{
+        $secret=$_POST["secret"];
+    }
+}
+
 if(!isset($_POST["record"])){
     header("HTTP/1.1 400 Bad request");
     echo "<h1>No record!</h1>";
@@ -101,7 +115,7 @@ if(str_ends_with($domain, ".")){
     $domainPermission = "$domain.new";
 }
 
-if(!userHasAnyOfThesePermissions(array($domainPermission, "admin"), $token)){
+if(!userHasAnyOfThesePermissions(array($domainPermission, "admin"), $token, $secret)){
     header("HTTP/1.1 403 Forbidden");
     echo "<h1>>:|</h1><br/>$domainPermission";
     exit(0);

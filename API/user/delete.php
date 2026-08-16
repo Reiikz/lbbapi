@@ -13,12 +13,26 @@ if(isset($_POST["token"])){
     $token=$_POST["token"];
 }
 
+$secret=null;
+if($token != null){
+    if(session_status() != PHP_SESSION_ACTIVE){
+        session_start();   
+    }
+    if(!isset($_POST["secret"])){
+        header("HTTP/1.1 403 Bad request");
+        echo "<h1>No secret!</h1>";
+        exit(0);
+    }else{
+        $secret=$_POST["secret"];
+    }
+}
+
 $updatedUser=false;
 include_once APP_ROOT . "/core/permissions.php";
 if(session_status() != PHP_SESSION_ACTIVE){
     session_start();
 } 
-if(userHasAnyOfThesePermissions(array("deleteUsers", "admin"), $token)){
+if(userHasAnyOfThesePermissions(array("deleteUsers", "admin"), $token, $secret)){
     include_once APP_ROOT . "/users.php";
 
     $username=$_POST["username"];

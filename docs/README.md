@@ -22,6 +22,10 @@ After installing sudo add the following lines to your  `/etc/sudoers` file.
 php-pear Net_IPv6 is used, it has been included as a standalone file as the currently available version on the repo is not compatible with php 8.1 due to a deprecated syntax I've simply patched this.
 The only function that was needed from it was this: https://pear.php.net/manual/en/package.networking.net-ipv6.compress.php
 
+#### Required php dependancies (debian packages)
+
+- php-mbstring
+
 ## Web server confuration recomendations:
 
 - You should disable indexing.
@@ -234,6 +238,7 @@ POST to https://cooldomain.net/lbbapi/API/record/new.php
     record:femboy.s.cooldomain.net
     value:shody
     authority:cooldomain.net
+    secret:your secret
 ```
 
 ### CURL example:
@@ -245,6 +250,7 @@ POST to https://cooldomain.net/lbbapi/API/record/new.php
             -d "value=UwU" \
             -d "ttl=74" \
             -d "authority=cooldomain.net" \
+            -d "secret=your secret goes here" \
             -o -
 ```
 
@@ -265,6 +271,7 @@ POST to https://cooldomain.net/lbbapi/API/record/delete.php
     record:femboy.s.cooldomain.net
     value:shody
     authority:cooldomain.net
+    secret:your secret
 ```
 
 ### CURL example:
@@ -276,6 +283,7 @@ POST to https://cooldomain.net/lbbapi/API/record/delete.php
             -d "value=UwU" \
             -d "ttl=74" \
             -d "authority=cooldomain.net" \
+            -d "secret=your secret goes here" \
             -o -
 ```
 
@@ -298,6 +306,7 @@ POST to https://cooldomain.net/lbbapi/API/record/updateRecord.php
     newValue:shody tool
     newTTL:60
     authority:cooldomain.net
+    secret:your secret
 ```
 
 ### CURL example:
@@ -311,6 +320,7 @@ POST to https://cooldomain.net/lbbapi/API/record/updateRecord.php
             -d "newValue=shody tool" \
             -d "newTTL=60" \
             -d "authority=cooldomain.net" \
+            -d "secret=your secret goes here" \
             -o -
 ```
 

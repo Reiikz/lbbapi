@@ -22,11 +22,20 @@ $available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
         <?php
             $token = bin2hex(random_bytes(32));
             $token = strtoupper($token);
+            $secret = "";
+            for ($i = 0; $i < 32; $i++) {
+                $secret .= mb_chr(random_int(0x00A0, 0x024F), 'UTF-8');
+            }
+            $secret = str_replace("'", "-", $secret);
+            $secret = str_replace("\"", "-", $secret);
+            $secret = str_replace("`", "-", $secret);
+            $secret = trim($secret);
+            $secret = preg_replace('/[\p{Cf}\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', '', $secret);
         ?>
 
         <input type="hidden" name="newToken" value="<?php echo $token?>" />
         <input type="hidden" name="returnTo" value="<?php echo getPathClientWebRoot();?>/cpanel/?p=tokens" />
-        
+        <input type='hidden' name='secret' value='<?php echo "$secret" ?>'/>
         <div class="token">
         Token:
             <div OnClick='copyInnerText(this);' OnDBClick='copyInnerText(this);' class="tokenValue">
@@ -35,7 +44,18 @@ $available_zones = bind9_zoneconfig_decode($CONFIG["ZoneConfigFile"]);
             ?>
             </div>
             <br/>
-            Use this token to interact witht the API after saving it!
+            Use this token to interact with the API after saving it!
+        </div>
+
+        <div class="token">
+        Secret:
+            <div OnClick='copyInnerText(this);' OnDBClick='copyInnerText(this);' class="tokenValue">
+            <?php
+                echo $secret;
+            ?>
+            </div>
+            <br/>
+            This is your secret, store it now!
         </div>
 
         <?php

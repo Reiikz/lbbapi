@@ -12,10 +12,24 @@ if(!session_status() != PHP_SESSION_ACTIVE){
 $token = null;
 if(isset($_POST["token"])){
     $token = $_POST["token"];
-    if(!userHasAnyOfThesePermissions(array("token.delete"), $token)){
+    if(!userHasAnyOfThesePermissions(array("token.delete", "admin"), $token, $secret)){
         header("HTTP/1.1 403 Forbidden");
         echo "<h1>This token can't delete other other tokens token.delete!</h1>";
         exit(0);
+    }
+}
+
+$secret=null;
+if($token != null){
+    if(session_status() != PHP_SESSION_ACTIVE){
+        session_start();   
+    }
+    if(!isset($_POST["secret"])){
+        header("HTTP/1.1 403 Bad request");
+        echo "<h1>No secret!</h1>";
+        exit(0);
+    }else{
+        $secret=$_POST["secret"];
     }
 }
 
@@ -25,7 +39,7 @@ if(!isset($_POST["deleteToken"])){
     exit(0);
 }
 
-if((!userHasAnyOfThesePermissions(array("admin", "token.delete"), $token)) ){
+if((!userHasAnyOfThesePermissions(array("admin", "token.delete"), $token, $secret)) ){
     header("HTTP/1.1 403 Forbidden");
     echo "<h1>You can't delete your own tokens!</h1>";
     exit(0);

@@ -11,10 +11,24 @@ if(!session_status() != PHP_SESSION_ACTIVE){
 $token = null;
 if(isset($_POST["token"])){
     $token = $_POST["token"];
-    if(!userHasAnyOfThesePermissions(array("token.update"), $token)){
+    if(!userHasAnyOfThesePermissions(array("token.update", "admin"), $token, $secret)){
         header("HTTP/1.1 403 Forbidden");
         echo "<h1>This token can't update other other tokens token.update!</h1>";
         exit(0);
+    }
+}
+
+$secret=null;
+if($token != null){
+    if(session_status() != PHP_SESSION_ACTIVE){
+        session_start();   
+    }
+    if(!isset($_POST["secret"])){
+        header("HTTP/1.1 403 Bad request");
+        echo "<h1>No secret!</h1>";
+        exit(0);
+    }else{
+        $secret=$_POST["secret"];
     }
 }
 
@@ -60,7 +74,7 @@ foreach($_POST as $key => $value){
     $x++;
 }
 
-if((!userHasAllThesePermissions($newPermissions + array("token.update"), $token)) && (!userHasAnyOfThesePermissions(array("admin"), $token))){
+if((!userHasAllThesePermissions($newPermissions + array("token.update"), $token)) && (!userHasAnyOfThesePermissions(array("admin"), $token, $secret))){
     header("HTTP/1.1 403 Forbidden");
     echo "<h1>Can't update token, you don't have permission!</h1>";
     exit(0);

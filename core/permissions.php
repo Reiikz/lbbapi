@@ -29,7 +29,7 @@ function saveUserPermissions($array, $userPermFile = null){
     saveVariable($array, "_PERMISSIONS", $userPermFile);
 }
 
-function userHasPermission($permission, $token = null){
+function userHasPermission($permission, $token = null, $secret = null){
     $perms = null;
     if($token == null){
         $userPermFile = getUserPermissionFilePath();
@@ -52,6 +52,9 @@ function userHasPermission($permission, $token = null){
             }
         }else{
             $token = readToken($token);
+            if(!password_verify($secret, $token["secret"])){
+                return false;
+            }
             if($token == null){
                 echo "no token found!<br/>\n";
                 return false;
@@ -83,17 +86,17 @@ function userHasPermission($permission, $token = null){
     return false;
 }
 
-function userHasAllThesePermissions($array, $token = null){
+function userHasAllThesePermissions($array, $token = null, $secret = null){
     $hasEm = true;
     foreach($array as $permission){
-        $hasEm = $hasEm && userHasPermission($permission, $token);
+        $hasEm = $hasEm && userHasPermission($permission, $token, $secret);
     }
     return $hasEm;
 }
 
-function userHasAnyOfThesePermissions($array, $token = null){
+function userHasAnyOfThesePermissions($array, $token = null, $secret = null){
     foreach($array as $permission){
-        if(userHasPermission($permission, $token)){
+        if(userHasPermission($permission, $token, $secret)){
             return true;
         }
     }
