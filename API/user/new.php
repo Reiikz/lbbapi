@@ -112,15 +112,17 @@ if(isset($USERIDS[$_POST["user"]])){
     exit(0);
 }
 
+$newUsername = trim($_POST["user"]);
+
 $newUser = array(
-    "username" => $_POST["user"],
+    "username" => $newUsername,
     "password" => password_hash($_POST["password"], PASSWORD_DEFAULT),
-    "username_md5" => md5($_POST["user"]),
+    "username_md5" => md5($newUsername),
 );
 
 array_push($USERS, $newUser);
 
-$USERIDS[$_POST["user"]]=count($USERIDS);
+$USERIDS[$newUsername]=count($USERIDS);
 
 $text = "<?php\n\n";
 $text .= "\$USERS = " . var_export($USERS, TRUE) . ";";
@@ -131,6 +133,8 @@ file_put_contents($USERS_FILE_PATH, $text, LOCK_EX);
 chmod($USERS_FILE_PATH, 0700);
 
 session_start();
+$_SESSION["username_md5"] = $newUser["username_md5"];
+$_SESSION["username"] = $newUser["username"];
 
 if(count($USERIDS) == 1){
     include_once APP_ROOT . "/core/permissions.php";
@@ -145,8 +149,8 @@ if(count($USERIDS) == 1){
 }
 
 if(!isset($_SESSION["username"])){
-    $_SESSION["username"]=$_POST["user"];
-    $_SESSION["username_md5"]=md5($_POST["user"]);
+    $_SESSION["username"]=$newUsername;
+    $_SESSION["username_md5"]=md5($newUsername);
 }
 
 header("Location: " . getPathClientWebRoot() . "/");
