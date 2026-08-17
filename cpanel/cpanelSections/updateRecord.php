@@ -74,7 +74,7 @@ $domain=$_GET["record"];
             Value: <input type="text" name="newValue" value="<?php echo $_GET["value"]; ?>" />
             TTL: <input type="text" name="newTTL" value="<?php echo $_GET["ttl"]; ?>" />
 
-            <input type="hidden" name="returnTo" value="<?php echo $_GET["returnTo"]; ?>/" />
+            <input type="hidden" name="returnTo" value="<?php echo $_GET["returnTo"]; ?>" />
             <input type="hidden" name="authority" value="<?php echo $_GET["authority"]; ?>" />
             <input type="submit" value="Update" />
         </form>
